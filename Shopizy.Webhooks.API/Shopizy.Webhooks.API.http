@@ -1,0 +1,6 @@
+@Shopizy.Webhooks.API_HostAddress = http://localhost:5001
+
+GET {{Shopizy.Webhooks.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,0 +1,6 @@
+@Shopizy.Identity.API_HostAddress = http://localhost:5130
+
+GET {{Shopizy.Identity.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

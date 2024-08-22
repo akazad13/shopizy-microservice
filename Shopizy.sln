@@ -3,7 +3,23 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35208.52
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopizy.API", "Shopizy.API\Shopizy.API.csproj", "{B16F6177-808C-44BC-BA19-42B4F16AE311}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shopizy.API", "Shopizy.API\Shopizy.API.csproj", "{B16F6177-808C-44BC-BA19-42B4F16AE311}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{800EC0DE-89DA-4945-90B4-28F7CB61CD51}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.override.yml = docker-compose.override.yml
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopizy.Identity.API", "Shopizy.Identity.API\Shopizy.Identity.API.csproj", "{E61C12F7-159A-4A6A-8447-D0720027161B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopizy.Catelog.API", "Shopizy.Catelog.API\Shopizy.Catelog.API.csproj", "{3D1B40F9-9F6B-4217-AEC2-854F0B16B447}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopizy.Basket.API", "Shopizy.Basket.API\Shopizy.Basket.API.csproj", "{D328893B-C82D-40A6-A2C7-ACA45C83EAFB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopizy.Order.API", "Shopizy.Order.API\Shopizy.Order.API.csproj", "{D694692A-820D-43D5-8466-7F8D6631ACEC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopizy.Webhooks.API", "Shopizy.Webhooks.API\Shopizy.Webhooks.API.csproj", "{C8AE3AE5-5F1E-4B68-BDBC-71332D3E428B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +31,26 @@ Global
 		{B16F6177-808C-44BC-BA19-42B4F16AE311}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B16F6177-808C-44BC-BA19-42B4F16AE311}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B16F6177-808C-44BC-BA19-42B4F16AE311}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E61C12F7-159A-4A6A-8447-D0720027161B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E61C12F7-159A-4A6A-8447-D0720027161B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E61C12F7-159A-4A6A-8447-D0720027161B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E61C12F7-159A-4A6A-8447-D0720027161B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D1B40F9-9F6B-4217-AEC2-854F0B16B447}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D1B40F9-9F6B-4217-AEC2-854F0B16B447}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D1B40F9-9F6B-4217-AEC2-854F0B16B447}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D1B40F9-9F6B-4217-AEC2-854F0B16B447}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D328893B-C82D-40A6-A2C7-ACA45C83EAFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D328893B-C82D-40A6-A2C7-ACA45C83EAFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D328893B-C82D-40A6-A2C7-ACA45C83EAFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D328893B-C82D-40A6-A2C7-ACA45C83EAFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D694692A-820D-43D5-8466-7F8D6631ACEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D694692A-820D-43D5-8466-7F8D6631ACEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D694692A-820D-43D5-8466-7F8D6631ACEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D694692A-820D-43D5-8466-7F8D6631ACEC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8AE3AE5-5F1E-4B68-BDBC-71332D3E428B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8AE3AE5-5F1E-4B68-BDBC-71332D3E428B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8AE3AE5-5F1E-4B68-BDBC-71332D3E428B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8AE3AE5-5F1E-4B68-BDBC-71332D3E428B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,21 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'dapr'
+    scrape_interval: 5s
+    static_configs:
+      - targets:
+          - 'localhost:9090'
+
+  - job_name: 'rabbitmq'
+    metrics_path: '/metrics'
+    scrape_interval: 5s
+    static_configs:
+    - targets:
+        - 'rabbitmq:15692'
+
+  - job_name: 'rabbitmq-perf-test'
+    static_configs:
+      - targets:
+          - 'basic-get:8080'

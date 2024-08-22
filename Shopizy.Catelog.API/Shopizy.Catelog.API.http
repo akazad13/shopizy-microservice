@@ -1,0 +1,6 @@
+@Shopizy.Catelog.API_HostAddress = http://localhost:5038
+
+GET {{Shopizy.Catelog.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
