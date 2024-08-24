@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace Shopizy.Order.API.Controllers
+namespace Shopizy.Ordering.API.Controllers
 {
     [ApiController]
     [Route("[controller]")]

@@ -1,4 +1,4 @@
-﻿namespace Shopizy.Domain.Models.Models;
+﻿namespace Shopizy.Domain.Models.Base;
 
 public abstract class AggregateRoot<TId, TIdType> : Entity<TId> where TId : AggregateRootId<TIdType>
 {

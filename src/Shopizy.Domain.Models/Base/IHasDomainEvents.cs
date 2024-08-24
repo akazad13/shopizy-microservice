@@ -1,4 +1,4 @@
-﻿namespace Shopizy.Domain.Models.Models;
+﻿namespace Shopizy.Domain.Models.Base;
 public interface IHasDomainEvents
 {
     IReadOnlyList<IDomainEvent> DomainEvents { get; }

@@ -1,4 +1,4 @@
-namespace Shopizy.Order.API
+namespace Shopizy.Ordering.API
 {
     public class WeatherForecast
     {

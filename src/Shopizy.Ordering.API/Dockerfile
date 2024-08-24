@@ -12,19 +12,19 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["Shopizy.Order.API/Shopizy.Order.API.csproj", "Shopizy.Order.API/"]
-RUN dotnet restore "./Shopizy.Order.API/Shopizy.Order.API.csproj"
+COPY ["Shopizy.Ordering.API/Shopizy.Ordering.API.csproj", "Shopizy.Ordering.API/"]
+RUN dotnet restore "./Shopizy.Ordering.API/Shopizy.Ordering.API.csproj"
 COPY . .
-WORKDIR "/src/Shopizy.Order.API"
-RUN dotnet build "./Shopizy.Order.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR "/src/Shopizy.Ordering.API"
+RUN dotnet build "./Shopizy.Ordering.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./Shopizy.Order.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./Shopizy.Ordering.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Shopizy.Order.API.dll"]
+ENTRYPOINT ["dotnet", "Shopizy.Ordering.API.dll"]

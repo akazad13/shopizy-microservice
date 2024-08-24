@@ -1,6 +1,4 @@
-﻿using MediatR;
-
-namespace Shopizy.Domain.Models.Models;
+﻿namespace Shopizy.Domain.Models.Base;
 
 public abstract class Entity<TId> : IEquatable<Entity<TId>>, IHasDomainEvents where TId : notnull
 {

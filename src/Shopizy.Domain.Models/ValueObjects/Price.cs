@@ -1,5 +1,5 @@
-﻿using Shopizy.Domain.Models.Enums;
-using Shopizy.Domain.Models.Models;
+﻿using Shopizy.Domain.Models.Base;
+using Shopizy.Domain.Models.Enums;
 
 namespace Shopizy.Domain.Models.ValueObjects;
 

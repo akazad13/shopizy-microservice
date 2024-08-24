@@ -1,4 +1,4 @@
-﻿using Shopizy.Domain.Models.Models;
+﻿using Shopizy.Domain.Models.Base;
 
 namespace Shopizy.Domain.Models.ValueObjects;
 
