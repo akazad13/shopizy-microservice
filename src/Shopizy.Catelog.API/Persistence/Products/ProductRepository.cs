@@ -6,9 +6,9 @@ using Shopizy.Domain.Models.Specifications;
 
 namespace Shopizy.Catelog.API.Persistence.Products;
 
-public class ProductRepository(AppDbContext dbContext) : IProductRepository
+public class ProductRepository(CatelogDbContext dbContext) : IProductRepository
 {
-    private readonly AppDbContext _dbContext = dbContext;
+    private readonly CatelogDbContext _dbContext = dbContext;
 
     public Task<List<Product>> GetProductsAsync()
     {

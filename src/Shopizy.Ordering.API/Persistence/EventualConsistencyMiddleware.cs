@@ -7,7 +7,7 @@ public class EventualConsistencyMiddleware(RequestDelegate _next)
 {
     public const string DomainEventsKey = "DomainEventsKey";
 
-    public async Task InvokeAsync(HttpContext context, IPublisher publisher, AppDbContext dbContext)
+    public async Task InvokeAsync(HttpContext context, IPublisher publisher, OrderDbContext dbContext)
     {
         var transaction = await dbContext.Database.BeginTransactionAsync();
         context.Response.OnCompleted(async () =>

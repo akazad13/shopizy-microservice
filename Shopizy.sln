@@ -23,6 +23,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shopizy.Domain.Models", "sr
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OrderService", "OrderService", "{B4BD7082-3176-4B2A-A872-056224803AF3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopizy.Security", "Shopizy.Security\Shopizy.Security.csproj", "{40A23124-A683-45BD-BAB6-9B56153EF303}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +63,10 @@ Global
 		{9CB11C5C-CB07-49A0-8A59-B2885E94FCBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9CB11C5C-CB07-49A0-8A59-B2885E94FCBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9CB11C5C-CB07-49A0-8A59-B2885E94FCBA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40A23124-A683-45BD-BAB6-9B56153EF303}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40A23124-A683-45BD-BAB6-9B56153EF303}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40A23124-A683-45BD-BAB6-9B56153EF303}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40A23124-A683-45BD-BAB6-9B56153EF303}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -75,6 +81,7 @@ Global
 		{DD794112-FFD3-4E53-9F7A-036F982AA668} = {0C5C9850-D277-4A9D-9EDF-7A5281611892}
 		{9CB11C5C-CB07-49A0-8A59-B2885E94FCBA} = {0C5C9850-D277-4A9D-9EDF-7A5281611892}
 		{B4BD7082-3176-4B2A-A872-056224803AF3} = {0C5C9850-D277-4A9D-9EDF-7A5281611892}
+		{40A23124-A683-45BD-BAB6-9B56153EF303} = {0C5C9850-D277-4A9D-9EDF-7A5281611892}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A7E9D63F-2904-4907-8161-F1B3D32BEB39}

@@ -9,7 +9,7 @@ using Shopizy.Catelog.API.Aggregates.ProductReviews;
 
 namespace Shopizy.Catelog.API.Persistence;
 
-public class AppDbContext(DbContextOptions options, IHttpContextAccessor _httpContextAccessor, IPublisher _publisher) : DbContext(options), IAppDbContext
+public class CatelogDbContext(DbContextOptions options, IHttpContextAccessor _httpContextAccessor, IPublisher _publisher) : DbContext(options), IAppDbContext
 {
     public DbSet<Category> Categories { get; set; }
     public DbSet<Product> Products { get; set; }
@@ -34,7 +34,7 @@ public class AppDbContext(DbContextOptions options, IHttpContextAccessor _httpCo
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Ignore<List<IDomainEvent>>().ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+        modelBuilder.Ignore<List<IDomainEvent>>().ApplyConfigurationsFromAssembly(typeof(CatelogDbContext).Assembly);
         base.OnModelCreating(modelBuilder);
     }
 

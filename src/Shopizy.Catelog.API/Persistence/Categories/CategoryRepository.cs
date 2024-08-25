@@ -6,9 +6,9 @@ using Shopizy.Domain.Models.Specifications;
 
 namespace Shopizy.Catelog.API.Persistence.Categories;
 
-public class CategoryRepository(AppDbContext dbContext) : ICategoryRepository
+public class CategoryRepository(CatelogDbContext dbContext) : ICategoryRepository
 {
-    private readonly AppDbContext _dbContext = dbContext;
+    private readonly CatelogDbContext _dbContext = dbContext;
     public Task<bool> GetCategoryByNameAsync(string name)
     {
         return _dbContext.Categories.AnyAsync(category => category.Name == name);

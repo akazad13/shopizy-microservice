@@ -7,7 +7,7 @@ using Shopizy.Domain.Models.Persistence;
 
 namespace Shopizy.Ordering.API.Persistence;
 
-public class AppDbContext(DbContextOptions options, IHttpContextAccessor _httpContextAccessor, IPublisher _publisher) : DbContext(options), IAppDbContext
+public class OrderDbContext(DbContextOptions options, IHttpContextAccessor _httpContextAccessor, IPublisher _publisher) : DbContext(options), IAppDbContext
 {
     public DbSet<Order> Orders { get; set; }
     public async override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
@@ -30,7 +30,7 @@ public class AppDbContext(DbContextOptions options, IHttpContextAccessor _httpCo
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Ignore<List<IDomainEvent>>().ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+        modelBuilder.Ignore<List<IDomainEvent>>().ApplyConfigurationsFromAssembly(typeof(OrderDbContext).Assembly);
         base.OnModelCreating(modelBuilder);
     }
 

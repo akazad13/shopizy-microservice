@@ -6,9 +6,9 @@ using Shopizy.Ordering.API.Persistence.Specifications;
 
 namespace Shopizy.Ordering.API.Persistence;
 
-public class OrderRepository(AppDbContext dbContext) : IOrderRepository
+public class OrderRepository(OrderDbContext dbContext) : IOrderRepository
 {
-    private readonly AppDbContext _dbContext = dbContext;
+    private readonly OrderDbContext _dbContext = dbContext;
     public Task<List<Order>> GetOrdersAsync()
     {
         return _dbContext.Orders.AsNoTracking().ToListAsync();

@@ -4,9 +4,9 @@ using Shopizy.Cart.API.Aggregates.ValueObjects;
 
 namespace Shopizy.Cart.API.Persistence;
 
-public class CartRepository(AppDbContext dbContext) : ICartRepository
+public class CartRepository(CartDbContext dbContext) : ICartRepository
 {
-    private readonly AppDbContext _dbContext = dbContext;
+    private readonly CartDbContext _dbContext = dbContext;
 
     public Task<List<CustomerCart>> GetCartsAsync()
     {
