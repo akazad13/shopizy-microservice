@@ -25,4 +25,9 @@ public sealed class CategoryId : AggregateRootId<Guid>
     {
         yield return Value;
     }
+
+    internal static CategoryId Create(object categoryId)
+    {
+        throw new NotImplementedException();
+    }
 }

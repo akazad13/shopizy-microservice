@@ -40,7 +40,7 @@ public sealed class CartConfigurations : IEntityTypeConfiguration<CustomerCart>
             m => m.CartItems,
             ltmb =>
             {
-                ltmb.ToTable("LineItems");
+                ltmb.ToTable("CartItems");
                 ltmb.WithOwner().HasForeignKey("CartId");
                 ltmb.HasKey(nameof(CartItem.Id), "CartId");
                 ltmb.HasIndex("CartId", "ProductId").IsUnique();

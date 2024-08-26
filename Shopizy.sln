@@ -8,6 +8,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shopizy.Identity.API", "src\Shopizy.Identity.API\Shopizy.Identity.API.csproj", "{E61C12F7-159A-4A6A-8447-D0720027161B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shopizy.Catelog.API", "src\Shopizy.Catelog.API\Shopizy.Catelog.API.csproj", "{3D1B40F9-9F6B-4217-AEC2-854F0B16B447}"
+	ProjectSection(ProjectDependencies) = postProject
+		{40A23124-A683-45BD-BAB6-9B56153EF303} = {40A23124-A683-45BD-BAB6-9B56153EF303}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shopizy.Cart.API", "src\Shopizy.Cart.API\Shopizy.Cart.API.csproj", "{D328893B-C82D-40A6-A2C7-ACA45C83EAFB}"
 EndProject
@@ -23,7 +26,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shopizy.Domain.Models", "sr
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OrderService", "OrderService", "{B4BD7082-3176-4B2A-A872-056224803AF3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shopizy.Security", "Shopizy.Security\Shopizy.Security.csproj", "{40A23124-A683-45BD-BAB6-9B56153EF303}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shopizy.Security", "src\Shopizy.Security\Shopizy.Security.csproj", "{40A23124-A683-45BD-BAB6-9B56153EF303}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,5 +1,5 @@
 ﻿using CloudinaryDotNet;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Shopizy.Catelog.API.ExternalServices.MediaUploader;
 using Shopizy.Catelog.API.ExternalServices.MediaUploader.CloudinaryService;
@@ -8,11 +8,6 @@ using Shopizy.Catelog.API.Persistence.Categories;
 using Shopizy.Catelog.API.Persistence.ProductReviews;
 using Shopizy.Catelog.API.Persistence.Products;
 using Shopizy.Domain.Models.Persistence;
-using Shopizy.Security;
-using Shopizy.Security.CurrentUserProvider;
-using Shopizy.Security.PolicyEnforcer;
-using Shopizy.Security.TokenGenerator;
-using Shopizy.Security.TokenValidation;
 
 namespace Shopizy.Catelog.API;
 
@@ -28,10 +23,21 @@ public static class ConfigurationExtensions
             .AddHttpContextAccessor()
             .AddServices(configuration)
             .AddBackgroundServices(configuration)
-            .AddAuthentication(configuration)
-            .AddAuthorization()
             .AddPersistence(configuration)
             .AddRepositories();
+    }
+
+    public static IServiceCollection AddApplication(this IServiceCollection services)
+    {
+        services.AddMediatR(msc =>
+        {
+            msc.RegisterServicesFromAssembly(typeof(ConfigurationExtensions).Assembly);
+            //msc.AddOpenBehavior(typeof(AuthorizationBehavior<,>));
+            //msc.AddOpenBehavior(typeof(ValidationBehavior<,>));
+        });
+        services.AddValidatorsFromAssemblyContaining(typeof(ConfigurationExtensions));
+
+        return services;
     }
 
     private static IServiceCollection AddBackgroundServices(
@@ -66,30 +72,6 @@ public static class ConfigurationExtensions
             return cloudinary;
         });
         services.AddScoped<IMediaUploader, CloudinaryMediaUploader>();
-
-        return services;
-    }
-
-    public static IServiceCollection AddAuthorization(this IServiceCollection services)
-    {
-        services.AddScoped<IAuthorizationService, AuthorizationService>();
-        services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
-        services.AddSingleton<IPolicyEnforcer, PolicyEnforcer>();
-
-        return services;
-    }
-
-    public static IServiceCollection AddAuthentication(
-        this IServiceCollection services,
-        IConfiguration configuration
-    )
-    {
-        services.Configure<JwtSettings>(configuration.GetSection(JwtSettings.Section));
-
-        services
-            .ConfigureOptions<JwtBearerToeknValidationConfiguration>()
-            .AddAuthentication(defaultScheme: JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer();
 
         return services;
     }
