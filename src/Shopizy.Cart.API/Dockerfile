@@ -12,19 +12,25 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["Shopizy.Basket.API/Shopizy.Basket.API.csproj", "Shopizy.Basket.API/"]
-RUN dotnet restore "./Shopizy.Basket.API/Shopizy.Basket.API.csproj"
+
+COPY ["src/Shopizy.Domain.Models/Shopizy.Domain.Models.csproj", "src/Shopizy.Domain.Models/"]
+COPY ["src/Shopizy.Security/Shopizy.Security.csproj", "src/Shopizy.Security/"]
+COPY ["src/Shopizy.Cart.API/Shopizy.Cart.API.csproj", "src/Shopizy.Cart.API/"]
+
+RUN dotnet restore "src/Shopizy.Cart.API/Shopizy.Cart.API.csproj"
+
 COPY . .
-WORKDIR "/src/Shopizy.Basket.API"
-RUN dotnet build "./Shopizy.Basket.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR "/src/src/Shopizy.Cart.API"
+RUN dotnet build "Shopizy.Cart.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
+
 
 # This stage is used to publish the service project to be copied to the final stage
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./Shopizy.Basket.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "Shopizy.Cart.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Shopizy.Basket.API.dll"]
+ENTRYPOINT ["dotnet", "Shopizy.Cart.API.dll"]

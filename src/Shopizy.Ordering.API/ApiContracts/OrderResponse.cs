@@ -2,7 +2,7 @@
 
 public record OrderResponse(
     Guid OrderId,
-    Guid UserId,
+    Guid CustomerId,
     Price DeliveryCharge,
     string OrderStatus,
     string PromoCode,

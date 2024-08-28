@@ -2,7 +2,7 @@
 
 public record CartResponse(
     Guid CartId,
-    Guid UserId,
+    Guid CustomerId,
     DateTime CreatedOn,
     DateTime ModifiedOn,
     List<CartItemResponse> CartItems

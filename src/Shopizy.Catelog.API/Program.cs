@@ -1,4 +1,5 @@
 using Shopizy.Catelog.API;
+using Shopizy.Catelog.API.Mapping;
 using Shopizy.Security;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +14,8 @@ builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddMappings();
 
 var app = builder.Build();
 

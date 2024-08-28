@@ -399,4 +399,4 @@ FodyWeavers.xsd
 
 # User Input
 *.sql
-tmp/*
+*/tmp/*

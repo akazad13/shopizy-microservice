@@ -1,0 +1,108 @@
+#docker-compose.override.yml (Extended config for DEVELOPMENT env)
+services:
+  ############################
+  # Dapr placement service
+  ############################
+  placement:
+    command: ["./placement", "-port", "50006"]
+    ports:
+      - "50000:50006"
+
+  ############################
+  # RabbitMQ pubsub
+  ############################
+  rabbitmq: &rmq
+    environment:
+      RABBITMQ_ERLANG_COOKIE: shopizy-dapr
+      RABBITMQ_LOG: debug,+color
+    ports:
+      - "50111:5672"
+      - "15673:15672"
+      - "15693:15692"
+
+  ############################
+  # Redis state store
+  ############################
+  redis:
+    ports:
+      - "50108:6379"
+    volumes:
+      - ./tmp/redis:/data
+
+  ############################
+  # Zipkin tracing service
+  ############################
+  zipkin:
+    ports:
+      - "5411:9411"
+
+  prometheus:
+    ports:
+      - 9000:9090
+    volumes:
+      - ./deps/prometheus:/etc/prometheus
+      - ./tmp/prometheus:/prometheus
+    command: --web.enable-lifecycle --config.file=/etc/prometheus/prometheus.yml
+
+  grafana:
+    ports:
+      - "3000:3000"
+    volumes:
+      #- rabbitmq-prometheus_grafana:/var/lib/grafana
+      - ./deps/grafana/dashboards.yml:/etc/grafana/provisioning/dashboards/rabbitmq.yaml
+      - ./deps/grafana/datasources.yml:/etc/grafana/provisioning/datasources/prometheus.yaml
+      - ./deps/grafana/dashboards:/dashboards
+    environment:
+      # https://grafana.com/plugins/flant-statusmap-panel
+      # https://grafana.com/plugins/grafana-piechart-panel
+      # https://grafana.com/plugins/grafana-polystat-panel
+      # https://grafana.com/plugins/jdbranham-diagram-panel
+      # https://grafana.com/plugins/michaeldmoore-multistat-panel
+      # https://grafana.com/plugins/vonage-status-panel
+      # https://grafana.com/plugins/yesoreyeram-boomtable-panel
+      GF_INSTALL_PLUGINS: "flant-statusmap-panel,grafana-piechart-panel"
+
+
+  #############################
+  ## Azurite Emulator
+  #############################
+  azurite:
+    ports:
+      - 10000:10000
+      - 10001:10001
+      - 10002:10002
+    volumes:
+      - c:/azurite:/data
+
+  ############################
+  # Kowl is a Ui for Kafka. Browse to its exposed port (7080)
+  ############################
+  kowl:
+    ports:
+      - 7079:8080
+    command: -c "echo \"$$KOWL_CONFIG_FILE\" > /tmp/config.yml; /app/kowl"
+    environment:
+      CONFIG_FILEPATH: /tmp/config.yml
+      KOWL_CONFIG_FILE: |
+        kafka:
+          brokers: ["kafka:9092"]
+
+  ############################
+  # Zookeeper, a key-value store used by Kafka
+  ############################
+  zookeeper:
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+
+  ############################
+  # Kafka
+  ############################
+  kafka:
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: LISTENER_DOCKER_INTERNAL://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_DOCKER_INTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_DOCKER_INTERNAL
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      KAFKA_BROKER_ID: 1
+      KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1

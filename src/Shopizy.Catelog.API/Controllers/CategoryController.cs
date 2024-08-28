@@ -1,5 +1,5 @@
-﻿using AutoMapper;
-using ErrorOr;
+﻿using ErrorOr;
+using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Shopizy.Catelog.API.Services.Categories.Commands.CreateCategory;

@@ -12,10 +12,10 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["Shopizy.API/Shopizy.API.csproj", "Shopizy.API/"]
-RUN dotnet restore "./Shopizy.API/Shopizy.API.csproj"
+COPY ["Shopizy.API.csproj", "."]
+RUN dotnet restore "./Shopizy.API.csproj"
 COPY . .
-WORKDIR "/src/Shopizy.API"
+WORKDIR "/src/."
 RUN dotnet build "./Shopizy.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage

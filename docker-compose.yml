@@ -1,110 +1,114 @@
-# docker-compose.yml
-name: shopizy-network
-
 networks:
   shopizy-dapr:
+    external: true
     name: shopizy-dapr
 
+name: shopizy-engine
 services:
-  ##############################
-  # Dapr placement service
-  ##############################
-  placement:
+  ############################
+  # shopizy catelog api
+  ############################
+  shopizy.catelog.api:
+    image: "akazad13/shopizycatelogapi"
+    build:
+      context: .
+      dockerfile: src/Shopizy.Catelog.API/Dockerfile
+    networks:
+      - shopizy-dapr
+
+  shopizy.catelog.api-dapr:
     image: "daprio/dapr:1.14.1-mariner"
-    networks:
-      - shopizy-dapr
-  
-  ##############################
-  # RabbitMQ pubsub
-  ##############################
-  rabbitmq: &rmq
-    image: "rabbitmq:management-alpine"
-    networks:
-      - shopizy-dapr
-  
-  ############################
-  # Redis state store
-  ############################
-  redis:
-    image: "redis:alpine"
-    networks:
-      - shopizy-dapr
-  
-  ############################
-  # Zipkin tracing service
-  ############################
-  zipkin:
-    image: "openzipkin/zipkin-slim:3.4.1"
-    networks:
-      - shopizy-dapr
-
-  prometheus:
-    image: prom/prometheus:latest
-    networks:
-      - shopizy-dapr
-
-  grafana:
-    image: grafana/grafana:latest
-    networks:
-      - shopizy-dapr
-  
-  #############################
-  ## Azurite Emulator
-  #############################
-  azurite:
-    image: "mcr.microsoft.com/azure-storage/azurite:latest"
-    container_name: shopizy.azurite
-    hostname: shopizy.azurite
-    networks:
-      - shopizy-dapr
-    tty: true
-    restart: on-failure:2
-
-  #############################
-  ## Seq Cse123456
-  #############################
-  seq:
-    image: "datalust/seq:latest"
-    container_name: shopizy.seq
-    environment:
-      ACCEPT_EULA: Y
-      SEQ_FIRSTRUN_ADMINPASSWORDHASH: "QBz/TVZtqUALcyfvtUnaqyKYNB49YAjErqCvH+uhxeHwtILICr3oJjaIqG0DoOhdP+hdpwxF4ILzn+SbuFHhsuu8VRhKBYGdtBsJP5swgRvS"
-    ports:
-      - 5341:5341
-      - 40280:80
+    command: [
+        "./daprd",
+        "-app-id",
+        "shopizycatelogapi",
+        "-app-port",
+        "8080",
+        "--placement-host-address",
+        "placement:50006", # Dapr's placement service can be reach via the docker DNS entry
+        "--resources-path",
+        "/components",
+        "-config",
+        "/configuration/config.yaml",
+        "--enable-api-logging",
+      ]
     volumes:
-      - c:/seq:/data
-    networks:
-      - shopizy-dapr
-
-  ############################
-  # Zookeeper, a key-value store used by Kafka
-  ############################
-  zookeeper:
-    image: confluentinc/cp-zookeeper:7.7.0
-    networks:
-      - shopizy-dapr
-
-  ############################
-  # Kafka
-  ############################
-  kafka:
-    image: confluentinc/cp-kafka:7.7.0
+      - "./dapr/components/:/components"
+      - "./dapr/configuration/:/configuration"
     depends_on:
-      - zookeeper
-    networks:
-      - shopizy-dapr
-
-  ############################
-  # Kowl is a Ui for Kafka. Browse to its exposed port (7080)
-  ############################
-  kowl:
-    image: quay.io/cloudhut/kowl:master
-    depends_on:
-      - kafka
-    networks:
-      - shopizy-dapr
-    entrypoint: /bin/sh
+      - shopizy.catelog.api
+    # Attach the myfrontend-dapr service to the myfrontend network namespace
+    network_mode: "service:shopizy.catelog.api"
     restart: on-failure
-    
- 
+
+  ############################
+  # shopizy cart api
+  ############################
+  shopizy.cart.api:
+    image: akazad13/shopizycartapi
+    build:
+      context: .
+      dockerfile: src/Shopizy.Cart.API/Dockerfile
+    networks:
+      - shopizy-dapr
+
+  shopizy.cart.api-dapr:
+    image: "daprio/dapr:1.14.1-mariner"
+    command: [
+        "./daprd",
+        "-app-id",
+        "shopizycatelogapi",
+        "-app-port",
+        "8080",
+        "--placement-host-address",
+        "placement:50006", # Dapr's placement service can be reach via the docker DNS entry
+        "--resources-path",
+        "/components",
+        "-config",
+        "/configuration/config.yaml",
+        "--enable-api-logging",
+      ]
+    volumes:
+      - "./dapr/components/:/components"
+      - "./dapr/configuration/:/configuration"
+    depends_on:
+      - shopizy.cart.api
+    # Attach the myfrontend-dapr service to the myfrontend network namespace
+    network_mode: "service:shopizy.cart.api"
+    restart: on-failure
+
+  ############################
+  # shopizy ordering api
+  ############################
+  shopizy.ordering.api:
+    image: akazad13/shopizyorderingapi
+    build:
+      context: .
+      dockerfile: src/Shopizy.Ordering.API/Dockerfile
+    networks:
+      - shopizy-dapr
+
+  shopizy.ordering.api-dapr:
+    image: "daprio/dapr:1.14.1-mariner"
+    command: [
+        "./daprd",
+        "-app-id",
+        "shopizyorderingapi",
+        "-app-port",
+        "8080",
+        "--placement-host-address",
+        "placement:50006", # Dapr's placement service can be reach via the docker DNS entry
+        "--resources-path",
+        "/components",
+        "-config",
+        "/configuration/config.yaml",
+        "--enable-api-logging",
+      ]
+    volumes:
+      - "./dapr/components/:/components"
+      - "./dapr/configuration/:/configuration"
+    depends_on:
+      - shopizy.ordering.api
+    # Attach the myfrontend-dapr service to the myfrontend network namespace
+    network_mode: "service:shopizy.ordering.api"
+    restart: on-failure

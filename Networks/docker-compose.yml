@@ -1,0 +1,110 @@
+# docker-compose.yml
+name: shopizy-network
+
+networks:
+  shopizy-dapr:
+    name: shopizy-dapr
+
+services:
+  ##############################
+  # Dapr placement service
+  ##############################
+  placement:
+    image: "daprio/dapr:1.14.1-mariner"
+    networks:
+      - shopizy-dapr
+  
+  ##############################
+  # RabbitMQ pubsub
+  ##############################
+  rabbitmq: &rmq
+    image: "rabbitmq:management-alpine"
+    networks:
+      - shopizy-dapr
+  
+  ############################
+  # Redis state store
+  ############################
+  redis:
+    image: "redis:alpine"
+    networks:
+      - shopizy-dapr
+  
+  ############################
+  # Zipkin tracing service
+  ############################
+  zipkin:
+    image: "openzipkin/zipkin-slim:3.4.1"
+    networks:
+      - shopizy-dapr
+
+  prometheus:
+    image: prom/prometheus:latest
+    networks:
+      - shopizy-dapr
+
+  grafana:
+    image: grafana/grafana:latest
+    networks:
+      - shopizy-dapr
+  
+  #############################
+  ## Azurite Emulator
+  #############################
+  azurite:
+    image: "mcr.microsoft.com/azure-storage/azurite:latest"
+    container_name: shopizy.azurite
+    hostname: shopizy.azurite
+    networks:
+      - shopizy-dapr
+    tty: true
+    restart: on-failure:2
+
+  #############################
+  ## Seq Cse123456
+  #############################
+  seq:
+    image: "datalust/seq:latest"
+    container_name: shopizy.seq
+    environment:
+      ACCEPT_EULA: Y
+      SEQ_FIRSTRUN_ADMINPASSWORDHASH: "QBz/TVZtqUALcyfvtUnaqyKYNB49YAjErqCvH+uhxeHwtILICr3oJjaIqG0DoOhdP+hdpwxF4ILzn+SbuFHhsuu8VRhKBYGdtBsJP5swgRvS"
+    ports:
+      - 5341:5341
+      - 40280:80
+    volumes:
+      - c:/seq:/data
+    networks:
+      - shopizy-dapr
+
+  ############################
+  # Zookeeper, a key-value store used by Kafka
+  ############################
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.7.0
+    networks:
+      - shopizy-dapr
+
+  ############################
+  # Kafka
+  ############################
+  kafka:
+    image: confluentinc/cp-kafka:7.7.0
+    depends_on:
+      - zookeeper
+    networks:
+      - shopizy-dapr
+
+  ############################
+  # Kowl is a Ui for Kafka. Browse to its exposed port (7080)
+  ############################
+  kowl:
+    image: quay.io/cloudhut/kowl:master
+    depends_on:
+      - kafka
+    networks:
+      - shopizy-dapr
+    entrypoint: /bin/sh
+    restart: on-failure
+    
+ 
