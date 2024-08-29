@@ -23,12 +23,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Shopizy.Dapr\Shopizy.Dapr.csproj" />
     <ProjectReference Include="..\Shopizy.Domain.Models\Shopizy.Domain.Models.csproj" />
     <ProjectReference Include="..\Shopizy.Security\Shopizy.Security.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\" />
     <Folder Include="Persistence\Specifications\" />
   </ItemGroup>
 

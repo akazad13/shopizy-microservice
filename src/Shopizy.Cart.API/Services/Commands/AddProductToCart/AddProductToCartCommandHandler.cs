@@ -5,13 +5,16 @@ using Shopizy.Cart.API.Aggregates.Entities;
 using Shopizy.Cart.API.Aggregates.ValueObjects;
 using Shopizy.Cart.API.Errors;
 using Shopizy.Cart.API.Persistence;
+using Shopizy.Dapr.QueryServices;
+using Shopizy.Dapr.QueryServices.Products;
 
 namespace Shopizy.Cart.API.Services.Commands.AddProductToCart;
 
-public class AddProductToCartCommandHandler(ICartRepository cartRepository)
+public class AddProductToCartCommandHandler(ICartRepository cartRepository, IQueryService<IsProductExistQuery, bool> productExistQuery)
         : IRequestHandler<AddProductToCartCommand, ErrorOr<CustomerCart>>
 {
     private readonly ICartRepository _cartRepository = cartRepository;
+    private readonly IQueryService<IsProductExistQuery, bool> _productExistQuery = productExistQuery;
 
     public async Task<ErrorOr<CustomerCart>> Handle(AddProductToCartCommand cmd, CancellationToken cancellationToken)
     {
@@ -23,10 +26,12 @@ public class AddProductToCartCommandHandler(ICartRepository cartRepository)
         if (cart.CartItems.Any(li => li.ProductId == ProductId.Create(cmd.ProductId)))
             return CustomErrors.Cart.ProductAlreadyExistInCart;
 
+        var product = await _productExistQuery.QueryAsync(new IsProductExistQuery(cmd.ProductId));
+
         //var product = await _productRepository.IsProductExistAsync(ProductId.Create(cmd.ProductId));
 
-        //if (!product)
-        //    return CustomErrors.Product.ProductNotFound;
+        if (!product)
+            return CustomErrors.Product.ProductNotFound;
 
         cart.AddCartItem(CartItem.Create(ProductId.Create(cmd.ProductId)));
 

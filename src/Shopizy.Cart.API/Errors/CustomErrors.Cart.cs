@@ -32,5 +32,11 @@ public static partial class CustomErrors
                 description: "Product is already exist in Cart."
             );
     }
+
+    public static class Product
+    {
+        public static Error ProductNotFound =>
+            Error.NotFound(code: "Product.ProductNotFound", description: "Product is not found.");
+    }
 }
 

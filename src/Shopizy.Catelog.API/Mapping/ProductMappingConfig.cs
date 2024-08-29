@@ -6,6 +6,7 @@ using Shopizy.Catelog.API.Services.Products.Commands.DeleteProduct;
 using Shopizy.Catelog.API.Services.Products.Commands.DeleteProductImage;
 using Shopizy.Catelog.API.Services.Products.Commands.UpdateProduct;
 using Shopizy.Catelog.API.Services.Products.Queries.GetProduct;
+using Shopizy.Catelog.API.Services.Products.Queries.ProductAvailability;
 using Shopizy.Contracts.Product;
 
 namespace Shopizy.Catelog.API.Mapping;
@@ -34,6 +35,7 @@ public class ProductMappingConfig : IRegister
             .Map(dest => dest.ProductId, src => src.ProductId);
 
         config.NewConfig<Guid, GetProductQuery>().MapWith(src => new GetProductQuery(src));
+        config.NewConfig<Guid, ProductAvailabilityQuery>().MapWith(src => new ProductAvailabilityQuery(src));
 
         config
             .NewConfig<Product, ProductResponse>()

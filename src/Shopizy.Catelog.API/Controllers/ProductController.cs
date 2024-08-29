@@ -9,6 +9,7 @@ using Shopizy.Catelog.API.Services.Products.Commands.DeleteProductImage;
 using Shopizy.Catelog.API.Services.Products.Commands.UpdateProduct;
 using Shopizy.Catelog.API.Services.Products.Queries.GetProduct;
 using Shopizy.Catelog.API.Services.Products.Queries.ListProducts;
+using Shopizy.Catelog.API.Services.Products.Queries.ProductAvailability;
 using Shopizy.Contracts.Product;
 
 namespace Shopizy.Catelog.API.Controllers;
@@ -85,5 +86,14 @@ public class ProductController(ISender _mediator, IMapper _mapper) : ApiControll
         var result = await _mediator.Send(command);
 
         return result.Match(success => Ok(success), Problem);
+    }
+
+    [HttpGet("products/{productId:guid}/isexist")]
+    public async Task<IActionResult> IstProductExist(Guid ProductId)
+    {
+        var query = _mapper.Map<ProductAvailabilityQuery>(ProductId);
+        var result = await _mediator.Send(query);
+
+        return result.Match(IsExist => Ok(IsExist), Problem);
     }
 }

@@ -35,7 +35,6 @@
   <ItemGroup>
     <Folder Include="ApiContracts\" />
     <Folder Include="Services\ProductReviews\" />
-    <Folder Include="Services\Products\" />
   </ItemGroup>
 
 </Project>

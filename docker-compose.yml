@@ -57,7 +57,7 @@ services:
     command: [
         "./daprd",
         "-app-id",
-        "shopizycatelogapi",
+        "shopizycartapi",
         "-app-port",
         "8080",
         "--placement-host-address",

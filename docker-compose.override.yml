@@ -13,7 +13,7 @@ services:
     command: [
         "./daprd",
         "-app-id",
-        "shopizypipelinecomposer",
+        "shopizycatelogapi",
         "-app-port",
         "8080",
         "--placement-host-address",
@@ -42,7 +42,7 @@ services:
     command: [
         "./daprd",
         "-app-id",
-        "shopizytransactionweb",
+        "shopizycartapi",
         "-app-port",
         "8080",
         "--placement-host-address",
@@ -70,7 +70,7 @@ services:
     command: [
         "./daprd",
         "-app-id",
-        "shopizytransactionchangefeed",
+        "shopizyorderingapi",
         "-app-port",
         "8080",
         "--placement-host-address",
