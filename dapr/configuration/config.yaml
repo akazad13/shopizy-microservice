@@ -1,0 +1,36 @@
+apiVersion: dapr.io/v1alpha1
+kind: Configuration
+metadata:
+  name: config
+  namespace: default
+spec:
+  tracing:
+    enabled: true
+    expandParams: true
+    includeBody: true
+    samplingRate: "1"
+    zipkin:
+      endpointAddress: "http://zipkin:9411/api/v2/spans"
+  metric:
+    enabled: true
+  policies:
+    # Global Retry Policy
+    DefaultRetryPolicy:
+      policy: constant
+      duration: 1s
+      maxRetries: 3
+    # Global Retry Policy for Apps
+    DefaultAppRetryPolicy:
+      policy: constant
+      duration: 100ms
+      maxRetries: 5
+    # Global Retry Policy for Apps
+    DefaultActorRetryPolicy:
+      policy: exponential
+      maxInterval: 15s
+      maxRetries: 10
+    # Global Retry Policy for Inbound Component operations
+    DefaultComponentInboundRetryPolicy:
+      policy: constant
+      duration: 5s
+      maxRetries: 5

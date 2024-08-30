@@ -28,8 +28,6 @@ public class AddProductToCartCommandHandler(ICartRepository cartRepository, IQue
 
         var product = await _productExistQuery.QueryAsync(new IsProductExistQuery(cmd.ProductId));
 
-        //var product = await _productRepository.IsProductExistAsync(ProductId.Create(cmd.ProductId));
-
         if (!product)
             return CustomErrors.Product.ProductNotFound;
 

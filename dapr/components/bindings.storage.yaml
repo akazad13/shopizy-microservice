@@ -1,0 +1,24 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: blobstorage
+spec:
+  type: bindings.azure.blobstorage
+  version: v1
+  metadata:
+    - name: accountName
+      value: devstoreaccount1
+    - name: accountKey
+      value: Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==
+    - name: containerName
+      value: test-images
+    - name: endpoint
+      value: http://host.docker.internal:10000
+    - name: decodeBase64
+      value: true
+    - name: direction
+      value: output
+scopes:
+  - shopizycatelogapi
+  - shopizycartapi
+  - shopizyorderingapi
