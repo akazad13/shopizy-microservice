@@ -34,7 +34,7 @@ public class CartDbContext(DbContextOptions options, IHttpContextAccessor httpCo
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         _ = Guard.Against.Null(modelBuilder);
- 
+
         _ = modelBuilder.Ignore<List<IDomainEvent>>().ApplyConfigurationsFromAssembly(typeof(CartDbContext).Assembly);
         base.OnModelCreating(modelBuilder);
     }
