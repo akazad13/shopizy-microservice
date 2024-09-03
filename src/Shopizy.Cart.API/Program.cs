@@ -9,27 +9,28 @@ using Shopizy.Security;
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddApplication();
-builder.Services.AddInfrastructure(builder.Configuration);
-builder.Services.AddSecurity(builder.Configuration);
-
-builder.Services.AddControllers().AddJsonOptions(options =>
-{
-    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(System.Text.Json.JsonNamingPolicy.CamelCase));
-}).AddDapr(options =>
-{
-    options.UseJsonSerializationOptions(new System.Text.Json.JsonSerializerOptions
+_ = builder.Services
+    .AddApplication()
+    .AddInfrastructure(builder.Configuration)
+    .AddSecurity(builder.Configuration)
+    .AddControllers().AddJsonOptions(options =>
     {
-        PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase,
-        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-        Converters =
-            {
-                new JsonStringEnumConverter(System.Text.Json.JsonNamingPolicy.CamelCase)
-            }
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(System.Text.Json.JsonNamingPolicy.CamelCase));
+    })
+    .AddDapr(options =>
+    {
+        options.UseJsonSerializationOptions(new System.Text.Json.JsonSerializerOptions
+        {
+            PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            Converters =
+                {
+                    new JsonStringEnumConverter(System.Text.Json.JsonNamingPolicy.CamelCase)
+                }
+        });
     });
-}); ;
 
-builder.Services.AddScoped<IQueryService<IsProductExistQuery, bool>, IsProductExistQueryService>(sp =>
+_ = builder.Services.AddScoped<IQueryService<IsProductExistQuery, bool>, IsProductExistQueryService>(sp =>
 {
     DaprClient dapr = sp.GetRequiredService<DaprClient>();
     return new IsProductExistQueryService(dapr);
@@ -37,18 +38,19 @@ builder.Services.AddScoped<IQueryService<IsProductExistQuery, bool>, IsProductEx
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-builder.Services.AddMappings();
+_ = builder.Services
+    .AddEndpointsApiExplorer()
+    .AddSwaggerGen()
+    .AddMappings();
 
 WebApplication app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    _ = app
+        .UseSwagger()
+        .UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();

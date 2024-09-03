@@ -1,4 +1,5 @@
-﻿using Mapster;
+﻿using Ardalis.GuardClauses;
+using Mapster;
 using Shopizy.Cart.API.Aggregates;
 using Shopizy.Cart.API.Aggregates.Entities;
 using Shopizy.Cart.API.ApiContracts;
@@ -14,7 +15,9 @@ public class CartMappingConfig : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
-        config
+        _ = Guard.Against.Null(config);
+
+        _ = config
             .NewConfig<
                 (Guid UserId, CreateCartWithFirstProductRequest request),
                 CreateCartWithFirstProductCommand
@@ -22,7 +25,7 @@ public class CartMappingConfig : IRegister
             .Map(dest => dest.UserId, src => src.UserId)
             .Map(dest => dest, src => src.request);
 
-        config
+        _ = config
             .NewConfig<
                 (Guid UserId, Guid CartId, AddProductToCartRequest request),
                 AddProductToCartCommand
@@ -31,7 +34,7 @@ public class CartMappingConfig : IRegister
             .Map(dest => dest.CartId, src => src.CartId)
             .Map(dest => dest, src => src.request);
 
-        config
+        _ = config
             .NewConfig<
                 (Guid UserId, Guid CartId, UpdateProductQuantityRequest request),
                 UpdateProductQuantityCommand
@@ -40,7 +43,7 @@ public class CartMappingConfig : IRegister
             .Map(dest => dest.CartId, src => src.CartId)
             .Map(dest => dest, src => src.request);
 
-        config
+        _ = config
             .NewConfig<
                 (Guid UserId, Guid CartId, RemoveProductFromCartRequest request),
                 RemoveProductFromCartCommand
@@ -49,15 +52,15 @@ public class CartMappingConfig : IRegister
             .Map(dest => dest.CartId, src => src.CartId)
             .Map(dest => dest, src => src.request);
 
-        config.NewConfig<Guid, GetCartQuery>().MapWith(userId => new GetCartQuery(userId));
+        _ = config.NewConfig<Guid, GetCartQuery>().MapWith(userId => new GetCartQuery(userId));
 
-        config
+        _ = config
             .NewConfig<CustomerCart, CartResponse>()
             .Map(dest => dest.CartId, src => src.Id.Value)
             .Map(dest => dest.CustomerId, src => src.CustomerId.Value)
             .Map(dest => dest.CartItems, src => src.CartItems);
 
-        config
+        _ = config
             .NewConfig<CartItem, CartItemResponse>()
             .Map(dest => dest.CartItemId, src => src.Id.Value)
             .Map(dest => dest.ProductId, src => src.ProductId.Value)

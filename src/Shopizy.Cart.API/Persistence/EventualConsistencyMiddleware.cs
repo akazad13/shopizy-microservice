@@ -1,14 +1,20 @@
-﻿using MediatR;
+﻿using Ardalis.GuardClauses;
+using MediatR;
 using Shopizy.Domain.Models.Base;
 
 namespace Shopizy.Cart.API.Persistence;
 
-public class EventualConsistencyMiddleware(RequestDelegate _next)
+public class EventualConsistencyMiddleware(RequestDelegate next)
 {
+    public readonly RequestDelegate _next = next;
     public const string DomainEventsKey = "DomainEventsKey";
 
     public async Task InvokeAsync(HttpContext context, IPublisher publisher, CartDbContext dbContext)
     {
+        _ = Guard.Against.Null(context);
+        _ = Guard.Against.Null(publisher);
+        _ = Guard.Against.Null(dbContext);
+
         Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction transaction = await dbContext.Database.BeginTransactionAsync();
         context.Response.OnCompleted(async () =>
         {

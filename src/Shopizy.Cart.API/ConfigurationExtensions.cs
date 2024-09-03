@@ -16,27 +16,27 @@ public static class ConfigurationExtensions
         return services
             .AddHttpContextAccessor()
             .AddServices()
-            .AddBackgroundServices(configuration)
+            .AddBackgroundServices()
             .AddPersistence(configuration)
             .AddRepositories();
     }
 
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
-        services.AddMediatR(msc =>
-        {
-            msc.RegisterServicesFromAssembly(typeof(ConfigurationExtensions).Assembly);
-            //msc.AddOpenBehavior(typeof(AuthorizationBehavior<,>));
-            //msc.AddOpenBehavior(typeof(ValidationBehavior<,>));
-        });
-        services.AddValidatorsFromAssemblyContaining(typeof(ConfigurationExtensions));
+        _ = services
+            .AddMediatR(msc =>
+            {
+                _ = msc.RegisterServicesFromAssembly(typeof(ConfigurationExtensions).Assembly);
+                //msc.AddOpenBehavior(typeof(AuthorizationBehavior<,>));
+                //msc.AddOpenBehavior(typeof(ValidationBehavior<,>));
+            })
+            .AddValidatorsFromAssemblyContaining(typeof(ConfigurationExtensions));
 
         return services;
     }
 
     private static IServiceCollection AddBackgroundServices(
-        this IServiceCollection services,
-        IConfiguration configuration
+        this IServiceCollection services
     )
     {
         return services;
@@ -46,8 +46,9 @@ public static class ConfigurationExtensions
         this IServiceCollection services
     )
     {
-        services.AddScoped<IAppDbContext, CartDbContext>();
-        services.AddScoped<DbMigrationsHelper>();
+        _ = services
+            .AddScoped<IAppDbContext, CartDbContext>()
+            .AddScoped<DbMigrationsHelper>();
 
         return services;
     }
@@ -57,7 +58,7 @@ public static class ConfigurationExtensions
         IConfiguration configuration
     )
     {
-        services.AddDbContext<CartDbContext>(options =>
+        _ = services.AddDbContext<CartDbContext>(options =>
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
         );
         return services;
@@ -65,7 +66,7 @@ public static class ConfigurationExtensions
 
     private static IServiceCollection AddRepositories(this IServiceCollection services)
     {
-        services.AddScoped<ICartRepository, CartRepository>();
+        _ = services.AddScoped<ICartRepository, CartRepository>();
 
         return services;
     }

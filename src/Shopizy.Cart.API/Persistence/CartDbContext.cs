@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using Ardalis.GuardClauses;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Shopizy.Cart.API.Aggregates;
@@ -7,10 +8,12 @@ using Shopizy.Domain.Models.Persistence;
 
 namespace Shopizy.Cart.API.Persistence;
 
-public class CartDbContext(DbContextOptions options, IHttpContextAccessor _httpContextAccessor, IPublisher _publisher) : DbContext(options), IAppDbContext
+public class CartDbContext(DbContextOptions options, IHttpContextAccessor httpContextAccessor, IPublisher publisher) : DbContext(options), IAppDbContext
 {
+    public readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+    public readonly IPublisher _publisher = publisher;
     public DbSet<CustomerCart> Carts { get; set; }
-    public async override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         // Get the domain events from the entity framework change tracker
         var domainEvents = ChangeTracker.Entries<IHasDomainEvents>()
@@ -30,7 +33,9 @@ public class CartDbContext(DbContextOptions options, IHttpContextAccessor _httpC
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Ignore<List<IDomainEvent>>().ApplyConfigurationsFromAssembly(typeof(CartDbContext).Assembly);
+        _ = Guard.Against.Null(modelBuilder);
+ 
+        _ = modelBuilder.Ignore<List<IDomainEvent>>().ApplyConfigurationsFromAssembly(typeof(CartDbContext).Assembly);
         base.OnModelCreating(modelBuilder);
     }
 

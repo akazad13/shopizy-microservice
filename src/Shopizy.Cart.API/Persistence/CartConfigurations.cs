@@ -16,44 +16,44 @@ public sealed class CartConfigurations : IEntityTypeConfiguration<CustomerCart>
 
     private static void ConfigureCartsTable(EntityTypeBuilder<CustomerCart> builder)
     {
-        builder.ToTable("Carts");
-        builder.HasKey(c => c.Id);
+        _ = builder.ToTable("Carts")
+               .HasKey(c => c.Id);
 
-        builder.HasIndex(c => c.CustomerId);
+        _ = builder.HasIndex(c => c.CustomerId);
 
-        builder
+        _ = builder
             .Property(c => c.Id)
             .ValueGeneratedNever()
             .HasConversion(id => id.Value, value => CartId.Create(value));
 
-        builder.Property(o => o.CreatedOn).HasColumnType("smalldatetime");
-        builder.Property(o => o.ModifiedOn).HasColumnType("smalldatetime").IsRequired(false);
+        _ = builder.Property(o => o.CreatedOn).HasColumnType("smalldatetime");
+        _ = builder.Property(o => o.ModifiedOn).HasColumnType("smalldatetime").IsRequired(false);
 
-        builder
+        _ = builder
             .Property(c => c.CustomerId)
             .HasConversion(id => id.Value, value => CustomerId.Create(value));
     }
 
     private static void ConfigureCartProductIdsTable(EntityTypeBuilder<CustomerCart> builder)
     {
-        builder.OwnsMany(
+        _ = builder.OwnsMany(
             m => m.CartItems,
             ltmb =>
             {
-                ltmb.ToTable("CartItems");
-                ltmb.WithOwner().HasForeignKey("CartId");
-                ltmb.HasKey(nameof(CartItem.Id), "CartId");
-                ltmb.HasIndex("CartId", "ProductId").IsUnique();
+                _ = ltmb.ToTable("CartItems");
+                _ = ltmb.WithOwner().HasForeignKey("CartId");
+                _ = ltmb.HasKey(nameof(CartItem.Id), "CartId");
+                _ = ltmb.HasIndex("CartId", "ProductId").IsUnique();
 
-                ltmb.Property(li => li.Id)
+                _ = ltmb.Property(li => li.Id)
                     .ValueGeneratedNever()
                     .HasConversion(id => id.Value, value => CartItemId.Create(value));
 
-                ltmb.Property(li => li.ProductId)
+                _ = ltmb.Property(li => li.ProductId)
                     .ValueGeneratedNever()
                     .HasConversion(id => id.Value, value => ProductId.Create(value));
             }
         );
-        builder.Navigation(p => p.CartItems).UsePropertyAccessMode(PropertyAccessMode.Field);
+        _ = builder.Navigation(p => p.CartItems).UsePropertyAccessMode(PropertyAccessMode.Field);
     }
 }

@@ -8,9 +8,9 @@ public class CartRepository(CartDbContext dbContext) : ICartRepository
 {
     private readonly CartDbContext _dbContext = dbContext;
 
-    public Task<List<CustomerCart>> GetCartsAsync()
+    public IQueryable<CustomerCart> GetCarts()
     {
-        return _dbContext.Carts.AsNoTracking().ToListAsync();
+        return _dbContext.Carts.AsNoTracking();
     }
     public Task<CustomerCart?> GetCartByIdAsync(CartId id)
     {
@@ -22,15 +22,15 @@ public class CartRepository(CartDbContext dbContext) : ICartRepository
     }
     public async Task AddAsync(CustomerCart cart)
     {
-        await _dbContext.Carts.AddAsync(cart);
+        _ = await _dbContext.Carts.AddAsync(cart);
     }
     public void Update(CustomerCart cart)
     {
-        _dbContext.Update(cart);
+        _ = _dbContext.Update(cart);
     }
     public void Remove(CustomerCart cart)
     {
-        _dbContext.Remove(cart);
+        _ = _dbContext.Remove(cart);
     }
     public Task<int> Commit(CancellationToken cancellationToken)
     {
