@@ -1,5 +1,5 @@
-﻿using Shopizy.Catelog.API.Aggregates.ProductReviews.ValueObjects;
-using Shopizy.Catelog.API.Aggregates.ProductReviews;
+﻿using Shopizy.Catelog.API.Aggregates.ProductReviews;
+using Shopizy.Catelog.API.Aggregates.ProductReviews.ValueObjects;
 
 namespace Shopizy.Catelog.API.Persistence.ProductReviews;
 

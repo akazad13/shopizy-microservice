@@ -1,9 +1,9 @@
 ﻿using MediatR;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Shopizy.Cart.API.Aggregates;
 using Shopizy.Domain.Models.Base;
 using Shopizy.Domain.Models.Persistence;
-using Shopizy.Cart.API.Aggregates;
 
 namespace Shopizy.Cart.API.Persistence;
 

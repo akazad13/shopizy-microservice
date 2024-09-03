@@ -1,9 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore;
-using Shopizy.Catelog.API.Aggregates.Products;
-using Shopizy.Catelog.API.Aggregates.Products.ValueObjects;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Shopizy.Catelog.API.Aggregates.Categories.ValueObjects;
+using Shopizy.Catelog.API.Aggregates.Products;
 using Shopizy.Catelog.API.Aggregates.Products.Entities;
+using Shopizy.Catelog.API.Aggregates.Products.ValueObjects;
 
 namespace Shopizy.Catelog.API.Persistence.Products;
 

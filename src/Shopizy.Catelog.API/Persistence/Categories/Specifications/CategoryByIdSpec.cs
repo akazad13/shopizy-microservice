@@ -1,5 +1,5 @@
-﻿using Shopizy.Catelog.API.Aggregates.Categories.ValueObjects;
-using Shopizy.Catelog.API.Aggregates.Categories;
+﻿using Shopizy.Catelog.API.Aggregates.Categories;
+using Shopizy.Catelog.API.Aggregates.Categories.ValueObjects;
 using Shopizy.Domain.Models.Specifications;
 
 namespace Shopizy.Catelog.API.Persistence.Categories.Specifications;

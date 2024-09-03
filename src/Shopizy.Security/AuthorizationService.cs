@@ -15,13 +15,19 @@ public class AuthorizationService(IPolicyEnforcer policyEnforcer, ICurrentUserPr
         var currentUser = _currentUserProvider.GetCurrentUser();
 
         if (currentUser == null)
+        {
             return Error.Unauthorized(description: "User is unauthorized.");
+        }
 
         if (requiredPermissions.Except(currentUser.Permissions).Any())
+        {
             return Error.Unauthorized(description: "User is missing required permissions for taking this action");
+        }
 
         if (requiredRoles.Except(currentUser.Roles).Any())
+        {
             return Error.Unauthorized(description: "User is missing required roles for taking this action");
+        }
 
         foreach (var policy in requiredPolicies)
         {

@@ -19,14 +19,18 @@ public class UpdateCategoryCommandHandler(ICategoryRepository categoryRepository
     {
         var category = await _categoryRepository.GetCategoryByIdAsync(CategoryId.Create(cmd.CategoryId));
         if (category is null)
+        {
             return CustomErrors.Category.CategoryNotFound;
+        }
 
         category.Update(cmd.Name, cmd.ParentId);
 
         _categoryRepository.Update(category);
 
         if (await _categoryRepository.Commit(cancellationToken) <= 0)
+        {
             return CustomErrors.Category.CategoryNotUpdated;
+        }
 
         return category;
     }

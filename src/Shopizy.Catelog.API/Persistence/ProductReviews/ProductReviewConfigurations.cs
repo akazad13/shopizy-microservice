@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Shopizy.Catelog.API.Aggregates.ProductReviews;
 using Shopizy.Catelog.API.Aggregates.ProductReviews.ValueObjects;
 using Shopizy.Catelog.API.Aggregates.Products.ValueObjects;

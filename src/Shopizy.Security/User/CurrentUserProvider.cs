@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 
 namespace Shopizy.Security.User;
 
@@ -12,7 +12,9 @@ public class CurrentUserProvider(IHttpContextAccessor httpContextAccessor) : ICu
     {
 
         if (!_httpContextAccessor.HttpContext!.User.Claims.Any())
+        {
             return null;
+        }
 
         var id = Guid.Parse(GetSingleClaimValue("id"));
         var permissions = GetClaimValues("permissions");

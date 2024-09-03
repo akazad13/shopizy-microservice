@@ -30,7 +30,9 @@ public class CreateProductCommandHandler(IProductRepository productRepository)
         await _productRepository.AddAsync(product);
 
         if (await _productRepository.Commit(cancellationToken) <= 0)
+        {
             return CustomErrors.Product.ProductNotCreated;
+        }
 
         return product;
 

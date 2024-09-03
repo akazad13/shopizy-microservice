@@ -18,12 +18,16 @@ public class DeleteProductImageCommandHandler(IProductRepository productReposito
         var product = await _productRepository.GetProductByIdAsync(ProductId.Create(cmd.ProductId));
 
         if (product is null)
+        {
             return CustomErrors.Product.ProductNotFound;
+        }
 
         var prodImage = product.ProductImages.FirstOrDefault(pi => pi.Id == ProductImageId.Create(cmd.ImageId));
 
         if (prodImage is null)
+        {
             return CustomErrors.Product.ProductImageNotFound;
+        }
 
         var res = await _mediaUploader.DeletePhotoAsync(prodImage.PublicId);
 
@@ -34,7 +38,10 @@ public class DeleteProductImageCommandHandler(IProductRepository productReposito
             _productRepository.Update(product);
 
             if (await _productRepository.Commit(cancellationToken) <= 0)
+            {
                 return CustomErrors.Product.ProductImageNotAdded;
+            }
+
             return Result.Success;
         }
         return res.Errors;

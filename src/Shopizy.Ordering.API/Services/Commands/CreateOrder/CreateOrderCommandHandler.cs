@@ -59,7 +59,9 @@ public class CreateOrderCommandHandler(
 
         await _orderRepository.AddAsync(order);
         if (await _orderRepository.Commit(cancellationToken) <= 0)
+        {
             return CustomErrors.Order.OrderNotCreated;
+        }
 
         return order;
     }

@@ -17,12 +17,16 @@ public class AddProductImageCommandHandler(IProductRepository productRepository,
     public async Task<ErrorOr<ProductImage>> Handle(AddProductImageCommand cmd, CancellationToken cancellationToken)
     {
         if (cmd.File is null)
+        {
             return CustomErrors.Product.ProductImageNotUploaded;
+        }
 
         var product = await _productRepository.GetProductByIdAsync(ProductId.Create(cmd.ProductId));
 
         if (product is null)
+        {
             return CustomErrors.Product.ProductNotFound;
+        }
 
         ProductImage productImage;
 
@@ -35,7 +39,10 @@ public class AddProductImageCommandHandler(IProductRepository productRepository,
             _productRepository.Update(product);
 
             if (await _productRepository.Commit(cancellationToken) <= 0)
+            {
                 return CustomErrors.Product.ProductImageNotAdded;
+            }
+
             return productImage;
         }
         return res.Errors;

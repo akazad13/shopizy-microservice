@@ -18,14 +18,18 @@ public class DeleteProductCommandHandler(IProductRepository productRepository, I
         var product = await _productRepository.GetProductByIdAsync(ProductId.Create(cmd.ProductId));
 
         if (product is null)
+        {
             return CustomErrors.Product.ProductNotFound;
+        }
 
         // Delete product image from media
 
         _productRepository.Remove(product);
 
         if (await _productRepository.Commit(cancellationToken) <= 0)
+        {
             return CustomErrors.Product.ProductNotDeleted;
+        }
 
         return Result.Success;
 

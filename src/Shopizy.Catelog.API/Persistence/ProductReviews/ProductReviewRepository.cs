@@ -1,6 +1,6 @@
-﻿using Shopizy.Catelog.API.Aggregates.ProductReviews.ValueObjects;
+﻿using Microsoft.EntityFrameworkCore;
 using Shopizy.Catelog.API.Aggregates.ProductReviews;
-using Microsoft.EntityFrameworkCore;
+using Shopizy.Catelog.API.Aggregates.ProductReviews.ValueObjects;
 
 namespace Shopizy.Catelog.API.Persistence.ProductReviews;
 

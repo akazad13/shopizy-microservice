@@ -15,14 +15,19 @@ public class UpdateProductQuantityCommandHandler(ICartRepository cartRepository)
         var cart = await _cartRepository.GetCartByIdAsync(CartId.Create(cmd.CartId));
 
         if (cart is null)
+        {
             return CustomErrors.Cart.CartNotFound;
+        }
 
         cart.UpdateCartItem(ProductId.Create(cmd.ProductId), cmd.Quantity);
 
         _cartRepository.Update(cart);
 
         if (await _cartRepository.Commit(cancellationToken) <= 0)
+        {
             return CustomErrors.Cart.CartPrductNotAdded;
+        }
+
         return Result.Success;
 
     }

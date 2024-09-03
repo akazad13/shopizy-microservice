@@ -13,14 +13,18 @@ public class CancelOrderCommandHandler(IOrderRepository orderRepository) : IRequ
     {
         var order = await _orderRepository.GetOrderByIdAsync(OrderId.Create(request.OrderId));
         if (order is null)
+        {
             return CustomErrors.Order.OrderNotFound;
+        }
 
         order.CancelOrder(request.Reason);
 
         _orderRepository.Update(order);
 
         if (await _orderRepository.Commit(cancellationToken) <= 0)
+        {
             return CustomErrors.Order.OrderNotCancelled;
+        }
 
         return Result.Success;
     }

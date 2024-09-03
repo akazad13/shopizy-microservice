@@ -16,7 +16,9 @@ public class GetOrderQueryHandler(IOrderRepository orderRepository) : IRequestHa
         var order = await _orderRepository.GetOrderByIdAsync(OrderId.Create(request.OrderId));
 
         if (order is null)
+        {
             return CustomErrors.Order.OrderNotFound;
+        }
 
         return order;
     }

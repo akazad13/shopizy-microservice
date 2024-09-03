@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Shopizy.Catelog.API.Aggregates.Categories.ValueObjects;
 using Shopizy.Catelog.API.Aggregates.Categories;
+using Shopizy.Catelog.API.Aggregates.Categories.ValueObjects;
 using Shopizy.Catelog.API.Persistence.Categories.Specifications;
 using Shopizy.Domain.Models.Specifications;
 

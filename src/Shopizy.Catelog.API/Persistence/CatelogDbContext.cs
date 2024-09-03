@@ -1,11 +1,11 @@
 ﻿using MediatR;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Shopizy.Catelog.API.Aggregates.Categories;
+using Shopizy.Catelog.API.Aggregates.ProductReviews;
+using Shopizy.Catelog.API.Aggregates.Products;
 using Shopizy.Domain.Models.Base;
 using Shopizy.Domain.Models.Persistence;
-using Shopizy.Catelog.API.Aggregates.Categories;
-using Shopizy.Catelog.API.Aggregates.Products;
-using Shopizy.Catelog.API.Aggregates.ProductReviews;
 
 namespace Shopizy.Catelog.API.Persistence;
 

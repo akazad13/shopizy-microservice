@@ -1,10 +1,10 @@
 using ErrorOr;
 using MediatR;
-using Shopizy.Catelog.API.Persistence.Products;
-using Shopizy.Catelog.API.Errors;
+using Shopizy.Catelog.API.Aggregates.Categories.ValueObjects;
 using Shopizy.Catelog.API.Aggregates.Products;
 using Shopizy.Catelog.API.Aggregates.Products.ValueObjects;
-using Shopizy.Catelog.API.Aggregates.Categories.ValueObjects;
+using Shopizy.Catelog.API.Errors;
+using Shopizy.Catelog.API.Persistence.Products;
 using Shopizy.Domain.Models.ValueObjects;
 
 namespace Shopizy.Catelog.API.Services.Products.Commands.UpdateProduct;
@@ -16,10 +16,12 @@ public class UpdateProductCommandHandler(IProductRepository productRepository)
 
     public async Task<ErrorOr<Product>> Handle(UpdateProductCommand cmd, CancellationToken cancellationToken)
     {
-        var product = await _productRepository.GetProductByIdAsync(ProductId.Create(cmd.ProductId));
+        Product? product = await _productRepository.GetProductByIdAsync(ProductId.Create(cmd.ProductId));
 
         if (product is null)
+        {
             return CustomErrors.Product.ProductNotFound;
+        }
 
         product.Update(
             cmd.Name,
@@ -36,7 +38,9 @@ public class UpdateProductCommandHandler(IProductRepository productRepository)
         _productRepository.Update(product);
 
         if (await _productRepository.Commit(cancellationToken) <= 0)
+        {
             return CustomErrors.Product.ProductNotUpdated;
+        }
 
         return product;
 

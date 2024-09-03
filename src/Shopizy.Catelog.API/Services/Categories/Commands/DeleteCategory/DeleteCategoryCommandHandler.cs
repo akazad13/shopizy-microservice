@@ -18,12 +18,16 @@ public class DeleteCategoryCommandHandler(ICategoryRepository categoryRepository
     {
         var category = await _categoryRepository.GetCategoryByIdAsync(CategoryId.Create(cmd.CategoryId));
         if (category is null)
+        {
             return CustomErrors.Category.CategoryNotFound;
+        }
 
         _categoryRepository.Remove(category);
 
         if (await _categoryRepository.Commit(cancellationToken) <= 0)
+        {
             return CustomErrors.Category.CategoryNotDeleted;
+        }
 
         return Result.Success;
     }

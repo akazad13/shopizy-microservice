@@ -1,5 +1,5 @@
-﻿using Shopizy.Ordering.API.Aggregates.ValueObjects;
-using Shopizy.Ordering.API.Aggregates;
+﻿using Shopizy.Ordering.API.Aggregates;
+using Shopizy.Ordering.API.Aggregates.ValueObjects;
 
 namespace Shopizy.Ordering.API.Persistence;
 

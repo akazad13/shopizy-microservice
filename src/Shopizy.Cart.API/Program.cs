@@ -1,10 +1,10 @@
+using System.Text.Json.Serialization;
 using Dapr.Client;
 using Shopizy.Cart.API;
 using Shopizy.Cart.API.Mapping;
 using Shopizy.Dapr.QueryServices;
 using Shopizy.Dapr.QueryServices.Products;
 using Shopizy.Security;
-using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
