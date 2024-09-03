@@ -53,11 +53,11 @@ if (app.Environment.IsDevelopment())
         .UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+_ = app
+    .UseHttpsRedirection()
+    .UseAuthorization();
 
-app.UseAuthorization();
-
-app.MapControllers();
+_ = app.MapControllers();
 
 using (IServiceScope scope = app.Services.CreateScope())
 {

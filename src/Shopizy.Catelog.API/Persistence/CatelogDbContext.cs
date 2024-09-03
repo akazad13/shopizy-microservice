@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using Ardalis.GuardClauses;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Shopizy.Catelog.API.Aggregates.Categories;
@@ -14,7 +15,7 @@ public class CatelogDbContext(DbContextOptions options, IHttpContextAccessor _ht
     public DbSet<Category> Categories { get; set; }
     public DbSet<Product> Products { get; set; }
     public DbSet<ProductReview> ProductReviews { get; set; }
-    public async override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
         // Get the domain events from the entity framework change tracker
         var domainEvents = ChangeTracker.Entries<IHasDomainEvents>()
@@ -34,7 +35,9 @@ public class CatelogDbContext(DbContextOptions options, IHttpContextAccessor _ht
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Ignore<List<IDomainEvent>>().ApplyConfigurationsFromAssembly(typeof(CatelogDbContext).Assembly);
+        _ = Guard.Against.Null(modelBuilder);
+
+        _ = modelBuilder.Ignore<List<IDomainEvent>>().ApplyConfigurationsFromAssembly(typeof(CatelogDbContext).Assembly);
         base.OnModelCreating(modelBuilder);
     }
 

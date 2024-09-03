@@ -29,13 +29,14 @@ public static class ConfigurationExtensions
 
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
-        services.AddMediatR(msc =>
-        {
-            msc.RegisterServicesFromAssembly(typeof(ConfigurationExtensions).Assembly);
-            //msc.AddOpenBehavior(typeof(AuthorizationBehavior<,>));
-            //msc.AddOpenBehavior(typeof(ValidationBehavior<,>));
-        });
-        services.AddValidatorsFromAssemblyContaining(typeof(ConfigurationExtensions));
+        _ = services
+            .AddMediatR(msc =>
+            {
+                _ = msc.RegisterServicesFromAssembly(typeof(ConfigurationExtensions).Assembly);
+                //msc.AddOpenBehavior(typeof(AuthorizationBehavior<,>));
+                //msc.AddOpenBehavior(typeof(ValidationBehavior<,>));
+            })
+            .AddValidatorsFromAssemblyContaining(typeof(ConfigurationExtensions));
 
         return services;
     }
@@ -52,14 +53,15 @@ public static class ConfigurationExtensions
         IConfiguration configuration
     )
     {
-        services.AddScoped<IAppDbContext, CatelogDbContext>();
-        services.AddScoped<DbMigrationsHelper>();
+        _ = services
+            .AddScoped<IAppDbContext, CatelogDbContext>()
+            .AddScoped<DbMigrationsHelper>();
 
-        services.Configure<CloudinarySettings>(
+        _ = services.Configure<CloudinarySettings>(
             configuration.GetSection(CloudinarySettings.Section)
         );
 
-        services.AddTransient<ICloudinary, Cloudinary>(sp =>
+        _ = services.AddTransient<ICloudinary, Cloudinary>(sp =>
         {
             var acc = new CloudinaryDotNet.Account(
                 configuration.GetValue<string>("CloudinarySettings:CloudName"),
@@ -70,7 +72,7 @@ public static class ConfigurationExtensions
             cloudinary.Api.Secure = configuration.GetValue<bool>("CloudinarySettings:Secure");
             return cloudinary;
         });
-        services.AddScoped<IMediaUploader, CloudinaryMediaUploader>();
+        _ = services.AddScoped<IMediaUploader, CloudinaryMediaUploader>();
 
         return services;
     }
@@ -80,7 +82,7 @@ public static class ConfigurationExtensions
         IConfiguration configuration
     )
     {
-        services.AddDbContext<CatelogDbContext>(
+        _ = services.AddDbContext<CatelogDbContext>(
             options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
         );
         return services;
@@ -88,9 +90,10 @@ public static class ConfigurationExtensions
 
     private static IServiceCollection AddRepositories(this IServiceCollection services)
     {
-        services.AddScoped<ICategoryRepository, CategoryRepository>();
-        services.AddScoped<IProductReviewRepository, ProductReviewRepository>();
-        services.AddScoped<IProductRepository, ProductRepository>();
+        _ = services
+            .AddScoped<ICategoryRepository, CategoryRepository>()
+            .AddScoped<IProductReviewRepository, ProductReviewRepository>()
+            .AddScoped<IProductRepository, ProductRepository>();
 
         return services;
     }

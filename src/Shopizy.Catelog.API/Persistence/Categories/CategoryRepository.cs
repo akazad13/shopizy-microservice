@@ -25,7 +25,7 @@ public class CategoryRepository(CatelogDbContext dbContext) : ICategoryRepositor
 
     public async Task AddAsync(Category category)
     {
-        await _dbContext.Categories.AddAsync(category);
+        _ = await _dbContext.Categories.AddAsync(category);
     }
 
     public void Update(Category category)

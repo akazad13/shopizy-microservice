@@ -5,7 +5,7 @@ using Shopizy.Catelog.API.Persistence.Products;
 
 namespace Shopizy.Catelog.API.Services.Products.Queries.ProductAvailability;
 
-public class ProductAvailabilityHandler(IProductRepository productRepository) : IRequestHandler<ProductAvailabilityQuery, ErrorOr<bool>>
+public class ProductAvailabilityQueryHandler(IProductRepository productRepository) : IRequestHandler<ProductAvailabilityQuery, ErrorOr<bool>>
 {
     private readonly IProductRepository _productRepository = productRepository;
 

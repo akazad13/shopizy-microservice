@@ -5,7 +5,7 @@ namespace Shopizy.Cart.API.Persistence;
 
 public interface ICartRepository
 {
-    IQueryable<CustomerCart> GetCarts();
+    Task<List<CustomerCart>> GetCarts();
     Task<CustomerCart?> GetCartByIdAsync(CartId id);
     Task<CustomerCart?> GetCartByUserIdAsync(CustomerId id);
     Task AddAsync(CustomerCart cart);

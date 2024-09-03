@@ -8,9 +8,9 @@ public class CartRepository(CartDbContext dbContext) : ICartRepository
 {
     private readonly CartDbContext _dbContext = dbContext;
 
-    public IQueryable<CustomerCart> GetCarts()
+    public Task<List<CustomerCart>> GetCarts()
     {
-        return _dbContext.Carts.AsNoTracking();
+        return _dbContext.Carts.AsNoTracking().ToListAsync();
     }
     public Task<CustomerCart?> GetCartByIdAsync(CartId id)
     {

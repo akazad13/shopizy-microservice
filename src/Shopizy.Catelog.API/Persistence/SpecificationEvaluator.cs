@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Ardalis.GuardClauses;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Shopizy.Domain.Models.Specifications;
 
 namespace Shopizy.Catelog.API.Persistence;
@@ -10,6 +12,9 @@ public static class SpecificationEvaluator
         Specification<TEntity> specification
     ) where TEntity : class
     {
+        _ = Guard.Against.Null(inputQueryable);
+        _ = Guard.Against.Null(specification);
+
         IQueryable<TEntity> queryable = inputQueryable;
 
         if (specification.Criteria is not null)

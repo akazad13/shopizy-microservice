@@ -11,7 +11,6 @@ using Shopizy.Catelog.API.Services.Products.Commands.UpdateProduct;
 using Shopizy.Catelog.API.Services.Products.Queries.GetProduct;
 using Shopizy.Catelog.API.Services.Products.Queries.ListProducts;
 using Shopizy.Catelog.API.Services.Products.Queries.ProductAvailability;
-using Shopizy.Contracts.Product;
 
 namespace Shopizy.Catelog.API.Controllers;
 

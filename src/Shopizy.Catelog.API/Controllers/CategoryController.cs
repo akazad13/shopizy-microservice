@@ -2,12 +2,12 @@
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Shopizy.Catelog.API.ApiContracts.Category;
 using Shopizy.Catelog.API.Services.Categories.Commands.CreateCategory;
 using Shopizy.Catelog.API.Services.Categories.Commands.DeleteCategory;
 using Shopizy.Catelog.API.Services.Categories.Commands.UpdateCategory;
 using Shopizy.Catelog.API.Services.Categories.Queries.GetCategory;
 using Shopizy.Catelog.API.Services.Categories.Queries.ListCategories;
-using Shopizy.Contracts.Category;
 
 namespace Shopizy.Catelog.API.Controllers;
 
