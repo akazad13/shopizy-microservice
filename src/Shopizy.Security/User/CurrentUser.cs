@@ -5,6 +5,6 @@ public record CurrentUser(
     string FirstName,
     string LastName,
     string Phone,
-    IReadOnlyList<string> Permissions,
-    IReadOnlyList<string> Roles
+    IList<string> Permissions,
+    IList<string> Roles
 );

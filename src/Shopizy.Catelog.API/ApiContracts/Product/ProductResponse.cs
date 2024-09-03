@@ -1,4 +1,4 @@
-namespace Shopizy.Contracts.Product;
+namespace Shopizy.Catelog.API.ApiContracts.Product;
 
 public record ProductResponse(
     Guid ProductId,
@@ -12,8 +12,8 @@ public record ProductResponse(
     string Tags,
     string Barcode,
     int StockQuantity,
-    List<Guid>? SpecificationIds,
-    List<ProductImageResponse> ProductImages
+    IList<Guid>? SpecificationIds,
+    IList<ProductImageResponse> ProductImages
 );
 
 public record ProductImageResponse(Guid ProductImageId, string ImageUrl, int Seq, string PublicId);

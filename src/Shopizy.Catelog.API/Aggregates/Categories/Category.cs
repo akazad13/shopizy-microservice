@@ -6,7 +6,7 @@ namespace Shopizy.Catelog.API.Aggregates.Categories;
 
 public class Category : AggregateRoot<CategoryId, Guid>
 {
-    private readonly List<Product> _products = [];
+    private readonly IList<Product> _products = [];
     public string Name { get; private set; }
     public Guid? ParentId { get; private set; }
     public IReadOnlyList<Product> Products => _products.AsReadOnly();

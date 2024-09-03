@@ -5,9 +5,9 @@ namespace Shopizy.Catelog.API.Persistence.Products;
 
 public interface IProductRepository
 {
-    Task<List<Product>> GetProductsAsync();
+    IQueryable<Product> GetProductsAsync();
     Task<Product?> GetProductByIdAsync(ProductId id);
-    Task<List<Product>> GetProductsByIdsAsync(List<ProductId> ids);
+    IQueryable<Product> GetProductsByIdsAsync(IList<ProductId> ids);
     Task<bool> IsProductExistAsync(ProductId id);
     Task AddAsync(Product product);
     void Update(Product product);

@@ -20,5 +20,5 @@ public record CreateProductCommand(
     string Brand,
     string Tags,
     string Barcode,
-    List<Guid>? SpecificationIds
+    IList<Guid>? SpecificationIds
 ) : IAuthorizeableRequest<ErrorOr<Product>>;

@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -14,6 +15,8 @@ public sealed class JwtBearerToeknValidationConfiguration(IOptions<JwtSettings> 
 
     public void Configure(JwtBearerOptions options)
     {
+        _ = Guard.Against.Null(options);
+
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,

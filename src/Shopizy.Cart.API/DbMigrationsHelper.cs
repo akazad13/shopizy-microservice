@@ -8,18 +8,20 @@ public class DbMigrationsHelper(
     CartDbContext context
     )
 {
+    private readonly CartDbContext _context = context;
+    private readonly ILogger<DbMigrationsHelper> _logger = logger;
     public async Task MigrateAsync()
     {
         try
         {
-            if (context.Database.IsSqlServer() && (await context.Database.GetPendingMigrationsAsync()).Any())
+            if (_context.Database.IsSqlServer() && (await _context.Database.GetPendingMigrationsAsync()).Any())
             {
-                await context.Database.MigrateAsync();
+                await _context.Database.MigrateAsync();
             }
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "An error occurred while initialising the database.");
+            _logger.DatabaseInitializationError(ex);
             throw;
         }
     }

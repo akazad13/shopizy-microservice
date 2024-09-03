@@ -1,6 +1,7 @@
 ﻿using Mapster;
 using Shopizy.Catelog.API.Aggregates.Products;
 using Shopizy.Catelog.API.Aggregates.Products.Entities;
+using Shopizy.Catelog.API.ApiContracts.Product;
 using Shopizy.Catelog.API.Services.Products.Commands.CreateProduct;
 using Shopizy.Catelog.API.Services.Products.Commands.DeleteProduct;
 using Shopizy.Catelog.API.Services.Products.Commands.DeleteProductImage;

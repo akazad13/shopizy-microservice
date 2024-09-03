@@ -1,3 +1,3 @@
 ﻿namespace Shopizy.Cart.API.ApiContracts;
 
-public record RemoveProductFromCartRequest(List<Guid> ProductIds);
+public record RemoveProductFromCartRequest(IList<Guid> ProductIds);

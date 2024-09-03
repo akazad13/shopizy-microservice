@@ -85,7 +85,7 @@ public sealed class Product : AggregateRoot<ProductId, Guid>
         ModifiedOn = DateTime.UtcNow;
     }
 
-    public void AddProductImages(List<ProductImage> productImages)
+    public void AddProductImages(IList<ProductImage> productImages)
     {
         _productImages.AddRange(productImages);
     }

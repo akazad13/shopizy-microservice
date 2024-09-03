@@ -10,7 +10,7 @@ public class AuthorizationService(IPolicyEnforcer policyEnforcer, ICurrentUserPr
     private readonly IPolicyEnforcer _policyEnforcer = policyEnforcer;
     private readonly ICurrentUserProvider _currentUserProvider = currentUserProvider;
 
-    public ErrorOr<Success> AuthorizeCurrentUser<T>(IAuthorizeableRequest<T> request, List<string> requiredRoles, List<string> requiredPermissions, List<string> requiredPolicies)
+    public ErrorOr<Success> AuthorizeCurrentUser<T>(IAuthorizeableRequest<T> request, IList<string> requiredRoles, IList<string> requiredPermissions, IList<string> requiredPolicies)
     {
         CurrentUser? currentUser = _currentUserProvider.GetCurrentUser();
 

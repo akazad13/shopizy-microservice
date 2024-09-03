@@ -9,7 +9,7 @@ public sealed class CustomerCart : AggregateRoot<CartId, Guid>
     private readonly List<CartItem> _cartItems = [];
     public CustomerId CustomerId { get; }
     public DateTime CreatedOn { get; private set; }
-    public DateTime? ModifiedOn { get; private set; }
+    public DateTime? ModifiedOn { get; }
     public IReadOnlyList<CartItem> CartItems => _cartItems.AsReadOnly();
 
     public static CustomerCart Create(

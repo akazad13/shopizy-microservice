@@ -13,7 +13,7 @@ public record CreateOrderCommand(
     string PromoCode,
     decimal DeliveryChargeAmount,
     Currency DeliveryChargeCurrency,
-    List<OrderItemCommand> OrderItems,
+    IList<OrderItemCommand> OrderItems,
     AddressCommand ShippingAddress
 ) : IAuthorizeableRequest<ErrorOr<Order>>;
 

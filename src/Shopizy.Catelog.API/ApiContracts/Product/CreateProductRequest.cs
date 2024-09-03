@@ -11,5 +11,5 @@ public record CreateProductRequest(
     string Brand,
     string Tags,
     string Barcode,
-    List<Guid>? SpecificationIds
+    IList<Guid>? SpecificationIds
 );

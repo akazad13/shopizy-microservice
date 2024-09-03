@@ -1,6 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Ardalis.GuardClauses;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -15,10 +16,13 @@ public class JwtTokenGenerator(IOptions<JwtSettings> jwtOptoins) : IJwtTokenGene
         string firstName,
         string LastName,
         string phone,
-        List<string> roles,
-        List<string> Permissions
+        IList<string> roles,
+        IList<string> Permissions
     )
     {
+        _ = Guard.Against.Null(roles);
+        _ = Guard.Against.Null(Permissions);
+
         var claims = new List<Claim>
         {
             new("id", userId.ToString()),
@@ -27,8 +31,15 @@ public class JwtTokenGenerator(IOptions<JwtSettings> jwtOptoins) : IJwtTokenGene
             new(ClaimTypes.MobilePhone, phone),
         };
 
-        roles.ForEach(role => claims.Add(new(ClaimTypes.Role, role)));
-        Permissions.ForEach(permission => claims.Add(new("permissions", permission)));
+        foreach (string role in roles)
+        {
+            claims.Add(new(ClaimTypes.Role, role));
+        }
+
+        foreach (string permission in Permissions)
+        {
+            claims.Add(new("permissions", permission));
+        }
 
         var creds = new SigningCredentials(
             new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Secret)),

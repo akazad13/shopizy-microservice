@@ -7,8 +7,8 @@ public interface IAuthorizationService
 {
     ErrorOr<Success> AuthorizeCurrentUser<T>(
         IAuthorizeableRequest<T> request,
-        List<string> requiredRoles,
-        List<string> requiredPermissions,
-        List<string> requiredPolicies
+        IList<string> requiredRoles,
+        IList<string> requiredPermissions,
+        IList<string> requiredPolicies
     );
 }

@@ -22,7 +22,7 @@ public static class ConfigurationExtensions
         return services
             .AddHttpContextAccessor()
             .AddServices(configuration)
-            .AddBackgroundServices(configuration)
+            .AddBackgroundServices()
             .AddPersistence(configuration)
             .AddRepositories();
     }
@@ -41,8 +41,7 @@ public static class ConfigurationExtensions
     }
 
     private static IServiceCollection AddBackgroundServices(
-        this IServiceCollection services,
-        IConfiguration configuration
+        this IServiceCollection services
     )
     {
         return services;

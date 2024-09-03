@@ -1,4 +1,4 @@
-namespace Shopizy.Contracts.Product;
+namespace Shopizy.Catelog.API.ApiContracts.Product;
 
 public record UpdateProductRequest(
     string Name,
@@ -11,5 +11,5 @@ public record UpdateProductRequest(
     string Brand,
     string Tags,
     string Barcode,
-    List<Guid>? SpecificationIds
+    IList<Guid>? SpecificationIds
 );

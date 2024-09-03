@@ -11,7 +11,7 @@ public class DeleteProductCommandHandler(IProductRepository productRepository, I
         : IRequestHandler<DeleteProductCommand, ErrorOr<Success>>
 {
     private readonly IProductRepository _productRepository = productRepository;
-    private readonly IMediaUploader _mediaUploader = mediaUploader;
+    //private readonly IMediaUploader _mediaUploader = mediaUploader;
 
     public async Task<ErrorOr<Success>> Handle(DeleteProductCommand cmd, CancellationToken cancellationToken)
     {

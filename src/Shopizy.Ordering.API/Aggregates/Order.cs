@@ -8,7 +8,7 @@ namespace Shopizy.Ordering.API.Aggregates;
 
 public sealed class Order : AggregateRoot<OrderId, Guid>
 {
-    private readonly List<OrderItem> _orderItems = [];
+    private readonly IList<OrderItem> _orderItems = [];
     public CustomerId CustomerId { get; private set; }
     public Price DeliveryCharge { get; private set; }
     public OrderStatus OrderStatus { get; private set; }
@@ -25,7 +25,7 @@ public sealed class Order : AggregateRoot<OrderId, Guid>
         string promoCode,
         Price deliveryCharge,
         Address shippingAddress,
-        List<OrderItem> orderItems
+        IList<OrderItem> orderItems
     )
     {
         return new Order(
@@ -42,7 +42,7 @@ public sealed class Order : AggregateRoot<OrderId, Guid>
         string promoCode,
         Price deliveryCharge,
         Address shippingAddress,
-        List<OrderItem> orderItems
+        IList<OrderItem> orderItems
     ) : base(orderId)
     {
         CustomerId = customerId;

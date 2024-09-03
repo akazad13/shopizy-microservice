@@ -24,9 +24,9 @@ public static class ConfigurationExtensions
 
     public static IServiceCollection AddAuthorization(this IServiceCollection services)
     {
-        services.AddScoped<IAuthorizationService, AuthorizationService>();
-        services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
-        services.AddSingleton<IPolicyEnforcer, PolicyEnforcer>();
+        _ = services.AddScoped<IAuthorizationService, AuthorizationService>();
+        _ = services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
+        _ = services.AddSingleton<IPolicyEnforcer, PolicyEnforcer>();
 
         return services;
     }
@@ -36,9 +36,9 @@ public static class ConfigurationExtensions
         IConfiguration configuration
     )
     {
-        services.Configure<JwtSettings>(configuration.GetSection(JwtSettings.Section));
+        _ = services.Configure<JwtSettings>(configuration.GetSection(JwtSettings.Section));
 
-        services
+        _ = services
             .ConfigureOptions<JwtBearerToeknValidationConfiguration>()
             .AddAuthentication(defaultScheme: JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer();

@@ -2,5 +2,5 @@
 public interface IHasDomainEvents
 {
     IReadOnlyList<IDomainEvent> DomainEvents { get; }
-    List<IDomainEvent> PopDomainEvents();
+    IList<IDomainEvent> PopDomainEvents();
 }

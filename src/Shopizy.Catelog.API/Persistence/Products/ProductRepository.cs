@@ -10,17 +10,17 @@ public class ProductRepository(CatelogDbContext dbContext) : IProductRepository
 {
     private readonly CatelogDbContext _dbContext = dbContext;
 
-    public Task<List<Product>> GetProductsAsync()
+    public IQueryable<Product> GetProductsAsync()
     {
-        return _dbContext.Products.AsNoTracking().ToListAsync();
+        return _dbContext.Products.AsNoTracking();
     }
     public Task<Product?> GetProductByIdAsync(ProductId id)
     {
         return _dbContext.Products.FirstOrDefaultAsync(p => p.Id == id);
     }
-    public Task<List<Product>> GetProductsByIdsAsync(List<ProductId> ids)
+    public IQueryable<Product> GetProductsByIdsAsync(IList<ProductId> ids)
     {
-        return ApplySpec(new ProductsByIdsSpec(ids)).ToListAsync();
+        return ApplySpec(new ProductsByIdsSpec(ids));
     }
     public Task<bool> IsProductExistAsync(ProductId id)
     {

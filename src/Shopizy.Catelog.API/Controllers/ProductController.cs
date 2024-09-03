@@ -2,6 +2,7 @@
 using MapsterMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Shopizy.Catelog.API.ApiContracts.Product;
 using Shopizy.Catelog.API.Services.Products.Commands.AddProductImage;
 using Shopizy.Catelog.API.Services.Products.Commands.CreateProduct;
 using Shopizy.Catelog.API.Services.Products.Commands.DeleteProduct;

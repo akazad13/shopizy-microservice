@@ -8,7 +8,7 @@ public record OrderResponse(
     string PromoCode,
     Address ShippingAddress,
     string PaymentStatus,
-    List<OrderItemResponse> OrderItems,
+    IList<OrderItemResponse> OrderItems,
     DateTime CreatedOn,
     DateTime ModifiedOn
 );

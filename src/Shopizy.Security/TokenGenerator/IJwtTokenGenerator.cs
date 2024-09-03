@@ -7,7 +7,7 @@ public interface IJwtTokenGenerator
         string firstName,
         string LastName,
         string phone,
-        List<string> roles,
-        List<string> Permissions
+        IList<string> roles,
+        IList<string> Permissions
     );
 }

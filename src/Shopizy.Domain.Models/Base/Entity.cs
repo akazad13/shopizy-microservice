@@ -2,7 +2,7 @@
 
 public abstract class Entity<TId> : IEquatable<Entity<TId>>, IHasDomainEvents where TId : notnull
 {
-    private readonly List<IDomainEvent> _domainEvents = [];
+    private readonly IList<IDomainEvent> _domainEvents = [];
     public TId Id { get; protected set; }
     public IReadOnlyList<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
 
@@ -50,7 +50,7 @@ public abstract class Entity<TId> : IEquatable<Entity<TId>>, IHasDomainEvents wh
         _domainEvents?.Remove(domainEvent);
     }
 
-    public List<IDomainEvent> PopDomainEvents()
+    public IList<IDomainEvent> PopDomainEvents()
     {
         var copy = _domainEvents.ToList();
         _domainEvents.Clear();

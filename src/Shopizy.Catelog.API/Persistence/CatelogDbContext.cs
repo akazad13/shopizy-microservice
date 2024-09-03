@@ -28,7 +28,7 @@ public class CatelogDbContext(DbContextOptions options, IHttpContextAccessor _ht
         }
 
         // Publish all the domain event
-        await PublishDomainEvents(domainEvents);
+        await publishDomainEventsAsync(domainEvents);
         return await base.SaveChangesAsync(cancellationToken);
     }
 
@@ -40,7 +40,7 @@ public class CatelogDbContext(DbContextOptions options, IHttpContextAccessor _ht
 
     private bool IsUserWaitingOnline() => _httpContextAccessor.HttpContext is not null;
 
-    private async Task PublishDomainEvents(List<IDomainEvent> domainEvents)
+    private async Task publishDomainEventsAsync(List<IDomainEvent> domainEvents)
     {
         foreach (IDomainEvent domainEvent in domainEvents)
         {

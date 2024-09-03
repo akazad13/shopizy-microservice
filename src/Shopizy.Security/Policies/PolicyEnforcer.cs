@@ -1,4 +1,5 @@
-﻿using ErrorOr;
+﻿using Ardalis.GuardClauses;
+using ErrorOr;
 using Shopizy.Security.Request;
 using Shopizy.Security.Roles;
 using Shopizy.Security.User;
@@ -13,6 +14,9 @@ public class PolicyEnforcer : IPolicyEnforcer
         string policy
     )
     {
+        _ = Guard.Against.Null(request);
+        _ = Guard.Against.Null(currentUser);
+
         return policy switch
         {
             Policy.SelfOrAdmin => SelfOrAdminPolicy(request, currentUser),
