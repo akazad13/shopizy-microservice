@@ -21,7 +21,7 @@ public class AddProductImageCommandHandler(IProductRepository productRepository,
             return CustomErrors.Product.ProductImageNotUploaded;
         }
 
-        var product = await _productRepository.GetProductByIdAsync(ProductId.Create(cmd.ProductId));
+        Aggregates.Products.Product? product = await _productRepository.GetProductByIdAsync(ProductId.Create(cmd.ProductId));
 
         if (product is null)
         {
@@ -30,7 +30,7 @@ public class AddProductImageCommandHandler(IProductRepository productRepository,
 
         ProductImage productImage;
 
-        var res = await _mediaUploader.UploadPhotoAsync(cmd.File, cancellationToken);
+        ErrorOr<PhotoUploadResult> res = await _mediaUploader.UploadPhotoAsync(cmd.File, cancellationToken);
         if (!res.IsError)
         {
             productImage = ProductImage.Create(res.Value.Url, product.ProductImages.Count, res.Value.PublicId);

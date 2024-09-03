@@ -38,7 +38,7 @@ public class CartDbContext(DbContextOptions options, IHttpContextAccessor _httpC
 
     private async Task PublishDomainEvents(List<IDomainEvent> domainEvents)
     {
-        foreach (var domainEvent in domainEvents)
+        foreach (IDomainEvent domainEvent in domainEvents)
         {
             await _publisher.Publish(domainEvent);
         }
@@ -47,7 +47,7 @@ public class CartDbContext(DbContextOptions options, IHttpContextAccessor _httpC
     private void AddDomainEventsToOfflineProcessingQueue(List<IDomainEvent> domainEvents)
     {
         // Get pending domain events from session
-        Queue<IDomainEvent> domainEventsQueue = _httpContextAccessor.HttpContext!.Items.TryGetValue(EventualConsistencyMiddleware.DomainEventsKey, out var value) &&
+        Queue<IDomainEvent> domainEventsQueue = _httpContextAccessor.HttpContext!.Items.TryGetValue(EventualConsistencyMiddleware.DomainEventsKey, out object? value) &&
             value is Queue<IDomainEvent> existingDomainEvents
             ? existingDomainEvents : new();
 

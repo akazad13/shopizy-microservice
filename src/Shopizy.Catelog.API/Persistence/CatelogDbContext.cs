@@ -42,7 +42,7 @@ public class CatelogDbContext(DbContextOptions options, IHttpContextAccessor _ht
 
     private async Task PublishDomainEvents(List<IDomainEvent> domainEvents)
     {
-        foreach (var domainEvent in domainEvents)
+        foreach (IDomainEvent domainEvent in domainEvents)
         {
             await _publisher.Publish(domainEvent);
         }
@@ -51,7 +51,7 @@ public class CatelogDbContext(DbContextOptions options, IHttpContextAccessor _ht
     private void AddDomainEventsToOfflineProcessingQueue(List<IDomainEvent> domainEvents)
     {
         // Get pending domain events from session
-        Queue<IDomainEvent> domainEventsQueue = _httpContextAccessor.HttpContext!.Items.TryGetValue(EventualConsistencyMiddleware.DomainEventsKey, out var value) &&
+        Queue<IDomainEvent> domainEventsQueue = _httpContextAccessor.HttpContext!.Items.TryGetValue(EventualConsistencyMiddleware.DomainEventsKey, out object? value) &&
             value is Queue<IDomainEvent> existingDomainEvents
             ? existingDomainEvents : new();
 

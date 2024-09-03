@@ -47,8 +47,8 @@ public class JwtTokenGenerator(IOptions<JwtSettings> jwtOptoins) : IJwtTokenGene
         };
 
         var jwtTokenHandler = new JwtSecurityTokenHandler();
-        var jwtToken = jwtTokenHandler.CreateJwtSecurityToken(tokenDescriptor);
-        var token = jwtTokenHandler.WriteToken(jwtToken);
+        JwtSecurityToken jwtToken = jwtTokenHandler.CreateJwtSecurityToken(tokenDescriptor);
+        string token = jwtTokenHandler.WriteToken(jwtToken);
         return token;
     }
 }

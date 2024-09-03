@@ -68,10 +68,10 @@ public sealed class Order : AggregateRoot<OrderId, Guid>
 
     public Price GetTotal()
     {
-        var totalAmount = _orderItems.Sum(item => item.TotalPrice().Amount);
-        var totalDiscount = _orderItems.Sum(item => item.TotalDiscount().Amount);
+        decimal totalAmount = _orderItems.Sum(item => item.TotalPrice().Amount);
+        decimal totalDiscount = _orderItems.Sum(item => item.TotalDiscount().Amount);
 
-        var chargeAmount = totalAmount - totalDiscount + DeliveryCharge.Amount;
+        decimal chargeAmount = totalAmount - totalDiscount + DeliveryCharge.Amount;
 
         return Price.CreateNew(chargeAmount, DeliveryCharge.Currency);
     }

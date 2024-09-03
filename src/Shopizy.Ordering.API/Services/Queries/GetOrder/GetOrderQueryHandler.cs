@@ -13,7 +13,7 @@ public class GetOrderQueryHandler(IOrderRepository orderRepository) : IRequestHa
 
     public async Task<ErrorOr<Order>> Handle(GetOrderQuery request, CancellationToken cancellationToken)
     {
-        var order = await _orderRepository.GetOrderByIdAsync(OrderId.Create(request.OrderId));
+        Order? order = await _orderRepository.GetOrderByIdAsync(OrderId.Create(request.OrderId));
 
         if (order is null)
         {

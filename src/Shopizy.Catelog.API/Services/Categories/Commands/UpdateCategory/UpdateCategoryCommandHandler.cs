@@ -17,7 +17,7 @@ public class UpdateCategoryCommandHandler(ICategoryRepository categoryRepository
         CancellationToken cancellationToken
     )
     {
-        var category = await _categoryRepository.GetCategoryByIdAsync(CategoryId.Create(cmd.CategoryId));
+        Category? category = await _categoryRepository.GetCategoryByIdAsync(CategoryId.Create(cmd.CategoryId));
         if (category is null)
         {
             return CustomErrors.Category.CategoryNotFound;

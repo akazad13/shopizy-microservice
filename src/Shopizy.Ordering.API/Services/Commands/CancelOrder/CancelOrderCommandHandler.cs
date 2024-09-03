@@ -11,7 +11,7 @@ public class CancelOrderCommandHandler(IOrderRepository orderRepository) : IRequ
     private readonly IOrderRepository _orderRepository = orderRepository;
     public async Task<ErrorOr<Success>> Handle(CancelOrderCommand request, CancellationToken cancellationToken)
     {
-        var order = await _orderRepository.GetOrderByIdAsync(OrderId.Create(request.OrderId));
+        Aggregates.Order? order = await _orderRepository.GetOrderByIdAsync(OrderId.Create(request.OrderId));
         if (order is null)
         {
             return CustomErrors.Order.OrderNotFound;

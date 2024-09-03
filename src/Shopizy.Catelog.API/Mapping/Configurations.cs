@@ -7,7 +7,7 @@ public static class Configurations
 {
     public static IServiceCollection AddMappings(this IServiceCollection services)
     {
-        var config = TypeAdapterConfig.GlobalSettings;
+        TypeAdapterConfig config = TypeAdapterConfig.GlobalSettings;
         config.Scan(typeof(Configurations).Assembly);
 
         services.AddSingleton(config);

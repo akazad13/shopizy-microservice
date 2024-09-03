@@ -12,7 +12,7 @@ public class UpdateProductQuantityCommandHandler(ICartRepository cartRepository)
     private readonly ICartRepository _cartRepository = cartRepository;
     public async Task<ErrorOr<Success>> Handle(UpdateProductQuantityCommand cmd, CancellationToken cancellationToken)
     {
-        var cart = await _cartRepository.GetCartByIdAsync(CartId.Create(cmd.CartId));
+        Aggregates.CustomerCart? cart = await _cartRepository.GetCartByIdAsync(CartId.Create(cmd.CartId));
 
         if (cart is null)
         {

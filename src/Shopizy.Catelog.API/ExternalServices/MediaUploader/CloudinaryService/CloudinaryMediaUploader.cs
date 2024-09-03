@@ -17,13 +17,13 @@ public class CloudinaryMediaUploader(ICloudinary cloudinary) : IMediaUploader
         {
             if (file.Length > 0)
             {
-                using var stream = file.OpenReadStream();
+                using Stream stream = file.OpenReadStream();
                 var uploadParams = new ImageUploadParams()
                 {
                     File = new FileDescription(file.Name, stream),
                     Transformation = new Transformation().Width(500).Height(500).Crop("fill"),
                 };
-                var uploadResult = await _cloudinary.UploadAsync(uploadParams, cancellationToken);
+                ImageUploadResult uploadResult = await _cloudinary.UploadAsync(uploadParams, cancellationToken);
 
                 return uploadResult.Error switch
                 {
@@ -47,7 +47,7 @@ public class CloudinaryMediaUploader(ICloudinary cloudinary) : IMediaUploader
         try
         {
             var deleteParams = new DeletionParams(publicId);
-            var result = await _cloudinary.DestroyAsync(deleteParams);
+            DeletionResult result = await _cloudinary.DestroyAsync(deleteParams);
 
             return result.Result switch
             {

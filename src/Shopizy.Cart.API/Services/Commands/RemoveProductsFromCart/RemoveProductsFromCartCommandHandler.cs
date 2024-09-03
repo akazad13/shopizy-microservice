@@ -12,16 +12,16 @@ public class RemoveProductFromCartCommandHandler(ICartRepository cartRepository)
     private readonly ICartRepository _cartRepository = cartRepository;
     public async Task<ErrorOr<Success>> Handle(RemoveProductFromCartCommand cmd, CancellationToken cancellationToken)
     {
-        var cart = await _cartRepository.GetCartByIdAsync(CartId.Create(cmd.CartId));
+        Aggregates.CustomerCart? cart = await _cartRepository.GetCartByIdAsync(CartId.Create(cmd.CartId));
 
         if (cart is null)
         {
             return CustomErrors.Cart.CartNotFound;
         }
 
-        foreach (var productid in cmd.ProductIds)
+        foreach (Guid productid in cmd.ProductIds)
         {
-            var cartItem = cart.CartItems.FirstOrDefault(li => li.ProductId.Value == productid);
+            Aggregates.Entities.CartItem? cartItem = cart.CartItems.FirstOrDefault(li => li.ProductId.Value == productid);
             if (cartItem is not null)
             {
                 cart.RemoveCartItem(cartItem);

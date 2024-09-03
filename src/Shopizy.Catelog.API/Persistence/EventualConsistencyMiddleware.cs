@@ -9,14 +9,14 @@ public class EventualConsistencyMiddleware(RequestDelegate _next)
 
     public async Task InvokeAsync(HttpContext context, IPublisher publisher, CatelogDbContext dbContext)
     {
-        var transaction = await dbContext.Database.BeginTransactionAsync();
+        Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction transaction = await dbContext.Database.BeginTransactionAsync();
         context.Response.OnCompleted(async () =>
         {
             try
             {
-                if (context.Items.TryGetValue(DomainEventsKey, out var value) && value is Queue<IDomainEvent> domainEvent)
+                if (context.Items.TryGetValue(DomainEventsKey, out object? value) && value is Queue<IDomainEvent> domainEvent)
                 {
-                    while (domainEvent.TryDequeue(out var nextEvent))
+                    while (domainEvent.TryDequeue(out IDomainEvent? nextEvent))
                     {
                         await publisher.Publish(nextEvent);
                     }

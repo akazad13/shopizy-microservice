@@ -11,7 +11,7 @@ public class ListOrdersQueryHandler(IOrderRepository orderRepository) : IRequest
 
     public async Task<ErrorOr<List<Order>>> Handle(ListOrdersQuery request, CancellationToken cancellationToken)
     {
-        var orders = await _orderRepository.GetOrdersAsync();
+        List<Order> orders = await _orderRepository.GetOrdersAsync();
         return orders;
     }
 }

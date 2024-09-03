@@ -15,84 +15,94 @@ using Shopizy.Contracts.Product;
 namespace Shopizy.Catelog.API.Controllers;
 
 [Route("api/v1.0")]
-public class ProductController(ISender _mediator, IMapper _mapper) : ApiController
+public class ProductController(ISender mediator, IMapper mapper) : ApiController
 {
+    private readonly ISender _mediator = mediator;
+    private readonly IMapper _mapper = mapper;
+
     [HttpGet("products")]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> GetAsync()
     {
         var query = new ListProductQuery();
-        var result = await _mediator.Send(query);
+        ErrorOr<List<Aggregates.Products.Product>> result = await _mediator.Send(query);
 
         return result.Match(Product => Ok(_mapper.Map<List<ProductResponse>?>(Product)), Problem);
     }
 
     [HttpGet("products/{productId:guid}")]
-    public async Task<IActionResult> GetProduct(Guid ProductId)
+    public async Task<IActionResult> GetProductAsync(Guid ProductId)
     {
-        var query = _mapper.Map<GetProductQuery>(ProductId);
-        var result = await _mediator.Send(query);
+        GetProductQuery query = _mapper.Map<GetProductQuery>(ProductId);
+        ErrorOr<Aggregates.Products.Product> result = await _mediator.Send(query);
 
         return result.Match(Product => Ok(_mapper.Map<ProductResponse?>(Product)), Problem);
     }
 
     [HttpPost("users/{userId:guid}/products")]
-    public async Task<IActionResult> CreateProduct(Guid userId, CreateProductRequest request)
+    public async Task<IActionResult> CreateProductAsync(Guid userId, CreateProductRequest request)
     {
-        var command = _mapper.Map<CreateProductCommand>((userId, request));
-        var result = await _mediator.Send(command);
+        CreateProductCommand command = _mapper.Map<CreateProductCommand>((userId, request));
+        ErrorOr<Aggregates.Products.Product> result = await _mediator.Send(command);
 
         return result.Match(product => Ok(_mapper.Map<ProductResponse>(product)), Problem);
     }
 
     [HttpPatch("users/{userId:guid}/products/{productId:guid}")]
-    public async Task<IActionResult> UpdateProduct(
+    public async Task<IActionResult> UpdateProductAsync(
         Guid userId,
         Guid productId,
         UpdateProductRequest request
     )
     {
-        var command = _mapper.Map<UpdateProductCommand>((userId, productId, request));
-        var result = await _mediator.Send(command);
+        UpdateProductCommand command = _mapper.Map<UpdateProductCommand>((userId, productId, request));
+        ErrorOr<Aggregates.Products.Product> result = await _mediator.Send(command);
 
         return result.Match(product => Ok(_mapper.Map<ProductResponse>(product)), Problem);
     }
 
     [HttpDelete("users/{userId:guid}/products/{productId:guid}")]
-    public async Task<IActionResult> DeleteProduct(Guid userId, Guid productId)
+    public async Task<IActionResult> DeleteProductAsync(Guid userId, Guid productId)
     {
-        var command = _mapper.Map<DeleteProductCommand>((userId, productId));
-        var result = await _mediator.Send(command);
+        DeleteProductCommand command = _mapper.Map<DeleteProductCommand>((userId, productId));
+        ErrorOr<Success> result = await _mediator.Send(command);
 
         return result.Match(product => Ok(_mapper.Map<Success>(product)), Problem);
     }
 
     [HttpPost("users/{userId:guid}/products/{productId:guid}/image")]
-    public async Task<IActionResult> AddProductImage(
+    public async Task<IActionResult> AddProductImageAsync(
         Guid userId,
         Guid productId,
         [FromForm] AddProductImageRequest request
     )
     {
-        var command = new AddProductImageCommand(userId, productId, request.File);
-        var result = await _mediator.Send(command);
+        if (request == null)
+        {
+            return Problem([Error.Failure(
+                code: "Product.RequestDataNull",
+                description: "Request data is not valid.")]
+            );
+        }
+        var command = new AddProductImageCommand(userId, productId, File: request.File);
+        ErrorOr<Aggregates.Products.Entities.ProductImage> result = await _mediator.Send(command);
 
         return result.Match(product => Ok(_mapper.Map<ProductImageResponse>(product)), Problem);
     }
 
     [HttpDelete("users/{userId:guid}/products/{productId:guid}/image/{imageId:guid}")]
-    public async Task<IActionResult> DeleteProductImage(Guid userId, Guid productId, Guid imageId)
+    public async Task<IActionResult> DeleteProductImageAsync(Guid userId, Guid productId, Guid imageId)
     {
-        var command = _mapper.Map<DeleteProductImageCommand>((userId, productId, imageId));
-        var result = await _mediator.Send(command);
+        DeleteProductImageCommand command = _mapper.Map<DeleteProductImageCommand>((userId, productId, imageId));
+        ErrorOr<Success> result = await _mediator.Send(command);
 
         return result.Match(success => Ok(success), Problem);
     }
 
     [HttpGet("products/{productId:guid}/isexist")]
-    public async Task<IActionResult> IstProductExist(Guid ProductId)
+    public async Task<IActionResult> IstProductExistAsync(Guid ProductId)
     {
-        var query = _mapper.Map<ProductAvailabilityQuery>(ProductId);
-        var result = await _mediator.Send(query);
+        ProductAvailabilityQuery query = _mapper.Map<ProductAvailabilityQuery>(ProductId);
+        ErrorOr<bool> result = await _mediator.Send(query);
 
         return result.Match(IsExist => Ok(IsExist), Problem);
     }

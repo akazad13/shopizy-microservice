@@ -16,7 +16,7 @@ public class DeleteCategoryCommandHandler(ICategoryRepository categoryRepository
         CancellationToken cancellationToken
     )
     {
-        var category = await _categoryRepository.GetCategoryByIdAsync(CategoryId.Create(cmd.CategoryId));
+        Aggregates.Categories.Category? category = await _categoryRepository.GetCategoryByIdAsync(CategoryId.Create(cmd.CategoryId));
         if (category is null)
         {
             return CustomErrors.Category.CategoryNotFound;

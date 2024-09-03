@@ -7,14 +7,14 @@ namespace Shopizy.Ordering.API.Controllers;
 [ApiController]
 public class ApiController : ControllerBase
 {
-    protected ActionResult Problem(List<Error> errors)
+    protected ActionResult Problem(IList<Error> errors)
     {
-        if (errors.Count is 0)
+        if (errors == null || errors.Count is 0)
         {
             return Problem();
         }
 
-        if (errors.TrueForAll(error => error.Type == ErrorType.Validation))
+        if (errors.All(error => error.Type == ErrorType.Validation))
         {
             return ValidationProblem(errors);
         }
@@ -24,7 +24,7 @@ public class ApiController : ControllerBase
 
     private ObjectResult Problem(Error error)
     {
-        var statusCode = error.Type switch
+        int statusCode = error.Type switch
         {
             ErrorType.Conflict => StatusCodes.Status409Conflict,
             ErrorType.Validation => StatusCodes.Status400BadRequest,
@@ -36,10 +36,13 @@ public class ApiController : ControllerBase
         return Problem(statusCode: statusCode, title: error.Description);
     }
 
-    private ActionResult ValidationProblem(List<Error> errors)
+    private ActionResult ValidationProblem(IList<Error> errors)
     {
         var modelStateDictonary = new ModelStateDictionary();
-        errors.ForEach(error => modelStateDictonary.AddModelError(error.Code, error.Description));
+        foreach (Error error in errors)
+        {
+            modelStateDictonary.AddModelError(error.Code, error.Description);
+        }
         return ValidationProblem(modelStateDictonary);
     }
 }

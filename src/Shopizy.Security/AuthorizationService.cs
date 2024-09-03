@@ -12,7 +12,7 @@ public class AuthorizationService(IPolicyEnforcer policyEnforcer, ICurrentUserPr
 
     public ErrorOr<Success> AuthorizeCurrentUser<T>(IAuthorizeableRequest<T> request, List<string> requiredRoles, List<string> requiredPermissions, List<string> requiredPolicies)
     {
-        var currentUser = _currentUserProvider.GetCurrentUser();
+        CurrentUser? currentUser = _currentUserProvider.GetCurrentUser();
 
         if (currentUser == null)
         {
@@ -29,9 +29,9 @@ public class AuthorizationService(IPolicyEnforcer policyEnforcer, ICurrentUserPr
             return Error.Unauthorized(description: "User is missing required roles for taking this action");
         }
 
-        foreach (var policy in requiredPolicies)
+        foreach (string policy in requiredPolicies)
         {
-            var authorizationAgaistPolicyResult = _policyEnforcer.Authorize(request, currentUser, policy);
+            ErrorOr<Success> authorizationAgaistPolicyResult = _policyEnforcer.Authorize(request, currentUser, policy);
             if (authorizationAgaistPolicyResult.IsError)
             {
                 return authorizationAgaistPolicyResult.Errors;

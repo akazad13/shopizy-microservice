@@ -17,11 +17,11 @@ public class CurrentUserProvider(IHttpContextAccessor httpContextAccessor) : ICu
         }
 
         var id = Guid.Parse(GetSingleClaimValue("id"));
-        var permissions = GetClaimValues("permissions");
-        var roles = GetClaimValues(ClaimTypes.Role);
-        var firstName = GetSingleClaimValue(JwtRegisteredClaimNames.Name);
-        var lastName = GetSingleClaimValue(ClaimTypes.Surname);
-        var phone = GetSingleClaimValue(ClaimTypes.MobilePhone);
+        List<string> permissions = GetClaimValues("permissions");
+        List<string> roles = GetClaimValues(ClaimTypes.Role);
+        string firstName = GetSingleClaimValue(JwtRegisteredClaimNames.Name);
+        string lastName = GetSingleClaimValue(ClaimTypes.Surname);
+        string phone = GetSingleClaimValue(ClaimTypes.MobilePhone);
 
         return new CurrentUser(id, firstName, lastName, phone, permissions, roles);
     }

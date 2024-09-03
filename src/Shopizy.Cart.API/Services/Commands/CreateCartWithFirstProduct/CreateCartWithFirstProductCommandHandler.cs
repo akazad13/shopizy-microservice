@@ -17,7 +17,7 @@ public class CreateCartWithFirstProductCommandHandler(ICartRepository cartReposi
     private readonly IQueryService<IsProductExistQuery, bool> _productExistQuery = productExistQuery;
     public async Task<ErrorOr<CustomerCart>> Handle(CreateCartWithFirstProductCommand cmd, CancellationToken cancellationToken)
     {
-        var productExits = await _productExistQuery.QueryAsync(new IsProductExistQuery(cmd.ProductId));
+        bool productExits = await _productExistQuery.QueryAsync(new IsProductExistQuery(cmd.ProductId));
 
         if (!productExits)
         {
