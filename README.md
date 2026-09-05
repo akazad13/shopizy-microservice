@@ -25,14 +25,17 @@
 
 ## 🌟 What Is Shopizy?
 
-Shopizy is an **enterprise-grade, headless digital commerce platform** built as a suite of independently deployable microservices. Each service owns its own domain, database, and API surface, communicating asynchronously via RabbitMQ events.
+Shopizy is an **enterprise-grade, headless digital commerce platform** built as a suite of independently deployable microservices. Each service owns its own domain, database, and API surface, communicating asynchronously via RabbitMQ events and orchestrated locally via .NET Aspire.
 
 **Business capabilities delivered:**
 - Zero-overselling atomic inventory reservation
+- Hierarchical category trees & brand directory
+- Parent-variant dimensional product matrix (SKUs, barcodes, pricing, stock, JSON attributes)
+- Optimistic concurrency control on product updates and stock modifications
 - 15-minute unpaid order expiration with automatic stock release
-- Idempotency protection on all financial operations
+- Idempotency protection on financial and mutating operations via `Idempotency-Key`
 - Sub-second live order tracking push via SignalR + Redis
-- Multi-tenant customer data isolation with JWT RBAC
+- Multi-tenant customer data isolation with cryptographic JWT RBAC
 - Flash-sale Redis Lua hot-key inventory protection
 
 ---
@@ -91,9 +94,9 @@ This conducts an interactive architectural interview and generates `.specify/arc
 
 #### Step 2: Generate a Module Specification
 ```text
-/sdd-spec identity-service
+/sdd-spec catalog-service
 ```
-Generates the formal spec suite at `.specify/specs/identity-service/`:
+Generates the formal spec suite at `.specify/specs/catalog-service/`:
 - `spec.md` — user stories, acceptance criteria, and verifiable E2E test scenarios
 - `plan.md` — technical design, component diagram, and API schemas
 - `tasks.md` — ordered, actionable implementation task list
@@ -101,7 +104,7 @@ Generates the formal spec suite at `.specify/specs/identity-service/`:
 
 #### Step 3: Run the Generator ↔ Reviewer Loop
 ```text
-/sdd-loop identity-service
+/sdd-loop catalog-service
 ```
 The **Generator Agent** implements all production code and tests. The **Review Agent** audits across 5 pillars:
 
@@ -111,16 +114,16 @@ The **Generator Agent** implements all production code and tests. The **Review A
 | **Test Completeness** | Unit, integration, and E2E tests present with meaningful assertions? |
 | **Architecture & Standards** | Clean Architecture layers respected? Constitution compliant? |
 | **Error & Edge Cases** | Nulls, boundaries, RFC 7807 Problem Details, unauthorized paths? |
-| **Security & Performance** | OWASP guidelines, JWT auth, idempotency on financial endpoints? |
+| **Security & Performance** | OWASP guidelines, JWT auth, idempotency on financial & mutating endpoints? |
 
 If any pillar fails → feedback passed back to the Generator Agent → code is patched → reviewer re-audits (up to 3 cycles).
 
 #### Step 4: Raise the Pull Request
 ```text
-/sdd-pr identity-service
+/sdd-pr catalog-service
 ```
 - Verifies build (`dotnet build --warnaserror`) and all tests pass
-- Creates a stacked feature branch (`feature/identity-service` branched from `feature/shared-kernel`)
+- Creates a feature branch (`feature/catalog-service`)
 - Raises PR with full traceability to PRD sections, spec files, and review-log
 
 #### Step 5: Google AI Reviewer Runs Automatically
@@ -131,7 +134,7 @@ On PR open/push, GitHub Actions triggers the Google AI PR Review Agent which:
 
 #### Step 6: Resolve Peer Feedback
 When a reviewer (human or AI) posts suggestions:
-> *"Address the feedback on PR #2"*
+> *"Address the feedback on PR #4"*
 
 The AI agent:
 1. Ingests all review comment threads
@@ -162,7 +165,7 @@ sequenceDiagram
     else Valid improvement
         Agent->>Agent: Apply line-targeted patch
         Agent->>Runner: dotnet build --warnaserror && dotnet test
-        Runner-->>Agent: ✅ 0 warnings, 30/30 passed
+        Runner-->>Agent: ✅ 0 warnings, 140/140 passed
         Agent->>PR: Push remediation commit
         PR-->>Reviewer: AI Review Agent re-runs → ✅ APPROVED
     end
@@ -184,11 +187,11 @@ The agent reads the full PR diff and cross-references:
 ### Line-by-Line Finding Format
 
 ```markdown
-#### 📍 `src/Shopizy.ServiceDefaults/Extensions.cs:L88-L98` — [Severity: Major] Finding Title
+#### 📍 `src/Shopizy.AppHost/Program.cs:L16-L19` — [Severity: Minor] Aspire Database Resource Scoping & Isolation
 - **Issue**: Precise technical description
 - **Current Code**: <exact snippet from diff>
 - **Suggested Fix**: <concrete, copy-pasteable replacement>
-- **Rationale**: Engineering reason (e.g., prevents probe failure in production)
+- **Rationale**: Engineering reason (e.g., enforces Principle VII database-per-service isolation)
 ```
 
 ### Verdict Decision Matrix
@@ -213,7 +216,7 @@ The review agent uses:
 | Layer | Technology |
 |:---|:---|
 | **Runtime** | .NET 10 / C# 14 |
-| **Architecture Pattern** | Clean Architecture + DDD + CQRS (MediatR) |
+| **Architecture Pattern** | Clean Architecture + DDD + CQRS |
 | **Orchestration** | .NET Aspire 10 (`Shopizy.AppHost` + `Shopizy.ServiceDefaults`) |
 | **API** | ASP.NET Core 10 Minimal APIs + YARP Reverse Proxy |
 | **Database** | PostgreSQL 17 (database-per-service) via EF Core 10 |
@@ -223,7 +226,7 @@ The review agent uses:
 | **Real-Time** | ASP.NET Core SignalR + Redis backplane |
 | **Observability** | OpenTelemetry (traces + metrics) + Serilog + .NET Aspire Dashboard |
 | **Resilience** | Polly (retry, circuit breaker, timeout) via `Microsoft.Extensions.Http.Resilience` |
-| **Testing** | xUnit + FluentAssertions + Aspire test host |
+| **Testing** | xUnit + FluentAssertions + WebApplicationFactory test host |
 | **CI/CD** | GitHub Actions (.NET 10 SDK build + AI PR Review) |
 | **AI Reviewer** | Google AI Gemini via Gemini API |
 
@@ -275,10 +278,10 @@ flowchart TD
 
 | # | Module | Branch | PR | Status | Tests |
 |:---:|:---|:---|:---:|:---:|:---:|
-| 1 | **Shared Kernel & Aspire Orchestrator** | `feature/shared-kernel` | [#1](https://github.com/akazad13/shopizy-microservice/pull/1) | ✅ APPROVED | 30/30 |
-| 2 | **Identity & Access Service** | `feature/identity-service` | — | 🔜 Next | — |
-| 3 | **Product Catalog Service** | `feature/catalog-service` | — | ⏳ Pending | — |
-| 4 | **Shopping Cart Service** | `feature/cart-service` | — | ⏳ Pending | — |
+| 1 | **Shared Kernel & Aspire Orchestrator** | `feature/shared-kernel` | [#1](https://github.com/akazad13/shopizy-microservice/pull/1) | ✅ MERGED | 30/30 |
+| 2 | **Identity & Access Service** | `feature/identity-service` | [#2](https://github.com/akazad13/shopizy-microservice/pull/2), [#3](https://github.com/akazad13/shopizy-microservice/pull/3) | ✅ MERGED | 48/48 |
+| 3 | **Product Catalog Service** | `feature/catalog-service` | [#4](https://github.com/akazad13/shopizy-microservice/pull/4) | ✅ MERGED | 62/62 |
+| 4 | **Shopping Cart Service** | `feature/cart-service` | — | 🔜 Next | — |
 | 5 | **Order & Inventory Service** | `feature/order-service` | — | ⏳ Pending | — |
 | 6 | **Payment & Refund Gateway** | `feature/payment-service` | — | ⏳ Pending | — |
 
@@ -299,8 +302,6 @@ flowchart TD
 | 12 | Loyalty Points & Gift Cards | ⏳ Pending |
 | 13 | Abandoned Cart Recovery Worker | ⏳ Pending |
 
-> **Stacked PR Strategy**: Each module branches from the previous module's feature branch so development is never blocked by pending PR merges. For example, `feature/identity-service` is branched from `feature/shared-kernel`.
-
 ---
 
 ## 📁 Project Structure
@@ -308,42 +309,47 @@ flowchart TD
 ```
 shopizy-microservice/
 ├── src/
-│   ├── Shopizy.SharedKernel/           # DDD primitives, Result<T>, event contracts, middleware
-│   ├── Shopizy.ServiceDefaults/        # OpenTelemetry, health checks, Polly resilience
-│   └── Shopizy.AppHost/               # .NET Aspire 10 orchestrator
+│   ├── Shopizy.SharedKernel/                  # DDD primitives, Result<T>, event contracts, idempotency middleware
+│   ├── Shopizy.ServiceDefaults/               # OpenTelemetry, health checks, Polly resilience
+│   ├── Shopizy.AppHost/                      # .NET Aspire 10 orchestrator (Postgres, Redis, RabbitMQ)
+│   ├── Shopizy.IdentityService/               # User registration, JWT auth, refresh tokens, RBAC, isolation
+│   └── Shopizy.CatalogService/                # Hierarchical categories, brands, variants, optimistic concurrency
 ├── tests/
-│   ├── Shopizy.SharedKernel.UnitTests/ # 23 unit tests
-│   └── Shopizy.SharedKernel.IntegrationTests/  # 7 integration tests
+│   ├── Shopizy.SharedKernel.UnitTests/        # 23 unit tests
+│   ├── Shopizy.SharedKernel.IntegrationTests/ # 7 integration tests
+│   ├── Shopizy.IdentityService.UnitTests/      # 38 unit tests (password policy, user aggregate, isolation)
+│   ├── Shopizy.IdentityService.IntegrationTests/ # 4 integration tests (EF Core persistence, tokens)
+│   ├── Shopizy.IdentityService.E2ETests/       # 6 automated E2E tests (auth, RBAC, data isolation, idempotency)
+│   ├── Shopizy.CatalogService.UnitTests/       # 46 unit tests (categories, brands, products, variants, money)
+│   ├── Shopizy.CatalogService.IntegrationTests/# 9 integration tests (category trees, search, concurrency)
+│   └── Shopizy.CatalogService.E2ETests/        # 7 automated E2E tests (catalog hierarchy, variants, RBAC, replay)
 ├── .specify/
 │   ├── architecture/
-│   │   ├── system-architecture.md     # Full topology & tech rationale
-│   │   ├── module-decomposition.md    # 13-module roadmap with E2E scenarios
-│   │   └── interview-answers.json     # Ratified architectural decisions
+│   │   ├── system-architecture.md            # Full topology & tech rationale
+│   │   ├── module-decomposition.md           # 13-module roadmap with E2E scenarios
+│   │   └── interview-answers.json            # Ratified architectural decisions
 │   ├── memory/
-│   │   └── constitution.md            # 8 non-negotiable engineering principles
-│   └── specs/<module-slug>/
-│       ├── spec.md                    # User stories & acceptance criteria
-│       ├── plan.md                    # Technical design & API schemas
-│       ├── tasks.md                   # Ordered implementation task list
-│       ├── checklist.md               # Pre-PR quality checklist
-│       ├── review-log.md              # Multi-agent audit trail & test results
-│       └── pr-body.md                 # Generated PR description
+│   │   └── constitution.md                   # 8 non-negotiable engineering principles
+│   └── specs/
+│       ├── shared-kernel/                    # Module 1 specs & review log
+│       ├── identity-service/                 # Module 2 specs & review log
+│       └── catalog-service/                  # Module 3 specs & review log
 ├── .agents/
-│   └── skills/                        # Antigravity AI skill definitions
-│       ├── sdd-intake/SKILL.md        # PRD ingestion & architecture interview
-│       ├── sdd-spec/SKILL.md          # Module specification generator
-│       ├── sdd-loop/SKILL.md          # Generator ↔ Reviewer refinement loop
-│       ├── sdd-pr/SKILL.md            # Automated PR creation
-│       └── speckit-*/SKILL.md         # GitHub Spec Kit base skills
+│   └── skills/                               # Antigravity AI skill definitions
+│       ├── sdd-intake/SKILL.md               # PRD ingestion & architecture interview
+│       ├── sdd-spec/SKILL.md                 # Module specification generator
+│       ├── sdd-loop/SKILL.md                 # Generator ↔ Reviewer refinement loop
+│       ├── sdd-pr/SKILL.md                   # Automated PR creation
+│       └── speckit-*/SKILL.md                # GitHub Spec Kit base skills
 ├── .github/
 │   ├── workflows/
-│   │   ├── dotnet.yml                 # .NET 10 CI: build + test
-│   │   └── pr-review-agent.yml        # Google AI PR Review Agent
+│   │   ├── dotnet.yml                        # .NET 10 CI: build + test
+│   │   └── pr-review-agent.yml               # Google AI PR Review Agent
 │   └── scripts/
-│       └── pr_review_agent.py         # Gemini-powered review script
+│       └── pr_review_agent.py                # Gemini-powered review script
 └── docs/
-    ├── Shopizy_PRD.md                 # Product Requirements Document
-    ├── sdd-workflow-guide.md          # Detailed workflow guide
+    ├── Shopizy_PRD.md                        # Product Requirements Document
+    ├── sdd-workflow-guide.md                 # Detailed workflow guide
     └── SPEC_DRIVEN_AI_WORKFLOW_PLAN.md
 ```
 
@@ -365,7 +371,7 @@ dotnet build Shopizy.sln --warnaserror
 
 ```bash
 dotnet test Shopizy.sln
-# Expected: 30 passed, 0 failed
+# Expected: 140 passed, 0 failed across 8 test projects
 ```
 
 ### Run Locally with .NET Aspire
@@ -373,20 +379,20 @@ dotnet test Shopizy.sln
 ```bash
 dotnet run --project src/Shopizy.AppHost
 # Opens .NET Aspire Dashboard at https://localhost:15888
-# Provisions: PostgreSQL 17, Redis 7, RabbitMQ
+# Provisions: PostgreSQL 17 (identitydb, catalogdb), Redis 7, RabbitMQ
 ```
 
 ### Run the AI Workflow (In Antigravity Chat)
 
 ```text
 # Start a new module:
-/sdd-spec identity-service
+/sdd-spec cart-service
 
 # Run the full generation + review loop:
-/sdd-loop identity-service
+/sdd-loop cart-service
 
 # Create the GitHub PR:
-/sdd-pr identity-service
+/sdd-pr cart-service
 ```
 
 ---
@@ -402,7 +408,7 @@ The Shopizy Platform operates under **8 non-negotiable engineering principles** 
 | **III. Event-Driven Decoupling** | No synchronous cross-service writes; use Transactional Outbox |
 | **IV. Test-First Quality** | Every spec defines test criteria before implementation begins |
 | **V. Zero Trust Security** | JWT Bearer required; multi-tenant data isolation at query level |
-| **VI. Idempotency** | All financial endpoints require and validate `Idempotency-Key` |
+| **VI. Idempotency** | All financial & mutating endpoints require and validate `Idempotency-Key` |
 | **VII. Database-per-Service** | No cross-database queries or cross-service foreign keys |
 | **VIII. Hot-Key Inventory** | Flash-sale protection via atomic Redis Lua scripts |
 
@@ -417,8 +423,12 @@ The Shopizy Platform operates under **8 non-negotiable engineering principles** 
 | [System Architecture Blueprint](.specify/architecture/system-architecture.md) | Full topology, CQRS, and infrastructure rationale |
 | [Module Decomposition Roadmap](.specify/architecture/module-decomposition.md) | 13-module dependency graph with E2E scenarios |
 | [Project Constitution](.specify/memory/constitution.md) | 8 non-negotiable engineering principles |
-| [Shared Kernel Spec](. specify/specs/shared-kernel/spec.md) | Module 1 formal specification |
-| [Shared Kernel Review Log](.specify/specs/shared-kernel/review-log.md) | Audit trail (3 cycles, AI + peer feedback) |
+| [Shared Kernel Spec](.specify/specs/shared-kernel/spec.md) | Module 1 formal specification |
+| [Shared Kernel Review Log](.specify/specs/shared-kernel/review-log.md) | Module 1 audit trail (AI + peer feedback) |
+| [Identity Service Spec](.specify/specs/identity-service/spec.md) | Module 2 formal specification |
+| [Identity Service Review Log](.specify/specs/identity-service/review-log.md) | Module 2 audit trail (Customer Isolation & Idempotency) |
+| [Catalog Service Spec](.specify/specs/catalog-service/spec.md) | Module 3 formal specification |
+| [Catalog Service Review Log](.specify/specs/catalog-service/review-log.md) | Module 3 audit trail (Categories, Variants, Concurrency) |
 
 ---
 
