@@ -8,6 +8,6 @@ public interface IIdentityService
     Task<Result<AuthResponse>> RegisterAsync(RegisterRequest request, CancellationToken cancellationToken = default);
     Task<Result<AuthResponse>> LoginAsync(LoginRequest request, CancellationToken cancellationToken = default);
     Task<Result<AuthResponse>> RefreshTokenAsync(RefreshTokenRequest request, CancellationToken cancellationToken = default);
-    Task<Result<UserResponse>> GetProfileAsync(Guid userId, CancellationToken cancellationToken = default);
+    Task<Result<UserResponse>> GetProfileAsync(Guid targetUserId, Guid requestingUserId, string requestingUserRole, CancellationToken cancellationToken = default);
     Task<Result<IReadOnlyList<UserResponse>>> GetUserDirectoryAsync(CancellationToken cancellationToken = default);
 }

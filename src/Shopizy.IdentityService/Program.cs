@@ -12,6 +12,8 @@ var app = builder.Build();
 
 app.MapDefaultEndpoints();
 
+app.UseMiddleware<Shopizy.SharedKernel.Middleware.Idempotency.IdempotencyMiddleware>();
+
 app.UseAuthentication();
 app.UseAuthorization();
 

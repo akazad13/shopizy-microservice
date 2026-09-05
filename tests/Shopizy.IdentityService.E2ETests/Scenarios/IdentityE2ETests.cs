@@ -180,4 +180,101 @@ public sealed class IdentityE2ETests : IClassFixture<IdentityWebApplicationFacto
         var unauthResponse = await _client.GetAsync("/api/v1/identity/me");
         unauthResponse.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
     }
+
+    [Fact]
+    public async Task E2E_Scenario05_CustomerDataIsolation_CrossCustomerAccessForbidden()
+    {
+        // Step 1: Register Customer A
+        var customerAReq = new RegisterRequest(
+            Email: "isolation.user.a@shopizy.test",
+            Password: "Password123!AStrong",
+            FirstName: "User",
+            LastName: "A");
+        var resA = await _client.PostAsJsonAsync("/api/v1/identity/register", customerAReq);
+        resA.StatusCode.Should().Be(HttpStatusCode.Created);
+        var authA = await resA.Content.ReadFromJsonAsync<AuthResponse>();
+
+        // Step 2: Register Customer B
+        var customerBReq = new RegisterRequest(
+            Email: "isolation.user.b@shopizy.test",
+            Password: "Password123!BStrong",
+            FirstName: "User",
+            LastName: "B");
+        var resB = await _client.PostAsJsonAsync("/api/v1/identity/register", customerBReq);
+        resB.StatusCode.Should().Be(HttpStatusCode.Created);
+        var authB = await resB.Content.ReadFromJsonAsync<AuthResponse>();
+
+        // Step 3: Customer A attempts to inspect Customer B's profile -> Must return 403 Forbidden
+        using var crossUserRequest = new HttpRequestMessage(HttpMethod.Get, $"/api/v1/identity/users/{authB!.User.Id}");
+        crossUserRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", authA!.AccessToken);
+
+        var crossUserResponse = await _client.SendAsync(crossUserRequest);
+        crossUserResponse.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+
+        var problem = await crossUserResponse.Content.ReadFromJsonAsync<ProblemDetails>();
+        problem.Should().NotBeNull();
+        problem!.Title.Should().Be("User.Forbidden");
+
+        // Step 4: Admin registers and accesses Customer B's profile -> Must return 200 OK
+        var adminReq = new RegisterRequest(
+            Email: "isolation.admin@shopizy.test",
+            Password: "AdminPassword123!Strong",
+            FirstName: "Admin",
+            LastName: "User",
+            Role: UserRole.StoreAdmin);
+        var adminRes = await _client.PostAsJsonAsync("/api/v1/identity/register", adminReq);
+        adminRes.StatusCode.Should().Be(HttpStatusCode.Created);
+        var adminAuth = await adminRes.Content.ReadFromJsonAsync<AuthResponse>();
+
+        using var adminViewRequest = new HttpRequestMessage(HttpMethod.Get, $"/api/v1/identity/users/{authB.User.Id}");
+        adminViewRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", adminAuth!.AccessToken);
+
+        var adminViewResponse = await _client.SendAsync(adminViewRequest);
+        adminViewResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        var userBProfile = await adminViewResponse.Content.ReadFromJsonAsync<UserResponse>();
+        userBProfile.Should().NotBeNull();
+        userBProfile!.Email.Should().Be("isolation.user.b@shopizy.test");
+    }
+
+    [Fact]
+    public async Task E2E_Scenario06_IdempotencyHeader_PreventsDuplicateRegistration()
+    {
+        // Step 1: Prepare registration with an Idempotency-Key header
+        var idempotencyKey = Guid.NewGuid().ToString();
+        var requestPayload = new RegisterRequest(
+            Email: "idempotent.user@shopizy.test",
+            Password: "IdempotentPassword123!",
+            FirstName: "Idempotent",
+            LastName: "Tester");
+
+        using var firstMsg = new HttpRequestMessage(HttpMethod.Post, "/api/v1/identity/register")
+        {
+            Content = JsonContent.Create(requestPayload)
+        };
+        firstMsg.Headers.Add("Idempotency-Key", idempotencyKey);
+
+        var firstResponse = await _client.SendAsync(firstMsg);
+        firstResponse.StatusCode.Should().Be(HttpStatusCode.Created);
+
+        var firstAuth = await firstResponse.Content.ReadFromJsonAsync<AuthResponse>();
+        firstAuth.Should().NotBeNull();
+
+        // Step 2: Resend identical request with same Idempotency-Key
+        using var secondMsg = new HttpRequestMessage(HttpMethod.Post, "/api/v1/identity/register")
+        {
+            Content = JsonContent.Create(requestPayload)
+        };
+        secondMsg.Headers.Add("Idempotency-Key", idempotencyKey);
+
+        var secondResponse = await _client.SendAsync(secondMsg);
+
+        // Assert: Cached response returned, status 201 Created (NOT 409 Conflict!), header X-Cache-Lookup: HIT
+        secondResponse.StatusCode.Should().Be(HttpStatusCode.Created);
+        secondResponse.Headers.Should().Contain(h => h.Key == "X-Cache-Lookup" && h.Value.Contains("HIT"));
+
+        var secondAuth = await secondResponse.Content.ReadFromJsonAsync<AuthResponse>();
+        secondAuth.Should().NotBeNull();
+        secondAuth!.User.Id.Should().Be(firstAuth!.User.Id);
+    }
 }
