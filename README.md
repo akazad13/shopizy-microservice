@@ -296,11 +296,11 @@ flowchart TD
 
 ### Phase 3: Retention, Loyalty & Social Proof
 
-| # | Module | Status |
-|:---:|:---|:---:|
-| 11 | Reviews, Ratings & Wishlists | ⏳ Pending |
-| 12 | Loyalty Points & Gift Cards | ⏳ Pending |
-| 13 | Abandoned Cart Recovery Worker | ⏳ Pending |
+| # | Module | Branch | PR | Status | Tests |
+|:---:|:---|:---|:---:|:---:|:---:|
+| 11 | **Reviews, Ratings & Wishlists** | `feature/review-service` | [#13](https://github.com/akazad13/shopizy-microservice/pull/13) | 🔄 IN REVIEW | 17/17 |
+| 12 | Loyalty Points & Gift Cards | | | ⏳ Pending | |
+| 13 | Abandoned Cart Recovery Worker | | | ⏳ Pending | |
 
 ---
 
@@ -320,7 +320,8 @@ shopizy-microservice/
 │   ├── Shopizy.SearchService/                 # Fuzzy matching, retail synonyms, "Did You Mean?", multi-attribute faceting
 │   ├── Shopizy.PromotionService/              # Discount campaigns, safety cap ceilings, BOGO, minimum spend rules
 │   ├── Shopizy.ShippingService/               # Multi-carrier rate engine, USPS $75 threshold, milestone tracking
-│   └── Shopizy.NotificationService/           # SignalR real-time hubs, transactional email dispatch, merchant feed
+│   ├── Shopizy.NotificationService/           # SignalR real-time hubs, transactional email dispatch, merchant feed
+│   └── Shopizy.ReviewService/                 # 1-5 star reviews, verified buyer badge, helpfulness voting, wishlists
 ├── tests/
 │   ├── Shopizy.SharedKernel.UnitTests/        # 23 unit tests
 │   ├── Shopizy.SharedKernel.IntegrationTests/ # 7 integration tests
@@ -350,7 +351,10 @@ shopizy-microservice/
 │   ├── Shopizy.ShippingService.E2ETests/       # 6 automated E2E tests (rates, threshold, progression, tracking, RBAC)
 │   ├── Shopizy.NotificationService.UnitTests/  # 4 unit tests (email validation, template rendering, status transitions)
 │   ├── Shopizy.NotificationService.IntegrationTests/# 2 integration tests (EF Core persistence, customer isolation)
-│   └── Shopizy.NotificationService.E2ETests/   # 6 automated E2E tests (send, query, isolation, auth, push, RBAC)
+│   ├── Shopizy.NotificationService.E2ETests/   # 6 automated E2E tests (send, query, isolation, auth, push, RBAC)
+│   ├── Shopizy.ReviewService.UnitTests/        # 9 unit tests (rating bounds, validation, voting math, distribution)
+│   ├── Shopizy.ReviewService.IntegrationTests/ # 2 integration tests (EF Core persistence, customer isolation)
+│   └── Shopizy.ReviewService.E2ETests/         # 6 automated E2E tests (verified badge, summary, helpful voting, wishlist, RBAC)
 ├── .specify/
 │   ├── architecture/
 │   │   ├── system-architecture.md            # Full topology & tech rationale
@@ -368,7 +372,8 @@ shopizy-microservice/
 │       ├── search-service/                   # Module 7 specs & review log
 │       ├── promotion-service/                # Module 8 specs & review log
 │       ├── shipping-service/                 # Module 9 specs & review log
-│       └── notification-service/             # Module 10 specs & review log
+│       ├── notification-service/             # Module 10 specs & review log
+│       └── review-service/                   # Module 11 specs & review log
 ├── .agents/
 │   └── skills/                               # Antigravity AI skill definitions
 │       ├── sdd-intake/SKILL.md               # PRD ingestion & architecture interview
