@@ -14,6 +14,7 @@ var orderDb = postgres.AddDatabase("orderdb");
 var paymentDb = postgres.AddDatabase("paymentdb");
 var promotionDb = postgres.AddDatabase("promotiondb");
 var shippingDb = postgres.AddDatabase("shippingdb");
+var notificationDb = postgres.AddDatabase("notificationdb");
 
 builder.AddProject<Projects.Shopizy_IdentityService>("identity-service")
     .WithReference(identityDb)
@@ -50,6 +51,11 @@ builder.AddProject<Projects.Shopizy_PromotionService>("promotion-service")
 
 builder.AddProject<Projects.Shopizy_ShippingService>("shipping-service")
     .WithReference(shippingDb)
+    .WithReference(redis)
+    .WithReference(rabbitmq);
+
+builder.AddProject<Projects.Shopizy_NotificationService>("notification-service")
+    .WithReference(notificationDb)
     .WithReference(redis)
     .WithReference(rabbitmq);
 

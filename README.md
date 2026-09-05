@@ -292,7 +292,7 @@ flowchart TD
 | 7 | **Search & Discovery Engine** | `feature/search-service` | [#9](https://github.com/akazad13/shopizy-microservice/pull/9) | ✅ MERGED | 19/19 |
 | 8 | **Promotion & Coupon Service** | `feature/promotion-service` | [#10](https://github.com/akazad13/shopizy-microservice/pull/10) | ✅ MERGED | 12/12 |
 | 9 | **Shipping & Tracking Service** | `feature/shipping-service` | [#11](https://github.com/akazad13/shopizy-microservice/pull/11) | ✅ MERGED | 12/12 |
-| 10 | Notification & Real-Time Push | | | ⏳ Pending | |
+| 10 | **Notification & Real-Time Push** | `feature/notification-service` | [#12](https://github.com/akazad13/shopizy-microservice/pull/12) | 🔄 IN REVIEW | 12/12 |
 
 ### Phase 3: Retention, Loyalty & Social Proof
 
@@ -319,7 +319,8 @@ shopizy-microservice/
 │   ├── Shopizy.PaymentService/                # Tokenized payment processing, gateway reconciliation, automated refunds
 │   ├── Shopizy.SearchService/                 # Fuzzy matching, retail synonyms, "Did You Mean?", multi-attribute faceting
 │   ├── Shopizy.PromotionService/              # Discount campaigns, safety cap ceilings, BOGO, minimum spend rules
-│   └── Shopizy.ShippingService/               # Multi-carrier rate engine, USPS $75 threshold, milestone tracking
+│   ├── Shopizy.ShippingService/               # Multi-carrier rate engine, USPS $75 threshold, milestone tracking
+│   └── Shopizy.NotificationService/           # SignalR real-time hubs, transactional email dispatch, merchant feed
 ├── tests/
 │   ├── Shopizy.SharedKernel.UnitTests/        # 23 unit tests
 │   ├── Shopizy.SharedKernel.IntegrationTests/ # 7 integration tests
@@ -346,7 +347,10 @@ shopizy-microservice/
 │   ├── Shopizy.PromotionService.E2ETests/       # 6 automated E2E tests (safety cap ceilings, minimum spend, category rules, BOGO, RBAC)
 │   ├── Shopizy.ShippingService.UnitTests/      # 4 unit tests (free shipping waiver, sub-$75 fee, 4 carriers)
 │   ├── Shopizy.ShippingService.IntegrationTests/# 2 integration tests (EF Core persistence, milestone events)
-│   └── Shopizy.ShippingService.E2ETests/       # 6 automated E2E tests (rates, threshold, progression, tracking, RBAC)
+│   ├── Shopizy.ShippingService.E2ETests/       # 6 automated E2E tests (rates, threshold, progression, tracking, RBAC)
+│   ├── Shopizy.NotificationService.UnitTests/  # 4 unit tests (email validation, template rendering, status transitions)
+│   ├── Shopizy.NotificationService.IntegrationTests/# 2 integration tests (EF Core persistence, customer isolation)
+│   └── Shopizy.NotificationService.E2ETests/   # 6 automated E2E tests (send, query, isolation, auth, push, RBAC)
 ├── .specify/
 │   ├── architecture/
 │   │   ├── system-architecture.md            # Full topology & tech rationale
@@ -363,7 +367,8 @@ shopizy-microservice/
 │       ├── payment-service/                  # Module 6 specs & review log
 │       ├── search-service/                   # Module 7 specs & review log
 │       ├── promotion-service/                # Module 8 specs & review log
-│       └── shipping-service/                 # Module 9 specs & review log
+│       ├── shipping-service/                 # Module 9 specs & review log
+│       └── notification-service/             # Module 10 specs & review log
 ├── .agents/
 │   └── skills/                               # Antigravity AI skill definitions
 │       ├── sdd-intake/SKILL.md               # PRD ingestion & architecture interview
