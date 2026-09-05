@@ -17,6 +17,7 @@ var shippingDb = postgres.AddDatabase("shippingdb");
 var notificationDb = postgres.AddDatabase("notificationdb");
 var reviewDb = postgres.AddDatabase("reviewdb");
 var loyaltyDb = postgres.AddDatabase("loyaltydb");
+var abandonmentDb = postgres.AddDatabase("abandonmentdb");
 
 builder.AddProject<Projects.Shopizy_IdentityService>("identity-service")
     .WithReference(identityDb)
@@ -71,4 +72,10 @@ builder.AddProject<Projects.Shopizy_LoyaltyService>("loyalty-service")
     .WithReference(redis)
     .WithReference(rabbitmq);
 
+builder.AddProject<Projects.Shopizy_CartAbandonmentWorker>("cart-abandonment-worker")
+    .WithReference(abandonmentDb)
+    .WithReference(redis)
+    .WithReference(rabbitmq);
+
 builder.Build().Run();
+
