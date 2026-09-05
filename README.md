@@ -290,7 +290,7 @@ flowchart TD
 | # | Module | Branch | PR | Status | Tests |
 |:---:|:---|:---|:---:|:---:|:---:|
 | 7 | **Search & Discovery Engine** | `feature/search-service` | [#9](https://github.com/akazad13/shopizy-microservice/pull/9) | ✅ MERGED | 19/19 |
-| 8 | Promotion & Coupon Service | | | ⏳ Pending | |
+| 8 | **Promotion & Coupon Service** | `feature/promotion-service` | PR | 🔄 IN REVIEW | 12/12 |
 | 9 | Shipping & Tracking Service | | | ⏳ Pending | |
 | 10 | Notification & Real-Time Push | | | ⏳ Pending | |
 
@@ -317,7 +317,8 @@ shopizy-microservice/
 │   ├── Shopizy.CartService/                   # Redis-backed shopping cart, price snapshotting, discrepancy alerts, merge
 │   ├── Shopizy.OrderService/                  # Atomic stock reservation, zero-overselling, 15-min auto-expiration, restocking
 │   ├── Shopizy.PaymentService/                # Tokenized payment processing, gateway reconciliation, automated refunds
-│   └── Shopizy.SearchService/                 # Fuzzy matching, retail synonyms, "Did You Mean?", multi-attribute faceting
+│   ├── Shopizy.SearchService/                 # Fuzzy matching, retail synonyms, "Did You Mean?", multi-attribute faceting
+│   └── Shopizy.PromotionService/              # Discount campaigns, safety cap ceilings, BOGO, minimum spend rules
 ├── tests/
 │   ├── Shopizy.SharedKernel.UnitTests/        # 23 unit tests
 │   ├── Shopizy.SharedKernel.IntegrationTests/ # 7 integration tests
@@ -338,7 +339,10 @@ shopizy-microservice/
 │   ├── Shopizy.PaymentService.E2ETests/        # 6 automated E2E tests (card charge, declines, refunds, idempotency)
 │   ├── Shopizy.SearchService.UnitTests/         # 11 unit tests (fuzzy matching, Damerau-Levenshtein, synonyms, pagination safety)
 │   ├── Shopizy.SearchService.IntegrationTests/  # 2 integration tests (index store faceting, filtering)
-│   └── Shopizy.SearchService.E2ETests/          # 6 automated E2E tests (typo tolerance, synonyms, did-you-mean, facets, filtering, RBAC)
+│   ├── Shopizy.SearchService.E2ETests/          # 6 automated E2E tests (typo tolerance, synonyms, did-you-mean, facets, filtering, RBAC)
+│   ├── Shopizy.PromotionService.UnitTests/      # 4 unit tests (percentage caps, fixed discounts, minimum spend, BOGO)
+│   ├── Shopizy.PromotionService.IntegrationTests/# 2 integration tests (EF Core campaign persistence, usage increments)
+│   └── Shopizy.PromotionService.E2ETests/       # 6 automated E2E tests (safety cap ceilings, minimum spend, category rules, BOGO, RBAC)
 ├── .specify/
 │   ├── architecture/
 │   │   ├── system-architecture.md            # Full topology & tech rationale
@@ -353,7 +357,8 @@ shopizy-microservice/
 │       ├── cart-service/                     # Module 4 specs & review log
 │       ├── order-service/                    # Module 5 specs & review log
 │       ├── payment-service/                  # Module 6 specs & review log
-│       └── search-service/                   # Module 7 specs & review log
+│       ├── search-service/                   # Module 7 specs & review log
+│       └── promotion-service/                # Module 8 specs & review log
 ├── .agents/
 │   └── skills/                               # Antigravity AI skill definitions
 │       ├── sdd-intake/SKILL.md               # PRD ingestion & architecture interview

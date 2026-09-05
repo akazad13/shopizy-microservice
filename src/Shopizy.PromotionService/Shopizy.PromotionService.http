@@ -1,0 +1,6 @@
+@Shopizy.PromotionService_HostAddress = http://localhost:5001
+
+GET {{Shopizy.PromotionService_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
