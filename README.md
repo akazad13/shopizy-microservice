@@ -287,12 +287,12 @@ flowchart TD
 
 ### Phase 2: Discovery, Merchandising & Operations
 
-| # | Module | Status |
-|:---:|:---|:---:|
-| 7 | **Search & Discovery Engine** | 🔜 Next |
-| 8 | Promotion & Coupon Service | ⏳ Pending |
-| 9 | Shipping & Tracking Service | ⏳ Pending |
-| 10 | Notification & Real-Time Push | ⏳ Pending |
+| # | Module | Branch | PR | Status | Tests |
+|:---:|:---|:---|:---:|:---:|:---:|
+| 7 | **Search & Discovery Engine** | `feature/search-service` | PR | 🔄 IN REVIEW | 16/16 |
+| 8 | Promotion & Coupon Service | | | ⏳ Pending | |
+| 9 | Shipping & Tracking Service | | | ⏳ Pending | |
+| 10 | Notification & Real-Time Push | | | ⏳ Pending | |
 
 ### Phase 3: Retention, Loyalty & Social Proof
 
@@ -316,7 +316,8 @@ shopizy-microservice/
 │   ├── Shopizy.CatalogService/                # Hierarchical categories, brands, variants, optimistic concurrency
 │   ├── Shopizy.CartService/                   # Redis-backed shopping cart, price snapshotting, discrepancy alerts, merge
 │   ├── Shopizy.OrderService/                  # Atomic stock reservation, zero-overselling, 15-min auto-expiration, restocking
-│   └── Shopizy.PaymentService/                # Tokenized payment processing, gateway reconciliation, automated refunds
+│   ├── Shopizy.PaymentService/                # Tokenized payment processing, gateway reconciliation, automated refunds
+│   └── Shopizy.SearchService/                 # Fuzzy matching, retail synonyms, "Did You Mean?", multi-attribute faceting
 ├── tests/
 │   ├── Shopizy.SharedKernel.UnitTests/        # 23 unit tests
 │   ├── Shopizy.SharedKernel.IntegrationTests/ # 7 integration tests
@@ -334,7 +335,10 @@ shopizy-microservice/
 │   ├── Shopizy.OrderService.E2ETests/          # 6 automated E2E tests (checkout, zero-overselling, 15-min expiry, idempotency)
 │   ├── Shopizy.PaymentService.UnitTests/       # 7 unit tests (payment state machine, refund validation, currency check)
 │   ├── Shopizy.PaymentService.IntegrationTests/# 2 integration tests (EF Core persistence, refund records)
-│   └── Shopizy.PaymentService.E2ETests/        # 6 automated E2E tests (card charge, declines, refunds, idempotency)
+│   ├── Shopizy.PaymentService.E2ETests/        # 6 automated E2E tests (card charge, declines, refunds, idempotency)
+│   ├── Shopizy.SearchService.UnitTests/         # 8 unit tests (fuzzy matching, Damerau-Levenshtein, synonyms)
+│   ├── Shopizy.SearchService.IntegrationTests/  # 2 integration tests (index store faceting, filtering)
+│   └── Shopizy.SearchService.E2ETests/          # 6 automated E2E tests (typo tolerance, synonyms, did-you-mean, facets, filtering, RBAC)
 ├── .specify/
 │   ├── architecture/
 │   │   ├── system-architecture.md            # Full topology & tech rationale
@@ -348,7 +352,8 @@ shopizy-microservice/
 │       ├── catalog-service/                  # Module 3 specs & review log
 │       ├── cart-service/                     # Module 4 specs & review log
 │       ├── order-service/                    # Module 5 specs & review log
-│       └── payment-service/                  # Module 6 specs & review log
+│       ├── payment-service/                  # Module 6 specs & review log
+│       └── search-service/                   # Module 7 specs & review log
 ├── .agents/
 │   └── skills/                               # Antigravity AI skill definitions
 │       ├── sdd-intake/SKILL.md               # PRD ingestion & architecture interview
