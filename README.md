@@ -299,7 +299,7 @@ flowchart TD
 | # | Module | Branch | PR | Status | Tests |
 |:---:|:---|:---|:---:|:---:|:---:|
 | 11 | **Reviews, Ratings & Wishlists** | `feature/review-service` | [#13](https://github.com/akazad13/shopizy-microservice/pull/13) | ✅ MERGED | 17/17 |
-| 12 | Loyalty Points & Gift Cards | | | ⏳ Pending | |
+| 12 | **Loyalty Points & Gift Cards** | `feature/loyalty-service` | [#14](https://github.com/akazad13/shopizy-microservice/pull/14) | 🔄 IN REVIEW | 20/20 |
 | 13 | Abandoned Cart Recovery Worker | | | ⏳ Pending | |
 
 ---
@@ -321,7 +321,8 @@ shopizy-microservice/
 │   ├── Shopizy.PromotionService/              # Discount campaigns, safety cap ceilings, BOGO, minimum spend rules
 │   ├── Shopizy.ShippingService/               # Multi-carrier rate engine, USPS $75 threshold, milestone tracking
 │   ├── Shopizy.NotificationService/           # SignalR real-time hubs, transactional email dispatch, merchant feed
-│   └── Shopizy.ReviewService/                 # 1-5 star reviews, verified buyer badge, helpfulness voting, wishlists
+│   ├── Shopizy.ReviewService/                 # 1-5 star reviews, verified buyer badge, helpfulness voting, wishlists
+│   └── Shopizy.LoyaltyService/                # Loyalty point accrual/redemption, digital gift card issuance/deductions
 ├── tests/
 │   ├── Shopizy.SharedKernel.UnitTests/        # 23 unit tests
 │   ├── Shopizy.SharedKernel.IntegrationTests/ # 7 integration tests
@@ -354,7 +355,10 @@ shopizy-microservice/
 │   ├── Shopizy.NotificationService.E2ETests/   # 6 automated E2E tests (send, query, isolation, auth, push, RBAC)
 │   ├── Shopizy.ReviewService.UnitTests/        # 9 unit tests (rating bounds, validation, voting math, distribution)
 │   ├── Shopizy.ReviewService.IntegrationTests/ # 2 integration tests (EF Core persistence, customer isolation)
-│   └── Shopizy.ReviewService.E2ETests/         # 6 automated E2E tests (verified badge, summary, helpful voting, wishlist, RBAC)
+│   ├── Shopizy.ReviewService.E2ETests/         # 6 automated E2E tests (verified badge, summary, helpful voting, wishlist, RBAC)
+│   ├── Shopizy.LoyaltyService.UnitTests/       # 12 unit tests (point accrual math, $1=1pt, 100pt=$1 discount, over-redemption, gift card states)
+│   ├── Shopizy.LoyaltyService.IntegrationTests/# 2 integration tests (EF Core account/ledger persistence, gift card balance deductions)
+│   └── Shopizy.LoyaltyService.E2ETests/        # 6 automated E2E tests (order accrual, redemption, over-redemption 400, gift card lifecycle, isolation, RBAC)
 ├── .specify/
 │   ├── architecture/
 │   │   ├── system-architecture.md            # Full topology & tech rationale
@@ -373,7 +377,8 @@ shopizy-microservice/
 │       ├── promotion-service/                # Module 8 specs & review log
 │       ├── shipping-service/                 # Module 9 specs & review log
 │       ├── notification-service/             # Module 10 specs & review log
-│       └── review-service/                   # Module 11 specs & review log
+│       ├── review-service/                   # Module 11 specs & review log
+│       └── loyalty-service/                  # Module 12 specs & review log
 ├── .agents/
 │   └── skills/                               # Antigravity AI skill definitions
 │       ├── sdd-intake/SKILL.md               # PRD ingestion & architecture interview
