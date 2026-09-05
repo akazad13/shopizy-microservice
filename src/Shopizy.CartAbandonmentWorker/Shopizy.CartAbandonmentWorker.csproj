@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.11" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.11" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.11" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.11" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Shopizy.SharedKernel\Shopizy.SharedKernel.csproj" />
+    <ProjectReference Include="..\Shopizy.ServiceDefaults\Shopizy.ServiceDefaults.csproj" />
+  </ItemGroup>
+
+</Project>

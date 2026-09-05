@@ -300,7 +300,7 @@ flowchart TD
 |:---:|:---|:---|:---:|:---:|:---:|
 | 11 | **Reviews, Ratings & Wishlists** | `feature/review-service` | [#13](https://github.com/akazad13/shopizy-microservice/pull/13) | ✅ MERGED | 17/17 |
 | 12 | **Loyalty Points & Gift Cards** | `feature/loyalty-service` | [#14](https://github.com/akazad13/shopizy-microservice/pull/14) | ✅ MERGED | 20/20 |
-| 13 | Abandoned Cart Recovery Worker | | | ⏳ Pending | |
+| 13 | **Abandoned Cart Recovery Worker** | `feature/cart-abandonment-worker` | [#15](https://github.com/akazad13/shopizy-microservice/pull/15) | 🔄 IN REVIEW | 22/22 |
 
 ---
 
@@ -322,7 +322,8 @@ shopizy-microservice/
 │   ├── Shopizy.ShippingService/               # Multi-carrier rate engine, USPS $75 threshold, milestone tracking
 │   ├── Shopizy.NotificationService/           # SignalR real-time hubs, transactional email dispatch, merchant feed
 │   ├── Shopizy.ReviewService/                 # 1-5 star reviews, verified buyer badge, helpfulness voting, wishlists
-│   └── Shopizy.LoyaltyService/                # Loyalty point accrual/redemption, digital gift card issuance/deductions
+│   ├── Shopizy.LoyaltyService/                # Loyalty point accrual/redemption, digital gift card issuance/deductions
+│   └── Shopizy.CartAbandonmentWorker/         # 2h cart inactivity sweep, 24h cooldown suppression, tokenized restore URLs
 ├── tests/
 │   ├── Shopizy.SharedKernel.UnitTests/        # 23 unit tests
 │   ├── Shopizy.SharedKernel.IntegrationTests/ # 7 integration tests
@@ -358,7 +359,10 @@ shopizy-microservice/
 │   ├── Shopizy.ReviewService.E2ETests/         # 6 automated E2E tests (verified badge, summary, helpful voting, wishlist, RBAC)
 │   ├── Shopizy.LoyaltyService.UnitTests/       # 12 unit tests (point accrual math, $1=1pt, 100pt=$1 discount, over-redemption, gift card states)
 │   ├── Shopizy.LoyaltyService.IntegrationTests/# 2 integration tests (EF Core account/ledger persistence, gift card balance deductions)
-│   └── Shopizy.LoyaltyService.E2ETests/        # 6 automated E2E tests (order accrual, redemption, over-redemption 400, gift card lifecycle, isolation, RBAC)
+│   ├── Shopizy.LoyaltyService.E2ETests/        # 6 automated E2E tests (order accrual, redemption, over-redemption 400, gift card lifecycle, isolation, RBAC)
+│   ├── Shopizy.CartAbandonmentWorker.UnitTests/ # 12 unit tests (2h inactivity threshold, 24h cooldown, URL formats)
+│   ├── Shopizy.CartAbandonmentWorker.IntegrationTests/ # 4 integration tests (EF Core persistence, cooldown tracking, restoration)
+│   └── Shopizy.CartAbandonmentWorker.E2ETests/  # 6 automated E2E tests (sweep dispatch, suppression, restore token, RBAC)
 ├── .specify/
 │   ├── architecture/
 │   │   ├── system-architecture.md            # Full topology & tech rationale
@@ -378,7 +382,8 @@ shopizy-microservice/
 │       ├── shipping-service/                 # Module 9 specs & review log
 │       ├── notification-service/             # Module 10 specs & review log
 │       ├── review-service/                   # Module 11 specs & review log
-│       └── loyalty-service/                  # Module 12 specs & review log
+│       ├── loyalty-service/                  # Module 12 specs & review log
+│       └── cart-abandonment-worker/          # Module 13 specs & review log
 ├── .agents/
 │   └── skills/                               # Antigravity AI skill definitions
 │       ├── sdd-intake/SKILL.md               # PRD ingestion & architecture interview
