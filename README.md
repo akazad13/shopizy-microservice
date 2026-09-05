@@ -290,7 +290,7 @@ flowchart TD
 | # | Module | Branch | PR | Status | Tests |
 |:---:|:---|:---|:---:|:---:|:---:|
 | 7 | **Search & Discovery Engine** | `feature/search-service` | [#9](https://github.com/akazad13/shopizy-microservice/pull/9) | ✅ MERGED | 19/19 |
-| 8 | **Promotion & Coupon Service** | `feature/promotion-service` | PR | 🔄 IN REVIEW | 12/12 |
+| 8 | **Promotion & Coupon Service** | `feature/promotion-service` | [#10](https://github.com/akazad13/shopizy-microservice/pull/10) | ✅ MERGED | 12/12 |
 | 9 | Shipping & Tracking Service | | | ⏳ Pending | |
 | 10 | Notification & Real-Time Push | | | ⏳ Pending | |
 
