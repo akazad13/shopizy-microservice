@@ -289,7 +289,7 @@ flowchart TD
 
 | # | Module | Branch | PR | Status | Tests |
 |:---:|:---|:---|:---:|:---:|:---:|
-| 7 | **Search & Discovery Engine** | `feature/search-service` | PR | 🔄 IN REVIEW | 16/16 |
+| 7 | **Search & Discovery Engine** | `feature/search-service` | [#9](https://github.com/akazad13/shopizy-microservice/pull/9) | 🔄 IN REVIEW | 19/19 |
 | 8 | Promotion & Coupon Service | | | ⏳ Pending | |
 | 9 | Shipping & Tracking Service | | | ⏳ Pending | |
 | 10 | Notification & Real-Time Push | | | ⏳ Pending | |
@@ -336,7 +336,7 @@ shopizy-microservice/
 │   ├── Shopizy.PaymentService.UnitTests/       # 7 unit tests (payment state machine, refund validation, currency check)
 │   ├── Shopizy.PaymentService.IntegrationTests/# 2 integration tests (EF Core persistence, refund records)
 │   ├── Shopizy.PaymentService.E2ETests/        # 6 automated E2E tests (card charge, declines, refunds, idempotency)
-│   ├── Shopizy.SearchService.UnitTests/         # 8 unit tests (fuzzy matching, Damerau-Levenshtein, synonyms)
+│   ├── Shopizy.SearchService.UnitTests/         # 11 unit tests (fuzzy matching, Damerau-Levenshtein, synonyms, pagination safety)
 │   ├── Shopizy.SearchService.IntegrationTests/  # 2 integration tests (index store faceting, filtering)
 │   └── Shopizy.SearchService.E2ETests/          # 6 automated E2E tests (typo tolerance, synonyms, did-you-mean, facets, filtering, RBAC)
 ├── .specify/

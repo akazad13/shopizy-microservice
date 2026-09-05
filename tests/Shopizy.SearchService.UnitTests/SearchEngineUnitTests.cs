@@ -1,5 +1,7 @@
 using FluentAssertions;
 using Shopizy.SearchService.Domain;
+using Shopizy.SearchService.Domain.ValueObjects;
+using Shopizy.SearchService.Infrastructure.Indexing;
 using Shopizy.SearchService.Infrastructure.Synonyms;
 using Xunit;
 
@@ -52,5 +54,18 @@ public class SearchEngineUnitTests
         var provider = new RetailSynonymProvider();
         var synonyms = provider.ExpandSynonyms("");
         synonyms.Should().BeEmpty();
+    }
+
+    [Theory]
+    [InlineData(-5, -20)]
+    [InlineData(int.MaxValue, 1000)]
+    [InlineData(0, 0)]
+    public async Task SearchIndexStore_HandlesExtremePagination_WithoutOverflow(int page, int pageSize)
+    {
+        var store = new InMemorySearchIndexStore();
+        var query = new SearchQuery { Page = page, PageSize = pageSize };
+        var act = async () => await store.SearchAsync(query, Array.Empty<string>());
+
+        await act.Should().NotThrowAsync();
     }
 }

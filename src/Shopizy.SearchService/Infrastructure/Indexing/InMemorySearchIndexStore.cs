@@ -137,8 +137,12 @@ public sealed class InMemorySearchIndexStore : ISearchIndexStore
         else if (string.Equals(query.SortBy, "rating", StringComparison.OrdinalIgnoreCase))
             filteredList = filteredList.OrderByDescending(d => d.AverageRating).ToList();
 
-        int skip = (Math.Max(1, query.Page) - 1) * Math.Max(1, query.PageSize);
-        var pagedItems = filteredList.Skip(skip).Take(Math.Max(1, query.PageSize)).ToList();
+        int safePage = Math.Max(1, query.Page);
+        int safePageSize = Math.Clamp(query.PageSize, 1, 100);
+        long computedSkip = ((long)safePage - 1) * safePageSize;
+        int safeSkip = computedSkip > int.MaxValue ? int.MaxValue : (int)computedSkip;
+
+        var pagedItems = filteredList.Skip(safeSkip).Take(safePageSize).ToList();
 
         return Task.FromResult<(IReadOnlyList<SearchProductDocument>, int, SearchFacets)>((pagedItems, totalCount, facets));
     }

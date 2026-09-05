@@ -26,6 +26,9 @@ public static class SearchEndpoints
             SearchApplicationService searchService,
             CancellationToken ct) =>
         {
+            int validatedPage = Math.Max(1, page ?? 1);
+            int validatedPageSize = Math.Clamp(pageSize ?? 20, 1, 100);
+
             var query = new SearchQuery
             {
                 QueryText = q,
@@ -35,8 +38,8 @@ public static class SearchEndpoints
                 MaxPrice = maxPrice,
                 MinRating = minRating,
                 InStockOnly = inStockOnly,
-                Page = page ?? 1,
-                PageSize = pageSize ?? 20,
+                Page = validatedPage,
+                PageSize = validatedPageSize,
                 SortBy = sortBy
             };
 
