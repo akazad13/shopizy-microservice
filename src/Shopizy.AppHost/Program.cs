@@ -37,4 +37,8 @@ builder.AddProject<Projects.Shopizy_PaymentService>("payment-service")
     .WithReference(redis)
     .WithReference(rabbitmq);
 
+builder.AddProject<Projects.Shopizy_SearchService>("search-service")
+    .WithReference(redis)
+    .WithReference(rabbitmq);
+
 builder.Build().Run();
