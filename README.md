@@ -281,7 +281,7 @@ flowchart TD
 | 1 | **Shared Kernel & Aspire Orchestrator** | `feature/shared-kernel` | [#1](https://github.com/akazad13/shopizy-microservice/pull/1) | ✅ MERGED | 30/30 |
 | 2 | **Identity & Access Service** | `feature/identity-service` | [#2](https://github.com/akazad13/shopizy-microservice/pull/2), [#3](https://github.com/akazad13/shopizy-microservice/pull/3) | ✅ MERGED | 48/48 |
 | 3 | **Product Catalog Service** | `feature/catalog-service` | [#4](https://github.com/akazad13/shopizy-microservice/pull/4) | ✅ MERGED | 62/62 |
-| 4 | **Shopping Cart Service** | `feature/cart-service` | PR | 🔄 IN REVIEW | 38/38 |
+| 4 | **Shopping Cart Service** | `feature/cart-service` | [#6](https://github.com/akazad13/shopizy-microservice/pull/6) | ✅ MERGED | 38/38 |
 | 5 | **Order & Inventory Service** | `feature/order-service` | — | 🔜 Next | — |
 | 6 | **Payment & Refund Gateway** | `feature/payment-service` | — | ⏳ Pending | — |
 
