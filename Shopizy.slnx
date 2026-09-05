@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Shopizy.AppHost/Shopizy.AppHost.csproj" />
+    <Project Path="src/Shopizy.ServiceDefaults/Shopizy.ServiceDefaults.csproj" />
+    <Project Path="src/Shopizy.SharedKernel/Shopizy.SharedKernel.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Shopizy.SharedKernel.IntegrationTests/Shopizy.SharedKernel.IntegrationTests.csproj" />
+    <Project Path="tests/Shopizy.SharedKernel.UnitTests/Shopizy.SharedKernel.UnitTests.csproj" />
+  </Folder>
+</Solution>
