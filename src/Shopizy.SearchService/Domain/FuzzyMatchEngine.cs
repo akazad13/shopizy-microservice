@@ -1,4 +1,4 @@
-namespace Shopizy.SearchService.Infrastructure.Synonyms;
+namespace Shopizy.SearchService.Domain;
 
 public static class FuzzyMatchEngine
 {

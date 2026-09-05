@@ -1,8 +1,8 @@
 using Shopizy.SearchService.Application.Contracts;
 using Shopizy.SearchService.Application.Interfaces;
+using Shopizy.SearchService.Domain;
 using Shopizy.SearchService.Domain.Entities;
 using Shopizy.SearchService.Domain.ValueObjects;
-using Shopizy.SearchService.Infrastructure.Synonyms;
 
 namespace Shopizy.SearchService.Application.Services;
 

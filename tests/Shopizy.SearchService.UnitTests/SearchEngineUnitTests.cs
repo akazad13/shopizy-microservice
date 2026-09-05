@@ -1,4 +1,5 @@
 using FluentAssertions;
+using Shopizy.SearchService.Domain;
 using Shopizy.SearchService.Infrastructure.Synonyms;
 using Xunit;
 
