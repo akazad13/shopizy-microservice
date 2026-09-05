@@ -298,7 +298,7 @@ flowchart TD
 
 | # | Module | Branch | PR | Status | Tests |
 |:---:|:---|:---|:---:|:---:|:---:|
-| 11 | **Reviews, Ratings & Wishlists** | `feature/review-service` | [#13](https://github.com/akazad13/shopizy-microservice/pull/13) | 🔄 IN REVIEW | 17/17 |
+| 11 | **Reviews, Ratings & Wishlists** | `feature/review-service` | [#13](https://github.com/akazad13/shopizy-microservice/pull/13) | ✅ MERGED | 17/17 |
 | 12 | Loyalty Points & Gift Cards | | | ⏳ Pending | |
 | 13 | Abandoned Cart Recovery Worker | | | ⏳ Pending | |
 
