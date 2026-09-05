@@ -13,4 +13,9 @@ builder.AddProject<Projects.Shopizy_IdentityService>("identity-service")
     .WithReference(redis)
     .WithReference(rabbitmq);
 
+builder.AddProject<Projects.Shopizy_CatalogService>("catalog-service")
+    .WithReference(postgres)
+    .WithReference(redis)
+    .WithReference(rabbitmq);
+
 builder.Build().Run();

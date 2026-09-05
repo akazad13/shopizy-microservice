@@ -1,11 +1,15 @@
 <Solution>
   <Folder Name="/src/">
     <Project Path="src/Shopizy.AppHost/Shopizy.AppHost.csproj" />
+    <Project Path="src/Shopizy.CatalogService/Shopizy.CatalogService.csproj" />
     <Project Path="src/Shopizy.IdentityService/Shopizy.IdentityService.csproj" />
     <Project Path="src/Shopizy.ServiceDefaults/Shopizy.ServiceDefaults.csproj" />
     <Project Path="src/Shopizy.SharedKernel/Shopizy.SharedKernel.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/Shopizy.CatalogService.E2ETests/Shopizy.CatalogService.E2ETests.csproj" />
+    <Project Path="tests/Shopizy.CatalogService.IntegrationTests/Shopizy.CatalogService.IntegrationTests.csproj" />
+    <Project Path="tests/Shopizy.CatalogService.UnitTests/Shopizy.CatalogService.UnitTests.csproj" />
     <Project Path="tests/Shopizy.IdentityService.E2ETests/Shopizy.IdentityService.E2ETests.csproj" />
     <Project Path="tests/Shopizy.IdentityService.IntegrationTests/Shopizy.IdentityService.IntegrationTests.csproj" />
     <Project Path="tests/Shopizy.IdentityService.UnitTests/Shopizy.IdentityService.UnitTests.csproj" />
