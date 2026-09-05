@@ -282,7 +282,7 @@ flowchart TD
 | 2 | **Identity & Access Service** | `feature/identity-service` | [#2](https://github.com/akazad13/shopizy-microservice/pull/2), [#3](https://github.com/akazad13/shopizy-microservice/pull/3) | ✅ MERGED | 48/48 |
 | 3 | **Product Catalog Service** | `feature/catalog-service` | [#4](https://github.com/akazad13/shopizy-microservice/pull/4) | ✅ MERGED | 62/62 |
 | 4 | **Shopping Cart Service** | `feature/cart-service` | [#6](https://github.com/akazad13/shopizy-microservice/pull/6) | ✅ MERGED | 38/38 |
-| 5 | **Order & Inventory Service** | `feature/order-service` | PR | 🔄 IN REVIEW | 33/33 |
+| 5 | **Order & Inventory Service** | `feature/order-service` | [#7](https://github.com/akazad13/shopizy-microservice/pull/7) | ✅ MERGED | 33/33 |
 | 6 | **Payment & Refund Gateway** | `feature/payment-service` | — | 🔜 Next | — |
 
 ### Phase 2: Discovery, Merchandising & Operations
