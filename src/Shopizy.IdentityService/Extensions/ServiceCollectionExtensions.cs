@@ -35,6 +35,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IPasswordHasher, PasswordHasher>();
         services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
         services.AddScoped<IIdentityService, Application.Services.IdentityService>();
+        services.AddSingleton<Shopizy.SharedKernel.Middleware.Idempotency.IIdempotencyStore, Shopizy.SharedKernel.Middleware.Idempotency.InMemoryIdempotencyStore>();
 
         services.AddAuthentication(options =>
         {

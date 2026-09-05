@@ -1,6 +1,7 @@
 using Shopizy.IdentityService.Application.Contracts;
 using Shopizy.IdentityService.Application.Interfaces;
 using Shopizy.IdentityService.Domain.Entities;
+using Shopizy.IdentityService.Domain.Enums;
 using Shopizy.IdentityService.Domain.Rules;
 using Shopizy.IdentityService.Domain.ValueObjects;
 using Shopizy.SharedKernel.Results;
@@ -159,12 +160,24 @@ public sealed class IdentityService : IIdentityService
             userResponse));
     }
 
-    public async Task<Result<UserResponse>> GetProfileAsync(Guid userId, CancellationToken cancellationToken = default)
+    public async Task<Result<UserResponse>> GetProfileAsync(
+        Guid targetUserId,
+        Guid requestingUserId,
+        string requestingUserRole,
+        CancellationToken cancellationToken = default)
     {
-        var user = await _userRepository.GetByIdAsync(userId, cancellationToken);
+        // Enforce Constitution Principle V: Customer Data Isolation at the service/query layer
+        var isStoreAdmin = string.Equals(requestingUserRole, UserRole.StoreAdmin.ToString(), StringComparison.OrdinalIgnoreCase);
+        if (!isStoreAdmin && targetUserId != requestingUserId)
+        {
+            return Result.Failure<UserResponse>(
+                Error.Forbidden("User.Forbidden", "You do not have permission to access another user's profile."));
+        }
+
+        var user = await _userRepository.GetByIdAsync(targetUserId, cancellationToken);
         if (user is null)
         {
-            return Result.Failure<UserResponse>(Error.NotFound("User.NotFound", $"User with ID '{userId}' was not found."));
+            return Result.Failure<UserResponse>(Error.NotFound("User.NotFound", $"User with ID '{targetUserId}' was not found."));
         }
 
         return Result.Success(new UserResponse(

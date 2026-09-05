@@ -162,6 +162,11 @@ The **Identity & Access Service (`identity-service`)** is the core security and 
   - Correctly registers user and stages `UserRegisteredDomainEvent`.
   - Enforces active status and prevents duplicate refresh token additions.
 
+- [ ] **Customer Data Isolation (Constitution Principle V)**:
+  - Enforces that non-admin customers can only retrieve their own profile.
+  - Rejects attempts by a customer to inspect another user's profile with HTTP 403 Forbidden.
+  - Grants `StoreAdmin` role authority to query any user profile.
+
 ### 6.2 Integration Test Criteria
 - [ ] **UserRepository Persistence**:
   - Persists and retrieves `User` aggregate from EF Core database.
@@ -187,6 +192,14 @@ The **Identity & Access Service (`identity-service`)** is the core security and 
   - *Step 1*: Client attempts registration with weak password ($< 12$ chars). Expected: 400 Bad Request + RFC 7807 Problem Details.
   - *Step 2*: Client attempts registration with already existing email. Expected: 409 Conflict.
   - *Step 3*: Client calls GET `/api/v1/identity/me` without Bearer token. Expected: 401 Unauthorized.
+- [ ] **Scenario E2E-05: Customer Data Isolation (Constitution Principle V)**
+  - *Step 1*: Customer A registers and logs in.
+  - *Step 2*: Customer B registers and logs in.
+  - *Step 3*: Customer A attempts `GET /api/v1/identity/users/{customerB.Id}` with Customer A's Bearer token. Expected: 403 Forbidden with RFC 7807 Problem Details (`User.Forbidden`).
+  - *Step 4*: StoreAdmin accesses `GET /api/v1/identity/users/{customerB.Id}` with StoreAdmin Bearer token. Expected: 200 OK + user B profile.
+- [ ] **Scenario E2E-06: Idempotency Validation (Constitution Principle VI)**
+  - *Step 1*: Client registers user with `Idempotency-Key: {guid}` header. Expected: 201 Created.
+  - *Step 2*: Client resends identical registration request with same `Idempotency-Key`. Expected: 201 Created with header `X-Cache-Lookup: HIT` (no 409 Conflict or duplicate creation).
 
 ---
 

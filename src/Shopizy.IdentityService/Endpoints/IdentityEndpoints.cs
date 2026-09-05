@@ -69,7 +69,11 @@ public static class IdentityEndpoints
                 return Results.Unauthorized();
             }
 
-            var result = await identityService.GetProfileAsync(userId, ct);
+            var role = user.FindFirst(ClaimTypes.Role)?.Value
+                    ?? user.FindFirst("role")?.Value
+                    ?? "Customer";
+
+            var result = await identityService.GetProfileAsync(userId, userId, role, ct);
             return result.IsSuccess
                 ? Results.Ok(result.Value)
                 : ToProblemDetails(result.Error);
@@ -78,6 +82,36 @@ public static class IdentityEndpoints
         .WithName("GetProfile")
         .Produces<UserResponse>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status401Unauthorized)
+        .Produces<ProblemDetails>(StatusCodes.Status404NotFound);
+
+        group.MapGet("/users/{id:guid}", async (
+            Guid id,
+            ClaimsPrincipal user,
+            IIdentityService identityService,
+            CancellationToken ct) =>
+        {
+            var requestingUserIdStr = user.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                                   ?? user.FindFirst("sub")?.Value;
+
+            if (!Guid.TryParse(requestingUserIdStr, out var requestingUserId))
+            {
+                return Results.Unauthorized();
+            }
+
+            var role = user.FindFirst(ClaimTypes.Role)?.Value
+                    ?? user.FindFirst("role")?.Value
+                    ?? "Customer";
+
+            var result = await identityService.GetProfileAsync(id, requestingUserId, role, ct);
+            return result.IsSuccess
+                ? Results.Ok(result.Value)
+                : ToProblemDetails(result.Error);
+        })
+        .RequireAuthorization()
+        .WithName("GetUserById")
+        .Produces<UserResponse>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status401Unauthorized)
+        .Produces<ProblemDetails>(StatusCodes.Status403Forbidden)
         .Produces<ProblemDetails>(StatusCodes.Status404NotFound);
 
         group.MapGet("/users", async (
