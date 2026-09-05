@@ -25,6 +25,7 @@
     <ProjectReference Include="..\Shopizy.ShippingService\Shopizy.ShippingService.csproj" IsAspireProjectResource="true" />
     <ProjectReference Include="..\Shopizy.NotificationService\Shopizy.NotificationService.csproj" IsAspireProjectResource="true" />
     <ProjectReference Include="..\Shopizy.ReviewService\Shopizy.ReviewService.csproj" IsAspireProjectResource="true" />
+    <ProjectReference Include="..\Shopizy.LoyaltyService\Shopizy.LoyaltyService.csproj" IsAspireProjectResource="true" />
   </ItemGroup>
 
 </Project>
