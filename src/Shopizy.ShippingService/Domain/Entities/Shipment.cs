@@ -40,7 +40,7 @@ public sealed class Shipment
         {
             Id = id,
             OrderId = orderId,
-            TrackingNumber = $"trk_{carrier.ToLowerInvariant()}_{Guid.NewGuid():N}"[..24],
+            TrackingNumber = $"trk_{carrier.ToLowerInvariant()}_{Guid.NewGuid():N}",
             Carrier = carrier,
             ServiceLevel = serviceLevel,
             WeightKg = weightKg,
