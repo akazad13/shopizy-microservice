@@ -8,10 +8,11 @@ public sealed class Money : ValueObject
     public decimal Amount { get; }
     public string Currency { get; }
 
-    private Money(decimal amount, string currency)
+    [System.Text.Json.Serialization.JsonConstructor]
+    public Money(decimal amount, string currency = "USD")
     {
-        Amount = amount;
-        Currency = currency;
+        Amount = decimal.Round(amount, 2, MidpointRounding.AwayFromZero);
+        Currency = string.IsNullOrWhiteSpace(currency) ? "USD" : currency.Trim().ToUpperInvariant();
     }
 
     public static Money Create(decimal amount, string currency = "USD")

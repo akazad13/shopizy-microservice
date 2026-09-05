@@ -55,16 +55,19 @@ public sealed class CartTests
     }
 
     [Fact]
-    public void AddItem_SameVariantTwice_IncrementsQuantity()
+    public void AddItem_SameVariantTwice_IncrementsQuantityAndUpdatesSnapshotPrice()
     {
         var cart = Cart.CreateForCustomer(Guid.NewGuid());
-        var price = Money.Create(10m);
+        var initialPrice = Money.Create(10m);
+        var latestPrice = Money.Create(15m);
 
-        cart.AddItem(ProductA, VariantA, "P", "S", null, 2, price);
-        cart.AddItem(ProductA, VariantA, "P", "S", null, 3, price);
+        cart.AddItem(ProductA, VariantA, "P", "S", null, 2, initialPrice);
+        cart.AddItem(ProductA, VariantA, "P", "S", null, 3, latestPrice);
 
         cart.Items.Should().HaveCount(1);
         cart.Items[0].Quantity.Should().Be(5);
+        cart.Items[0].SnapshotPrice.Amount.Should().Be(15m);
+        cart.Subtotal.Amount.Should().Be(75m);
     }
 
     [Fact]

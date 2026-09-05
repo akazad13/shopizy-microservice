@@ -31,3 +31,13 @@
 - **Total CartService Tests**: 38 passing
 - **Total Solution Tests**: 178 / 178 passing across all 11 test assemblies
 - **Build Status**: 0 warnings, 0 errors with `--warnaserror`
+
+---
+
+## Peer Review Remediation (PR #6)
+
+| Finding | Severity | Resolution |
+| :--- | :--- | :--- |
+| `Cart.cs:L57-L63`: `AddItem` does not update `SnapshotPrice` when incrementing existing item quantity (AC-1.2) | `[Severity: Major]` | Added `UpdateSnapshotPrice(Money)` to `CartItem` and updated `Cart.AddItem` to update snapshot price to latest price on increment. Verified via unit test. |
+| `Money.cs:L11-L15`: Private constructor in `Money` value object prevents System.Text.Json deserialization from Redis | `[Severity: Major]` | Added public `[JsonConstructor]` to `Money` value object for reliable System.Text.Json serialization/deserialization. |
+

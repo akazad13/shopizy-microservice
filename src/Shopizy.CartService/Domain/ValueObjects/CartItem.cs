@@ -9,7 +9,7 @@ public sealed class CartItem
     public string VariantSku { get; }
     public IReadOnlyDictionary<string, string> Attributes { get; }
     public int Quantity { get; private set; }
-    public Money SnapshotPrice { get; }
+    public Money SnapshotPrice { get; private set; }
     public DateTimeOffset AddedAtUtc { get; }
 
     public CartItem(
@@ -50,5 +50,11 @@ public sealed class CartItem
         if (quantity is < 1 or > 99)
             throw new Shopizy.SharedKernel.Domain.DomainException("CartItem.InvalidQuantity", "Quantity must be between 1 and 99.");
         Quantity = quantity;
+    }
+
+    public void UpdateSnapshotPrice(Money newPrice)
+    {
+        ArgumentNullException.ThrowIfNull(newPrice);
+        SnapshotPrice = newPrice;
     }
 }

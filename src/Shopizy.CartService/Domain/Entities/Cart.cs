@@ -60,6 +60,7 @@ public sealed class Cart
             int newQty = existing.Quantity + quantity;
             if (newQty > 99) newQty = 99;
             existing.SetQuantity(newQty);
+            existing.UpdateSnapshotPrice(snapshotPrice);
         }
         else
         {
