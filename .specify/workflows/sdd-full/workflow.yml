@@ -1,0 +1,62 @@
+schema_version: "1.0"
+workflow:
+  id: "sdd-full"
+  name: "Full Spec-Driven AI Workflow (PRD to PR)"
+  version: "1.0.0"
+  author: "Shopizy Team"
+  description: "Complete pipeline: PRD Intake → Architectural Interview → Module Decomposition → Spec with E2E Criteria → Generator & Reviewer Loop → Automated Tests → GitHub PR"
+
+requires:
+  speckit_version: ">=0.8.5"
+  integrations:
+    any:
+      - "agy"
+      - "copilot"
+      - "claude"
+
+inputs:
+  prd:
+    type: string
+    required: true
+    prompt: "Path to your PRD document or paste PRD content"
+  module:
+    type: string
+    default: "auth-service"
+    prompt: "Target module slug to specify, implement, and review"
+  max_iterations:
+    type: integer
+    default: 3
+    prompt: "Max review loop iterations between Generator and Review Agent"
+
+steps:
+  - id: prd-intake-and-interview
+    command: sdd-intake
+    input:
+      args: "{{ inputs.prd }}"
+
+  - id: gate-architecture-approval
+    type: gate
+    message: "Review the system architecture blueprint and module decomposition before proceeding to module specification."
+    options: [approve, reject]
+    on_reject: abort
+
+  - id: module-specification
+    command: sdd-spec
+    input:
+      args: "{{ inputs.module }}"
+
+  - id: gate-spec-approval
+    type: gate
+    message: "Review generated module specification, automated test criteria, and E2E scenarios before code generation."
+    options: [approve, reject]
+    on_reject: abort
+
+  - id: generator-review-loop
+    command: sdd-loop
+    input:
+      args: "{{ inputs.module }}"
+
+  - id: automated-pull-request
+    command: sdd-pr
+    input:
+      args: "{{ inputs.module }}"

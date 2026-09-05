@@ -1,0 +1,7 @@
+{
+  "arch_style": "Microservices (Independent service boundaries)",
+  "primary_db": "PostgreSQL (Relational)",
+  "messaging_broker": "RabbitMQ / MassTransit",
+  "auth_provider": "JWT Bearer Tokens with ASP.NET Core Identity / OAuth2",
+  "e2e_framework": "xUnit + WebApplicationFactory (In-Memory HTTP)"
+}
