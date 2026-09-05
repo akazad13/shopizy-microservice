@@ -399,6 +399,7 @@ shopizy-microservice/
 │       └── pr_review_agent.py                # Gemini-powered review script
 └── docs/
     ├── Shopizy_PRD.md                        # Product Requirements Document
+    ├── RUNBOOK.md                            # Comprehensive Operations & Incident Response Runbook
     ├── sdd-workflow-guide.md                 # Detailed workflow guide
     └── SPEC_DRIVEN_AI_WORKFLOW_PLAN.md
 ```
@@ -421,7 +422,7 @@ dotnet build Shopizy.sln --warnaserror
 
 ```bash
 dotnet test Shopizy.sln
-# Expected: 225 passed, 0 failed across 17 test projects
+# Expected: 336 passed, 0 failed across 38 test projects
 ```
 
 ### Run Locally with .NET Aspire
@@ -429,7 +430,7 @@ dotnet test Shopizy.sln
 ```bash
 dotnet run --project src/Shopizy.AppHost
 # Opens .NET Aspire Dashboard at https://localhost:15888
-# Provisions: PostgreSQL 17 (identitydb, catalogdb, orderdb, paymentdb), Redis 7 (cart-service, caching), RabbitMQ
+# Provisions: PostgreSQL 17 (identitydb, catalogdb, orderdb, paymentdb, promotiondb, shippingdb, notificationdb, reviewdb, loyaltydb, abandonmentdb), Redis 7 (cart-service, caching), RabbitMQ
 ```
 
 ### Run the AI Workflow (In Antigravity Chat)
@@ -468,6 +469,7 @@ The Shopizy Platform operates under **8 non-negotiable engineering principles** 
 
 | Document | Description |
 |:---|:---|
+| [Operations & Incident Runbook](docs/RUNBOOK.md) | Comprehensive operational, local setup, troubleshooting playbooks, and disaster recovery |
 | [Shopizy PRD](docs/Shopizy_PRD.md) | Full Product Requirements Document |
 | [SDD Workflow Guide](docs/sdd-workflow-guide.md) | Detailed step-by-step workflow guide |
 | [System Architecture Blueprint](.specify/architecture/system-architecture.md) | Full topology, CQRS, and infrastructure rationale |
