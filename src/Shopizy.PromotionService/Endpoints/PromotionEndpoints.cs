@@ -20,6 +20,15 @@ public static class PromotionEndpoints
             return Results.Ok(result);
         }).AllowAnonymous();
 
+        group.MapPost("/{code}/use", async (
+            string code,
+            PromotionApplicationService promoService,
+            CancellationToken ct) =>
+        {
+            await promoService.RecordUsageAsync(code, ct);
+            return Results.NoContent();
+        }).AllowAnonymous();
+
         group.MapPost("/campaigns", async (
             [FromBody] CreateCampaignRequest request,
             PromotionApplicationService promoService,

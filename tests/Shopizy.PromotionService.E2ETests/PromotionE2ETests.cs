@@ -182,5 +182,9 @@ public class PromotionE2ETests : IClassFixture<WebApplicationFactory<Program>>
         authReq.Headers.Authorization = new AuthenticationHeaderValue("Bearer", adminToken);
         var authRes = await _client.SendAsync(authReq);
         authRes.StatusCode.Should().Be(HttpStatusCode.Created);
+
+        // Record coupon usage
+        var useRes = await _client.PostAsync("/api/v1/promotions/ADMINEXCLUSIVE/use", null);
+        useRes.StatusCode.Should().Be(HttpStatusCode.NoContent);
     }
 }
