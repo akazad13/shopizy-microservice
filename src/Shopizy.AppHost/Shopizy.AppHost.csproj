@@ -17,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Shopizy.IdentityService\Shopizy.IdentityService.csproj" IsAspireProjectResource="true" />
     <ProjectReference Include="..\Shopizy.CatalogService\Shopizy.CatalogService.csproj" IsAspireProjectResource="true" />
+    <ProjectReference Include="..\Shopizy.CartService\Shopizy.CartService.csproj" IsAspireProjectResource="true" />
   </ItemGroup>
 
 </Project>

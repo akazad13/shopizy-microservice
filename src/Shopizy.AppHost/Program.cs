@@ -21,4 +21,8 @@ builder.AddProject<Projects.Shopizy_CatalogService>("catalog-service")
     .WithReference(redis)
     .WithReference(rabbitmq);
 
+builder.AddProject<Projects.Shopizy_CartService>("cart-service")
+    .WithReference(redis)
+    .WithReference(rabbitmq);
+
 builder.Build().Run();
