@@ -8,13 +8,16 @@ var redis = builder.AddRedis("shopizy-redis");
 
 var rabbitmq = builder.AddRabbitMQ("shopizy-rabbitmq");
 
+var identityDb = postgres.AddDatabase("identitydb");
+var catalogDb = postgres.AddDatabase("catalogdb");
+
 builder.AddProject<Projects.Shopizy_IdentityService>("identity-service")
-    .WithReference(postgres)
+    .WithReference(identityDb)
     .WithReference(redis)
     .WithReference(rabbitmq);
 
 builder.AddProject<Projects.Shopizy_CatalogService>("catalog-service")
-    .WithReference(postgres)
+    .WithReference(catalogDb)
     .WithReference(redis)
     .WithReference(rabbitmq);
 
