@@ -56,9 +56,15 @@ public sealed class PaymentApplicationService
         if (!isAdmin && transaction.CustomerId != requestingCustomerId)
             throw new PaymentDomainException("Payment.Unauthorized", "Cannot refund another customer's payment.");
 
+        if (transaction.Status != PaymentStatus.Succeeded)
+            throw new PaymentDomainException("Payment.InvalidStateTransition", $"Cannot refund payment in status '{transaction.Status}'. Only succeeded payments can be refunded.");
+
         var refundMoney = request.Amount.HasValue
             ? Money.Create(request.Amount.Value, transaction.Amount.Currency)
             : transaction.Amount;
+
+        if (refundMoney.Amount > transaction.Amount.Amount)
+            throw new PaymentDomainException("Payment.ExcessiveRefund", "Refund amount exceeds transaction balance.");
 
         // Process refund via gateway
         var refundResult = await _gateway.RefundAsync(transaction.GatewayTransactionId ?? "mock_gw", refundMoney, request.Reason, ct);
