@@ -34,9 +34,30 @@ def github_api_request(url: str, token: str, accept: str = "application/vnd.gith
         print(f"::error::GitHub API call failed [{e.code}] {url}: {error_content}")
         return e.code, error_content
 
+def discover_gemini_models(api_key: str) -> list[str]:
+    url = f"https://generativelanguage.googleapis.com/v1beta/models?key={api_key}"
+    req = urllib.request.Request(url, headers={"User-Agent": "Shopizy-PR-Review-Agent"})
+    try:
+        with urllib.request.urlopen(req) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+            models = data.get("models", [])
+            valid_models = []
+            for m in models:
+                methods = m.get("supportedGenerationMethods", [])
+                if "generateContent" in methods:
+                    name = m.get("name", "").replace("models/", "")
+                    if name:
+                        valid_models.append(name)
+            print(f"Discovered {len(valid_models)} supported Gemini models: {valid_models[:5]}")
+            return valid_models
+    except Exception as e:
+        print(f"::warning::Could not query ListModels: {e}")
+        return []
+
 def call_google_ai_gemini(prompt: str, api_key: str) -> str:
-    preferred = os.environ.get("GEMINI_MODEL", "gemini-2.0-flash")
-    models_to_try = [preferred, "gemini-1.5-flash", "gemini-1.5-pro"]
+    discovered = discover_gemini_models(api_key)
+    preferred = os.environ.get("GEMINI_MODEL", "gemini-3.6-flash")
+    models_to_try = [preferred] + discovered + ["gemini-3.6-flash", "gemini-2.5-flash", "gemini-2.0-flash"]
     # Remove duplicates while preserving order
     models_to_try = list(dict.fromkeys(models_to_try))
 
