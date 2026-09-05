@@ -1,50 +1,72 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+# 📜 Shopizy Microservices Platform — Constitution
 
-## Core Principles
+> **Version:** 1.0.0 | **Ratified:** 2026-09-05 | **Governance:** Strict SDD Compliance
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+This document defines the non-negotiable architectural principles, engineering standards, and quality gates for all microservices in the Shopizy platform.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+---
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+## 1. Core Principles
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### Principle I: Clean Architecture & Domain Isolation (NON-NEGOTIABLE)
+- Every microservice must adhere to Clean Architecture (or Hexagonal Architecture) layer boundaries:
+  - **Domain**: Pure business entities, value objects, domain events, and domain exceptions. Zero dependencies on external frameworks, ORMs, or ASP.NET Core.
+  - **Application**: Use cases, CQRS commands/queries (MediatR), validation rules (FluentValidation), and interfaces/ports.
+  - **Infrastructure**: Implementations of database persistence (EF Core), message publishing (MassTransit), external APIs, and caching.
+  - **Api / Presentation**: Controllers or Minimal API endpoints, middleware, filters, and DTO contracts.
+- **Dependency Inversion**: Outer layers depend on inner layers; inner layers NEVER reference outer layers.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### Principle II: Zero Overselling & Atomic Inventory Protection
+- Stock reservation must occur atomically at the exact moment of order placement.
+- Unpaid orders must be subject to an automatic 15-minute expiration deadline.
+- Stock restock/release logic must be idempotent and triggered automatically when an order cancels or expires.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+### Principle III: Asynchronous Event-Driven Decoupling
+- Services must not perform synchronous cross-service writes during transactional business flows.
+- State synchronization between services (e.g. Catalog -> Search, Order -> Shipping, Payment -> Order) must occur asynchronously via **RabbitMQ domain events** using the **Transactional Outbox Pattern** to prevent dual-write anomalies.
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+### Principle IV: Strict Test-First & Quality Gates (NON-NEGOTIABLE)
+- Every feature or module specification must define verifiable Unit, Integration, and Automated E2E test criteria before implementation starts.
+- Code without automated tests will be rejected by the Review Agent and CI pipeline.
+- Quality standards:
+  - Domain layer: minimum 85% branch coverage.
+  - Endpoints: integration test verifying success (200/201), validation errors (400), unauthorized access (401/403), and missing resources (404).
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+### Principle V: Customer Data Isolation & Zero Trust Security
+- All authenticated requests must carry a valid cryptographic JWT Bearer token.
+- Multi-customer data isolation must be enforced at the repository/query level. Customers can never read, modify, or infer carts, addresses, or orders belonging to another user.
+- PCI Compliance: Sensitive credit card numbers and CVVs must never touch or be stored on Shopizy servers or databases.
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+### Principle VI: Idempotency & Duplicate Prevention
+- Financial and state-altering endpoints (order placement, payment capture, refunds) must require and validate an `Idempotency-Key` header.
+- Repeated requests with the same key must return the recorded response without executing side effects twice.
 
-## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
+### Principle VII: Database-per-Service & Shared-Nothing Isolation
+- Each microservice possesses an isolated PostgreSQL database. Cross-database queries and foreign keys across service boundaries are strictly forbidden.
+- Data synchronization must occur asynchronously through MassTransit domain events with the Transactional Outbox pattern.
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+### Principle VIII: High-Throughput Hot-Key Inventory Protection
+- High-concurrency inventory reservation must leverage atomic Redis Lua scripts to prevent relational table/row locking under flash-sale spikes, backed by durable PostgreSQL Outbox reconciliation.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+---
+
+## 2. Technology & Language Standards
+
+- **Runtime**: .NET 10 / C# 14
+- **Distributed Orchestration**: .NET Aspire 10 (`Shopizy.AppHost` for local inner loop, container provisioning, and service discovery; `Shopizy.ServiceDefaults` for standard OTel resilience and health checks).
+- **ORM & Database**: Entity Framework Core 10 on PostgreSQL 17 with snake_case naming conventions and code-first migrations.
+- **Messaging**: MassTransit with RabbitMQ transport. Message contracts stored in a shared contracts package or namespace.
+- **Logging & Tracing**: Serilog with structured JSON output, OpenTelemetry metrics and activity tracing, correlation ID propagation via HTTP headers and message headers.
+- **Real-Time**: ASP.NET Core SignalR with Redis backplane.
+
+---
+
+## 3. Review Process & Quality Gates
+
+1. **SDD Loop Verification**: All tasks must be validated by the autonomous Generator ⟷ Review Agent refinement loop before a PR is opened.
+2. **Deterministic Build**: `dotnet build --warnaserror` must pass cleanly without warnings.
+3. **Automated Test Suite**: All unit, integration, and contract tests must execute and pass in CI with zero flaky tests.
+
+---
+
+**Version**: 1.0.0 | **Ratified**: 2026-09-05 | **Last Amended**: 2026-09-05

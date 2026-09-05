@@ -1,7 +1,17 @@
 {
-  "arch_style": "Microservices (Independent service boundaries)",
-  "primary_db": "PostgreSQL (Relational)",
-  "messaging_broker": "RabbitMQ / MassTransit",
-  "auth_provider": "JWT Bearer Tokens with ASP.NET Core Identity / OAuth2",
-  "e2e_framework": "xUnit + WebApplicationFactory (In-Memory HTTP)"
+  "arch_style": "Microservices (Independent service boundaries, Domain-Driven Design)",
+  "backend_runtime": "ASP.NET Core 10 (C#)",
+  "architecture_pattern": "Clean Architecture / Hexagonal Architecture (Domain, Application, Infrastructure, Api)",
+  "primary_db": "PostgreSQL 17 (Relational with EF Core)",
+  "search_engine": "Dedicated Search Engine (Elasticsearch / Meilisearch) synchronized via domain events",
+  "messaging_broker": "RabbitMQ with MassTransit (Domain Events, Outbox Pattern, Saga State Machines)",
+  "auth_provider": "JWT Bearer Tokens with ASP.NET Core Identity & Role-Based Access Control (Customer vs Admin)",
+  "realtime_engine": "ASP.NET Core SignalR with Redis Backplane",
+  "cache_and_state": "Redis 7 (Distributed cache, SignalR backplane, session state)",
+  "orchestration_and_observability": ".NET Aspire (Shopizy.AppHost & Shopizy.ServiceDefaults for orchestration, OpenTelemetry, health checks, service discovery)",
+  "database_isolation": "Database-per-service (dedicated PostgreSQL database per microservice)",
+  "high_concurrency_inventory": "Hybrid: Redis atomic Lua script reservation during flash sales, confirmed via PostgreSQL Outbox transaction",
+  "read_scalability": "Full CQRS: Separate read and write pipelines with Redis response caching and search engine offloading",
+  "cloud_deployment": "Azure Container Apps / Serverless containers with built-in KEDA scaling (RabbitMQ queue depth + CPU/Memory)",
+  "testing_framework": "xUnit, FluentAssertions, Moq, Respawn, Testcontainers & WebApplicationFactory"
 }
