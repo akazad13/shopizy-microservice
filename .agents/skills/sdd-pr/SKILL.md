@@ -22,20 +22,31 @@ The user input specifies the target module slug (e.g., `auth-service`). If omitt
 
 ```mermaid
 flowchart TD
-    Module[Module Slug: $ARGUMENTS] --> Verify[1. Verify Review Approval & Green Tests]
+    Module[Module Slug: $ARGUMENTS] --> Verify[1. Pre-Flight Verification & README.md Sync]
     Verify --> Branch[2. Create Git Feature Branch]
     Branch --> Commit[3. Conventional Commit]
     Commit --> Body[4. Compose Rich PR Description]
     Body --> RaisePR[5. Execute gh pr create]
+    RaisePR --> Gate[6. Inspect AI Review & Strict Merge Gate]
+    Gate --> |"❌ CHANGES REQUESTED or Check Failed"| Fix[Remediate Findings & Push]
+    Fix --> Gate
+    Gate --> |"✅ APPROVED or SUGGESTIONS (All Checks Green)"| Merge[7. gh pr merge --squash]
 ```
 
 ---
 
-## Step 1: Pre-Flight Verification
+## Step 1: Pre-Flight Verification & README Sync
 
 1. Verify that `.specify/specs/<module-slug>/review-log.md` exists and contains `STATUS: APPROVED`.
 2. Verify that all tasks in `.specify/specs/<module-slug>/tasks.md` are marked `[X]`.
-3. Run the fast test suite (`dotnet test` or equivalent) to guarantee zero regressions.
+3. Run the full test suite (`dotnet test Shopizy.sln --warnaserror` or equivalent) to guarantee 100% pass rate and zero warnings.
+4. **Mandatory `README.md` Check & Update**:
+   - Inspect and update `README.md` **before** committing and creating the PR.
+   - **Module Roadmap & Status Table**: Update the module row with its active branch, PR link, and verified test count (e.g. `X/X passed`).
+   - **Project Structure**: Add newly created `src/` and `tests/` directories to the directory tree.
+   - **Developer Quick Start**: Update the total test count (e.g. `Expected: N passed, 0 failed across M test projects`).
+   - **Documentation Table**: Add links to `.specify/specs/<module-slug>/spec.md` and `review-log.md`.
+   - Ensure the updated `README.md` is included in the PR commit.
 
 ---
 
@@ -47,13 +58,13 @@ flowchart TD
    ```bash
    git checkout -b feature/<module-slug>
    ```
-3. Stage modified and new files:
+3. Stage all modified and new files (including source code, tests, specs, and `README.md`):
    ```bash
    git add .
    ```
 4. Commit with conventional commit message:
    ```bash
-   git commit -m "feat(<module-slug>): implement specification with automated E2E tests and review sign-off"
+   git commit -m "feat(<module-slug>): implement specification with automated E2E tests, review sign-off, and docs"
    ```
 
 ---
@@ -87,6 +98,9 @@ This pull request implements the **[Module Title]** specification in full compli
 - **Integration Tests**: Database persistence, middleware pipelines (`tests/<module>.IntegrationTests`)
 - **Automated E2E Tests**: Verified scenarios from Section 6.3 of spec (`tests/<module>.E2ETests`)
 
+### 3. Documentation & Governance
+- **README.md**: Updated roadmap status, test totals, and project structure.
+
 ---
 
 ## 🔍 Multi-Agent Review Loop Report
@@ -98,7 +112,7 @@ This pull request implements the **[Module Title]** specification in full compli
 ---
 
 ## 🧪 Verification & Test Results
-- **Test Pass Rate**: 100% (X passed, 0 failed)
+- **Test Pass Rate**: 100% (X passed, 0 failed across solution)
 - **Automated E2E Scenarios**: All scenarios successfully executed and verified.
 
 ---
@@ -107,17 +121,55 @@ This pull request implements the **[Module Title]** specification in full compli
 - [ ] Code adheres to clean architecture principles
 - [ ] No regression in shared contracts or database migrations
 - [ ] E2E scenarios cover happy path and critical error handling
+- [ ] README.md has been synchronized with the latest roadmap and test counts
 ```
 
 ---
 
 ## Step 4: Raise GitHub Pull Request
 
-Execute the GitHub CLI command:
-```bash
-gh pr create --base main --head feature/<module-slug> --title "feat(<module-slug>): [Module Title] implementation" --body-file .specify/specs/<module-slug>/pr-body.md
-```
+1. Push branch to origin:
+   ```bash
+   git push -u origin feature/<module-slug>
+   ```
+2. Execute the GitHub CLI command:
+   ```bash
+   gh pr create --base main --head feature/<module-slug> --title "feat(<module-slug>): [Module Title] implementation" --body-file .specify/specs/<module-slug>/pr-body.md
+   ```
 
-If the push requires authentication or remote configuration, output clear instructions and provide the ready-to-use PR body.
+---
 
-Conclude by displaying the PR link and inviting the human reviewer to inspect the final code!
+## Step 5: Review Gate & Merge Policy (Zero Accidental Merges)
+
+1. **Wait for CI & Google AI Review**:
+   - Monitor GitHub Actions checks:
+     ```bash
+     gh pr checks <pr-number>
+     ```
+   - Inspect comments and review verdict:
+     ```bash
+     gh pr view <pr-number> --comments
+     ```
+
+2. **Strict Merge Gate Enforcement**:
+   - **BLOCK MERGE** if:
+     - Any GitHub Actions check fails (`fail` or `cancelled`).
+     - The Google AI Review Agent verdict is `❌ CHANGES REQUESTED` or contains `[Critical]` / `[Major]` findings.
+   - **Remediation Protocol**:
+     - Do NOT attempt to merge or bypass.
+     - Implement the requested fixes directly on `feature/<module-slug>`.
+     - Run `dotnet test Shopizy.sln` to confirm all tests pass.
+     - Commit and push fixes (`git push origin feature/<module-slug>`).
+     - Wait for GitHub Actions to re-run and verify the new verdict is clean.
+
+3. **Safe Merge**:
+   - Only when all checks are green (`Pass`) and the verdict is `✅ APPROVED` or `⚠️ APPROVED WITH SUGGESTIONS`:
+     ```bash
+     gh pr merge <pr-number> --squash --delete-branch
+     ```
+   - Update local tracking branch:
+     ```bash
+     git checkout main
+     git pull origin main
+     ```
+   - Proceed to the next module in the roadmap!

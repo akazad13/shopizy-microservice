@@ -120,17 +120,19 @@ This is the core autonomous AI loop. See [Section 3](#3-the-generator--reviewer-
 
 **What happens:**
 1. Verifies `dotnet build --warnaserror` passes (0 warnings, 0 errors).
-2. Verifies all unit and integration tests pass.
-3. Creates stacked feature branch from the previous module branch:
+2. Verifies all unit, integration, and E2E tests pass cleanly (100% pass rate).
+3. **Mandatory README.md Synchronization**: Checks and updates `README.md` (roadmap status, test totals, project structure, and documentation links).
+4. Creates feature branch:
    ```bash
-   git checkout -b feature/identity-service origin/feature/shared-kernel
+   git checkout -b feature/<module-slug>
    ```
-4. Commits all changes.
-5. Generates `pr-body.md` with full PRD traceability, spec links, and test results.
-6. Executes:
+5. Commits all changes including source code, tests, specs, and `README.md`.
+6. Generates `pr-body.md` with full PRD traceability, spec links, and test results.
+7. Executes:
    ```bash
-   gh pr create --title "feat(identity-service): ..." --body-file .specify/specs/identity-service/pr-body.md
+   gh pr create --title "feat(<module-slug>): ..." --body-file .specify/specs/<module-slug>/pr-body.md
    ```
+8. **Review & Merge Gate**: Waits for GitHub Actions CI and Google AI Review Agent. If `CHANGES REQUESTED` or checks fail, accidental merge to `main` is strictly blocked until findings are resolved. Only when all checks are green and approved is squash merge executed.
 
 ---
 
@@ -238,7 +240,8 @@ The `+` side gives the new file line numbers. All findings reference exact lines
 | `⚠️ APPROVED WITH SUGGESTIONS` | All critical gates pass; only `[Minor]` or `[Nit]` remain | 🟢 No |
 | `✅ APPROVED` | Zero findings; 100% test pass; 0 warnings | 🟢 No |
 
-#### When `❌ CHANGES REQUESTED` (blockers):
+#### When `❌ CHANGES REQUESTED` (strictly blocks merge to main):
+- The script submits a formal Pull Request Review with `REQUEST_CHANGES`, prints an error annotation, and **exits with code 1**, failing the GitHub Actions check.
 - Constitution violation (e.g., Domain references EF Core)
 - Security flaw (hardcoded secret, missing auth, stack trace leak)
 - Business invariant risk (overselling race condition, missing idempotency)

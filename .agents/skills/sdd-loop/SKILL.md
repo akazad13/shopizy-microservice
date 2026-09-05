@@ -114,5 +114,7 @@ Act as an independent, adversarial Review Agent evaluating the code against 5 st
    - Number of iterations completed.
    - Audit findings and resolution history.
    - Test execution results (tests run, tests passed, duration).
-2. Notify the user:
-   > "Code generation, multi-agent review loop, and automated test execution succeeded with all tests green! Proceed to create the Pull Request with `/sdd-pr <module-slug>`."
+2. **README.md Synchronization**:
+   - Inspect and update `README.md` to reflect the newly implemented module, total passed tests, and project tree additions before calling `/sdd-pr`.
+3. Notify the user:
+   > "Code generation, multi-agent review loop, and automated test execution succeeded with all tests green! README.md synchronized. Proceed to create the Pull Request with `/sdd-pr <module-slug>`."

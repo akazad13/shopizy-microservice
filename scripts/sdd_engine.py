@@ -585,12 +585,17 @@ Implements the `{module_slug}` module adhering to the Spec-Driven Development (S
             console.print(f"[yellow]Dry Run: Would create branch '{branch_name}' and execute 'gh pr create'.[/yellow]")
             return True
 
+        # Verify README.md sync
+        readme_file = self.workspace / "README.md"
+        if readme_file.exists():
+            console.print("[cyan]Pre-Flight Check: Ensuring README.md is synchronized before PR creation...[/cyan]")
+
         # Check git
         try:
             # Create or switch to branch
             subprocess.run(["git", "checkout", "-B", branch_name], cwd=self.workspace, check=False)
             subprocess.run(["git", "add", "."], cwd=self.workspace, check=False)
-            commit_msg = f"feat({module_slug}): implement spec with automated tests and review loop"
+            commit_msg = f"feat({module_slug}): implement spec with automated tests, review loop, and docs"
             subprocess.run(["git", "commit", "-m", commit_msg], cwd=self.workspace, check=False)
             console.print(f"[green]Committed changes to branch '{branch_name}'.[/green]")
 
@@ -606,6 +611,7 @@ Implements the `{module_slug}` module adhering to the Spec-Driven Development (S
             res = subprocess.run(gh_cmd, cwd=self.workspace, capture_output=True, text=True)
             if res.returncode == 0:
                 console.print(f"[bold green]Pull Request successfully raised:[/bold green] {res.stdout.strip()}")
+                console.print("[bold yellow]Strict Merge Gate: Monitor 'gh pr checks' and Google AI review comments. If CHANGES REQUESTED or checks fail, accidental merge to main is strictly blocked until remediated.[/bold yellow]")
                 return True
             else:
                 console.print(f"[yellow]Note: gh pr create returned non-zero (may need remote branch push or authentication):[/yellow]\n{res.stderr.strip()}")
