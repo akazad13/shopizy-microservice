@@ -13,6 +13,7 @@
 | :--- | :--- | :--- | :--- |
 | **Cycle 1** | **REMEDIATED** | 1. `GlobalExceptionHandler` Content-Type was being overridden to `application/json` by `WriteAsJsonAsync`.<br/>2. Legacy `WebHostBuilder` deprecation warnings on .NET 10. | Updated `WriteAsJsonAsync` to specify `contentType: "application/problem+json"`. Refactored integration tests to modern `WebApplication.CreateBuilder` with `GetTestClient()`, eliminating all deprecation warnings. |
 | **Cycle 2** | **APPROVED** | All 5 pillars verified. Build passes with `0 Warning(s) 0 Error(s)` under `--warnaserror`. All 30 unit, integration, and Aspire tests passed. | None required. |
+| **Cycle 3 (Peer Feedback)** | **APPROVED** | 1. `MapDefaultEndpoints()` guarded `/health` and `/alive` behind `IsDevelopment()`, breaking container orchestrator readiness/liveness probes in staging/production.<br/>2. `AppHost` PostgreSQL lacked persistent volume storage across local container restarts. | 1. Removed `IsDevelopment()` check from `MapDefaultEndpoints()` so container probes function reliably across all environments.<br/>2. Added `.WithDataVolume()` to `shopizy-postgres` in `Shopizy.AppHost/Program.cs`. Build and all 30 tests re-verified green. |
 
 ---
 

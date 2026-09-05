@@ -1,7 +1,8 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
 // Cloud-native container resources for Shopizy ecosystem
-var postgres = builder.AddPostgres("shopizy-postgres");
+var postgres = builder.AddPostgres("shopizy-postgres")
+    .WithDataVolume();
 
 var redis = builder.AddRedis("shopizy-redis");
 
