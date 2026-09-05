@@ -10,6 +10,7 @@ var rabbitmq = builder.AddRabbitMQ("shopizy-rabbitmq");
 
 var identityDb = postgres.AddDatabase("identitydb");
 var catalogDb = postgres.AddDatabase("catalogdb");
+var orderDb = postgres.AddDatabase("orderdb");
 
 builder.AddProject<Projects.Shopizy_IdentityService>("identity-service")
     .WithReference(identityDb)
@@ -22,6 +23,11 @@ builder.AddProject<Projects.Shopizy_CatalogService>("catalog-service")
     .WithReference(rabbitmq);
 
 builder.AddProject<Projects.Shopizy_CartService>("cart-service")
+    .WithReference(redis)
+    .WithReference(rabbitmq);
+
+builder.AddProject<Projects.Shopizy_OrderService>("order-service")
+    .WithReference(orderDb)
     .WithReference(redis)
     .WithReference(rabbitmq);
 

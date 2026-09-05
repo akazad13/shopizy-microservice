@@ -282,8 +282,8 @@ flowchart TD
 | 2 | **Identity & Access Service** | `feature/identity-service` | [#2](https://github.com/akazad13/shopizy-microservice/pull/2), [#3](https://github.com/akazad13/shopizy-microservice/pull/3) | ✅ MERGED | 48/48 |
 | 3 | **Product Catalog Service** | `feature/catalog-service` | [#4](https://github.com/akazad13/shopizy-microservice/pull/4) | ✅ MERGED | 62/62 |
 | 4 | **Shopping Cart Service** | `feature/cart-service` | [#6](https://github.com/akazad13/shopizy-microservice/pull/6) | ✅ MERGED | 38/38 |
-| 5 | **Order & Inventory Service** | `feature/order-service` | — | 🔜 Next | — |
-| 6 | **Payment & Refund Gateway** | `feature/payment-service` | — | ⏳ Pending | — |
+| 5 | **Order & Inventory Service** | `feature/order-service` | PR | 🔄 IN REVIEW | 33/33 |
+| 6 | **Payment & Refund Gateway** | `feature/payment-service` | — | 🔜 Next | — |
 
 ### Phase 2: Discovery, Merchandising & Operations
 
@@ -314,7 +314,8 @@ shopizy-microservice/
 │   ├── Shopizy.AppHost/                      # .NET Aspire 10 orchestrator (Postgres, Redis, RabbitMQ)
 │   ├── Shopizy.IdentityService/               # User registration, JWT auth, refresh tokens, RBAC, isolation
 │   ├── Shopizy.CatalogService/                # Hierarchical categories, brands, variants, optimistic concurrency
-│   └── Shopizy.CartService/                   # Redis-backed shopping cart, price snapshotting, discrepancy alerts, merge
+│   ├── Shopizy.CartService/                   # Redis-backed shopping cart, price snapshotting, discrepancy alerts, merge
+│   └── Shopizy.OrderService/                  # Atomic stock reservation, zero-overselling, 15-min auto-expiration, restocking
 ├── tests/
 │   ├── Shopizy.SharedKernel.UnitTests/        # 23 unit tests
 │   ├── Shopizy.SharedKernel.IntegrationTests/ # 7 integration tests
@@ -326,7 +327,10 @@ shopizy-microservice/
 │   ├── Shopizy.CatalogService.E2ETests/        # 7 automated E2E tests (catalog hierarchy, variants, RBAC, replay)
 │   ├── Shopizy.CartService.UnitTests/          # 27 unit tests (item mutations, price snapshotting, subtotal)
 │   ├── Shopizy.CartService.IntegrationTests/   # 5 integration tests (Redis persistence roundtrip, TTL)
-│   └── Shopizy.CartService.E2ETests/           # 6 automated E2E tests (guest lifecycle, merge, discrepancy, isolation)
+│   ├── Shopizy.CartService.E2ETests/           # 6 automated E2E tests (guest lifecycle, merge, discrepancy, isolation)
+│   ├── Shopizy.OrderService.UnitTests/         # 24 unit tests (state machine, stock reservation, expiration)
+│   ├── Shopizy.OrderService.IntegrationTests/  # 3 integration tests (EF Core persistence, isolation)
+│   └── Shopizy.OrderService.E2ETests/          # 6 automated E2E tests (checkout, zero-overselling, 15-min expiry, idempotency)
 ├── .specify/
 │   ├── architecture/
 │   │   ├── system-architecture.md            # Full topology & tech rationale
@@ -338,7 +342,8 @@ shopizy-microservice/
 │       ├── shared-kernel/                    # Module 1 specs & review log
 │       ├── identity-service/                 # Module 2 specs & review log
 │       ├── catalog-service/                  # Module 3 specs & review log
-│       └── cart-service/                     # Module 4 specs & review log
+│       ├── cart-service/                     # Module 4 specs & review log
+│       └── order-service/                    # Module 5 specs & review log
 ├── .agents/
 │   └── skills/                               # Antigravity AI skill definitions
 │       ├── sdd-intake/SKILL.md               # PRD ingestion & architecture interview
@@ -376,7 +381,7 @@ dotnet build Shopizy.sln --warnaserror
 
 ```bash
 dotnet test Shopizy.sln
-# Expected: 178 passed, 0 failed across 11 test projects
+# Expected: 211 passed, 0 failed across 14 test projects
 ```
 
 ### Run Locally with .NET Aspire
@@ -384,20 +389,20 @@ dotnet test Shopizy.sln
 ```bash
 dotnet run --project src/Shopizy.AppHost
 # Opens .NET Aspire Dashboard at https://localhost:15888
-# Provisions: PostgreSQL 17 (identitydb, catalogdb), Redis 7 (cart-service, caching), RabbitMQ
+# Provisions: PostgreSQL 17 (identitydb, catalogdb, orderdb), Redis 7 (cart-service, caching), RabbitMQ
 ```
 
 ### Run the AI Workflow (In Antigravity Chat)
 
 ```text
 # Start a new module:
-/sdd-spec order-service
+/sdd-spec payment-service
 
 # Run the full generation + review loop:
-/sdd-loop order-service
+/sdd-loop payment-service
 
 # Create the GitHub PR:
-/sdd-pr order-service
+/sdd-pr payment-service
 ```
 
 ---
@@ -436,6 +441,8 @@ The Shopizy Platform operates under **8 non-negotiable engineering principles** 
 | [Catalog Service Review Log](.specify/specs/catalog-service/review-log.md) | Module 3 audit trail (Categories, Variants, Concurrency) |
 | [Cart Service Spec](.specify/specs/cart-service/spec.md) | Module 4 formal specification |
 | [Cart Service Review Log](.specify/specs/cart-service/review-log.md) | Module 4 audit trail (Redis Shopping Cart & Merging) |
+| [Order Service Spec](.specify/specs/order-service/spec.md) | Module 5 formal specification |
+| [Order Service Review Log](.specify/specs/order-service/review-log.md) | Module 5 audit trail (Atomic Stock Reservation & Expiration) |
 
 ---
 
