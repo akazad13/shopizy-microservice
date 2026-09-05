@@ -170,20 +170,49 @@ Perform a thorough, adversarial code review of the following Pull Request:
 {pr_diff}
 ```
 
-## Review Guidelines & Pillars:
-1. **Spec & Requirements Adherence**: Does the code satisfy the described requirements?
-2. **Clean Architecture & Separation of Concerns**: Does code maintain strict boundaries? (Domain has zero external dependencies; Infrastructure implements interfaces; APIs use DTOs).
-3. **Invariants & Domain Protections**: Are core invariants guarded? (e.g. Zero Overselling, Atomic Reservation, 15-Minute Unpaid Expiration, Price Snapshotting, Idempotency).
-4. **Error Handling & RFC 7807**: Are errors handled with standard Problem Details and safe failure paths?
-5. **Test Coverage & Quality**: Are unit, integration, or E2E tests meaningful with real assertions?
-6. **Security & Performance**: Are there any OWASP vulnerabilities, sensitive data exposures, or performance bottlenecks?
+## Review Guidelines & Decision Rubric:
+
+### When to Select Each Verdict:
+- **`❌ CHANGES REQUESTED`**: MUST be chosen if ANY of the following occur:
+  - **Constitution Violation**: Domain layer references external frameworks/ORMs, cross-database joins across service boundaries, or missing layer separation.
+  - **Security Vulnerability**: Unhandled sensitive PII, hardcoded secrets, missing auth checks, or leaking stack traces/internal exceptions to clients.
+  - **Business Invariant Risk**: Broken atomic inventory reservation, race condition / overselling risk, unhandled 15-minute unpaid expiration, or missing idempotency on payment/order submission.
+  - **Test Gap**: Core acceptance criteria or domain invariants lack automated test coverage, or tests contain trivial assertions.
+  - **Build / Lint Breakage**: Compiler warnings or failing tests.
+- **`⚠️ APPROVED WITH SUGGESTIONS`**: Choose when the PR satisfies all acceptance criteria, constitution principles, and passes tests cleanly, but has non-blocking polish items (e.g., local developer ergonomics like Docker data volumes, additional debug logs, or minor optimization ideas).
+- **`✅ APPROVED`**: Choose when the PR is 100% production-ready, fully covered by automated tests, adheres strictly to the constitution, and has no blocking or significant defects.
+
+---
 
 ## Expected Output Format:
 Generate a clean, professional GitHub PR review markdown report structured as:
-1. **Summary & Verdict**: State clearly `✅ APPROVED`, `⚠️ APPROVED WITH SUGGESTIONS`, or `❌ CHANGES REQUESTED` with a 2-3 sentence executive summary.
-2. **Strengths**: Highlights of well-implemented architectural patterns or clean code.
-3. **Audit Findings & Improvement Suggestions**: Specific, actionable observations with line numbers or code snippets if applicable.
-4. **Verification Status**: Brief check on tests and build compliance.
+
+### Summary & Verdict
+- **Verdict**: `✅ APPROVED`, `⚠️ APPROVED WITH SUGGESTIONS`, or `❌ CHANGES REQUESTED`
+- **Executive Summary**: 2-3 concise sentences stating why this verdict was given, summarizing quality and readiness.
+
+### Key Strengths
+- 2-4 bullet points highlighting well-implemented architecture, clean code patterns, or high-value test suites.
+
+### Audit Findings & Improvement Suggestions
+For each finding, format exactly like a staff engineer line-by-line code review:
+#### 📍 `<file-path>:<line-range>` — [Severity: High/Medium/Low] <Finding Title>
+- **Issue**: Precise description of what is wrong, risky, or sub-optimal.
+- **Current Diff Code**:
+```<lang>
+<exact snippet from the diff with line context>
+```
+- **Suggested Fix**:
+```<lang>
+<concrete, copy-pasteable replacement code>
+```
+- **Rationale**: Explain the engineering reason (e.g., prevents production probe failure, adheres to Principle V, avoids deadlock).
+
+*(If no findings exist, write: "None. All inspected lines comply with standards.")*
+
+### Verification Status & Quality Gates
+- Compiler health check (`--warnaserror`).
+- Automated test coverage & pass rate check.
 
 IMPORTANT: Do NOT output a top-level header title (e.g. '## 🤖 Google AI Code Review Agent') or a sign-off footer; these are added by the automation system. Begin directly with '### Summary & Verdict'.
 Keep your response constructive, professional, and directly actionable.
