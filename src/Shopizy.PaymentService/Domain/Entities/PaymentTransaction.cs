@@ -75,6 +75,9 @@ public sealed class PaymentTransaction : AggregateRoot<Guid>
             throw new PaymentDomainException("Payment.InvalidStateTransition", $"Cannot refund payment in status '{Status}'. Only succeeded payments can be refunded.");
 
         var amountToRefund = refundAmount ?? Amount;
+        if (!string.Equals(amountToRefund.Currency, Amount.Currency, StringComparison.OrdinalIgnoreCase))
+            throw new PaymentDomainException("Payment.CurrencyMismatch", $"Refund currency '{amountToRefund.Currency}' does not match payment currency '{Amount.Currency}'.");
+
         if (amountToRefund.Amount > Amount.Amount)
             throw new PaymentDomainException("Payment.ExcessiveRefund", "Refund amount exceeds transaction balance.");
 

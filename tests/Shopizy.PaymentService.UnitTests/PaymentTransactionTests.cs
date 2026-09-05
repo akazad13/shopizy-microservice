@@ -81,4 +81,14 @@ public sealed class PaymentTransactionTests
         var act = () => tx.ApplyRefund("re_98765", Money.Create(150m));
         act.Should().Throw<PaymentDomainException>().WithMessage("*exceeds transaction balance*");
     }
+
+    [Fact]
+    public void Refund_CurrencyMismatch_ThrowsDomainException()
+    {
+        var tx = PaymentTransaction.Create(Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Money.Create(100m, "USD"), ValidMethod());
+        tx.MarkSucceeded("ch_12345");
+
+        var act = () => tx.ApplyRefund("re_98765", Money.Create(50m, "EUR"));
+        act.Should().Throw<PaymentDomainException>().WithMessage("*does not match payment currency*");
+    }
 }
