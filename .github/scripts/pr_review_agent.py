@@ -172,15 +172,22 @@ Perform a thorough, adversarial code review of the following Pull Request:
 
 ## Review Guidelines & Decision Rubric:
 
-### When to Select Each Verdict:
-- **`❌ CHANGES REQUESTED`**: MUST be chosen if ANY of the following occur:
-  - **Constitution Violation**: Domain layer references external frameworks/ORMs, cross-database joins across service boundaries, or missing layer separation.
-  - **Security Vulnerability**: Unhandled sensitive PII, hardcoded secrets, missing auth checks, or leaking stack traces/internal exceptions to clients.
-  - **Business Invariant Risk**: Broken atomic inventory reservation, race condition / overselling risk, unhandled 15-minute unpaid expiration, or missing idempotency on payment/order submission.
-  - **Test Gap**: Core acceptance criteria or domain invariants lack automated test coverage, or tests contain trivial assertions.
-  - **Build / Lint Breakage**: Compiler warnings or failing tests.
-- **`⚠️ APPROVED WITH SUGGESTIONS`**: Choose when the PR satisfies all acceptance criteria, constitution principles, and passes tests cleanly, but has non-blocking polish items (e.g., local developer ergonomics like Docker data volumes, additional debug logs, or minor optimization ideas).
-- **`✅ APPROVED`**: Choose when the PR is 100% production-ready, fully covered by automated tests, adheres strictly to the constitution, and has no blocking or significant defects.
+### Verdict Decision Matrix:
+The Review Agent MUST follow this deterministic decision matrix:
+- **`❌ CHANGES REQUESTED` (DO NOT APPROVE)**: MUST be chosen if ANY finding has severity `[Critical]` or `[Major]`:
+  - **Constitution Violation**: Domain layer references external frameworks/ORMs, cross-database joins across service boundaries, or violation of Clean Architecture layer dependencies.
+  - **Security Vulnerability**: Unhandled sensitive PII, hardcoded secrets, missing authorization checks, SQL injection, or leaking internal exception stack traces (violating RFC 7807).
+  - **Business Invariant Risk**: Concurrency race conditions or overselling risk in inventory, missing 15-minute unpaid order expiration, or missing idempotency on payment/order submission.
+  - **Test Gap / Build Breakage**: Core acceptance criteria lack automated test coverage, tests contain trivial or empty assertions, or compiler warnings exist under `--warnaserror`.
+- **`⚠️ APPROVED WITH SUGGESTIONS` (APPROVE WITH NON-BLOCKING COMMENTS)**: MUST be chosen when ALL critical gates and acceptance criteria pass cleanly (zero blockers, 100% test pass rate, 0 warnings), but there are non-blocking findings with severity `[Minor]` or `[Nit]`:
+  - Developer ergonomics (e.g., local Docker persistence volumes like `.WithDataVolume()`).
+  - Performance improvements on non-critical paths.
+  - Code clarity, documentation, or naming polish.
+- **`✅ APPROVED` (FULL PRODUCTION APPROVAL)**: MUST be chosen ONLY when:
+  - All acceptance criteria are fully met and verified.
+  - Strict compliance with the Project Constitution and Clean Architecture.
+  - Automated tests pass with 100% coverage of domain invariants and zero warnings.
+  - Exactly ZERO findings ([Critical], [Major], [Minor], or [Nit]) remain.
 
 ---
 
@@ -189,26 +196,30 @@ Generate a clean, professional GitHub PR review markdown report structured as:
 
 ### Summary & Verdict
 - **Verdict**: `✅ APPROVED`, `⚠️ APPROVED WITH SUGGESTIONS`, or `❌ CHANGES REQUESTED`
-- **Executive Summary**: 2-3 concise sentences stating why this verdict was given, summarizing quality and readiness.
+- **Executive Summary**: 2-3 concise sentences stating why this verdict was given, summarizing quality, architectural alignment, and deployment readiness.
 
 ### Key Strengths
 - 2-4 bullet points highlighting well-implemented architecture, clean code patterns, or high-value test suites.
 
 ### Audit Findings & Improvement Suggestions
 For each finding, format exactly like a staff engineer line-by-line code review:
-#### 📍 `<file-path>:<line-range>` — [Severity: High/Medium/Low] <Finding Title>
+#### 📍 `<file-path>:L<start>-L<end>` — [Severity: Critical/Major/Minor/Nit] <Finding Title>
 - **Issue**: Precise description of what is wrong, risky, or sub-optimal.
-- **Current Diff Code**:
+- **Current Code**:
 ```<lang>
 <exact snippet from the diff with line context>
 ```
 - **Suggested Fix**:
 ```<lang>
-<concrete, copy-pasteable replacement code>
+<concrete, copy-pasteable replacement code or diff block>
 ```
-- **Rationale**: Explain the engineering reason (e.g., prevents production probe failure, adheres to Principle V, avoids deadlock).
+- **Rationale**: Explain the engineering reason (e.g., prevents production probe failure, eliminates overselling race condition, satisfies Constitution Principle V).
 
-*(If no findings exist, write: "None. All inspected lines comply with standards.")*
+Line Number Reference Rules:
+- Calculate line numbers from the unified diff hunk headers `@@ -old,count +new,count @@` (use the `+` side corresponding to new/modified lines).
+- For a multi-line range, use: `<file-path>:L<start>-L<end>` (e.g. `src/Shopizy.ServiceDefaults/Extensions.cs:L88-L98`).
+- For a single line, use: `<file-path>:L<line>` (e.g. `src/Shopizy.AppHost/Program.cs:L6`).
+- (If no findings exist, write: "None. All inspected lines comply with standards.")
 
 ### Verification Status & Quality Gates
 - Compiler health check (`--warnaserror`).
