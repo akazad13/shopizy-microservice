@@ -45,16 +45,36 @@ Shopizy is an **enterprise-grade, headless digital commerce platform** built as 
 Every module in this repository is built using a **fully autonomous 7-stage Spec-Driven Development pipeline**:
 
 ```mermaid
-flowchart LR
-    PRD["📄 1. Ingest PRD\n/sdd-intake"] --> Interview["🎙️ 2. Arch Interview\n(Interactive Q&A)"]
-    Interview --> Blueprint["🏗️ 3. Architecture Blueprint\n+ Module Roadmap"]
-    Blueprint --> Spec["📋 4. Module Spec\n/sdd-spec <module>"]
-    Spec --> Loop["🔄 5. Generator ⟷ Reviewer\n/sdd-loop <module>"]
-    Loop --> Tests["✅ 6. Automated Tests\n(Unit + Integration + E2E)"]
-    Tests --> PR["🚀 7. GitHub PR\n/sdd-pr <module>"]
-    PR --> Review["🤖 8. AI PR Review\n(Google AI Gemini)"]
-    Review --> Feedback["🔁 9. Peer Feedback\nResolution Loop"]
-    Feedback --> |"✅ APPROVED"| Merge["🎉 Merge"]
+flowchart TD
+    subgraph Phase1["Phase 1: Architecture & Ingestion"]
+        PRD["📄 1. Ingest PRD\n/sdd-intake"]
+        Interview["🎙️ 2. Arch Interview\n(Interactive Q&A)"]
+        Blueprint["🏗️ 3. Architecture Blueprint\n+ Module Roadmap"]
+        PRD --> Interview --> Blueprint
+    end
+
+    subgraph Phase2["Phase 2: Formal Specification"]
+        Spec["📋 4. Module Spec\n/sdd-spec <module>"]
+    end
+
+    subgraph Phase3["Phase 3: Autonomous Implementation & Testing"]
+        Loop["🔄 5. Generator ⟷ Reviewer\n/sdd-loop <module>"]
+        Tests["✅ 6. Automated Tests\n(Unit + Integration + E2E)"]
+        Loop --> Tests
+    end
+
+    subgraph Phase4["Phase 4: Review, Feedback & Delivery"]
+        PR["🚀 7. GitHub PR\n/sdd-pr <module>"]
+        Review["🤖 8. AI PR Review\n(Google AI Gemini)"]
+        Feedback["🔁 9. Peer Feedback\nResolution Loop"]
+        Merge(["🎉 Merge to Main"])
+        PR --> Review --> Feedback
+        Feedback -->|"✅ APPROVED"| Merge
+    end
+
+    Blueprint --> Spec
+    Spec --> Loop
+    Tests --> PR
 ```
 
 ### How Each Stage Works
