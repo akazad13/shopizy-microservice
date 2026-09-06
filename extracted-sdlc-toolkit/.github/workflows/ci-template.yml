@@ -1,0 +1,78 @@
+# Continuous Integration (CI) Quality Gate Workflow Template
+# Adapt the steps below to match your project stack (Node.js, Python, Go, or .NET).
+name: Continuous Integration (CI)
+
+on:
+  push:
+    branches: [ "main", "feature/**" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    # =========================================================================
+    # OPTION A: Node.js / TypeScript Workspace
+    # =========================================================================
+    # - name: Setup Node.js
+    #   uses: actions/setup-node@v4
+    #   with:
+    #     node-version: '20'
+    #     cache: 'npm'
+    # - name: Install Dependencies
+    #   run: npm ci
+    # - name: Type Check & Lint (Zero Tolerance for Warnings)
+    #   run: npm run lint
+    # - name: Run Automated Tests
+    #   run: npm test -- --run
+
+    # =========================================================================
+    # OPTION B: Python Workspace
+    # =========================================================================
+    # - name: Setup Python
+    #   uses: actions/setup-python@v5
+    #   with:
+    #     python-version: '3.12'
+    # - name: Install Dependencies
+    #   run: pip install -r requirements.txt
+    # - name: Lint & Static Analysis
+    #   run: ruff check .
+    # - name: Run Automated Tests
+    #   run: pytest -v
+
+    # =========================================================================
+    # OPTION C: Go Workspace
+    # =========================================================================
+    # - name: Setup Go
+    #   uses: actions/setup-go@v5
+    #   with:
+    #     go-version: '1.23'
+    # - name: Build (Zero Warnings)
+    #   run: go build ./...
+    # - name: Run Automated Tests
+    #   run: go test -v -race ./...
+
+    # =========================================================================
+    # OPTION D: .NET Workspace
+    # =========================================================================
+    # - name: Setup .NET
+    #   uses: actions/setup-dotnet@v4
+    #   with:
+    #     dotnet-version: '10.0.x'
+    # - name: Restore Dependencies
+    #   run: dotnet restore
+    # - name: Build Solution (--warnaserror)
+    #   run: dotnet build --no-restore --configuration Release --warnaserror
+    # - name: Run Automated Tests
+    #   run: dotnet test --no-build --configuration Release --verbosity normal
+
+    - name: Verify Health Check (Default Fallback)
+      run: |
+        echo "CI workflow triggered. Uncomment the relevant runtime block above for your language."
