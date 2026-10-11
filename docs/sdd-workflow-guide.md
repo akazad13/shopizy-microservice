@@ -7,6 +7,8 @@ This guide covers every stage of the **Spec-Driven Development (SDD) AI Workflow
 ## Table of Contents
 
 1. [Overview & Philosophy](#1-overview--philosophy)
+   - [SDLC Lifecycle Overview](#sdlc-lifecycle-overview)
+   - [Stage Summary](#stage-summary)
 2. [Full Pipeline Walkthrough](#2-full-pipeline-walkthrough)
 3. [The Generator ↔ Reviewer Loop](#3-the-generator--reviewer-loop)
 4. [The Google AI PR Review Agent](#4-the-google-ai-pr-review-agent)

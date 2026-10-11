@@ -1,312 +1,348 @@
 # 🛍️ Shopizy Microservices Platform
 
-> **Enterprise headless e-commerce microservices platform** built with .NET 10, Clean Architecture, and .NET Aspire orchestration.
+> **Enterprise-grade, headless digital commerce platform** engineered with **.NET 10**, **C# 14**, **Clean Architecture**, **Domain-Driven Design (DDD)**, and **.NET Aspire** cloud-native orchestration.
 
-[![.NET](https://github.com/akazad13/shopizy-microservice/actions/workflows/dotnet.yml/badge.svg)](https://github.com/akazad13/shopizy-microservice/actions/workflows/dotnet.yml)
+[![.NET 10 Build](https://github.com/akazad13/shopizy-microservice/actions/workflows/dotnet.yml/badge.svg)](https://github.com/akazad13/shopizy-microservice/actions/workflows/dotnet.yml)
+[![Tests Passing](https://img.shields.io/badge/Tests-336%20Passed%20(100%25)-success?style=flat&logo=dotnet)](https://github.com/akazad13/shopizy-microservice)
 [![Google AI PR Reviewer](https://github.com/akazad13/shopizy-microservice/actions/workflows/pr-review-agent.yml/badge.svg)](https://github.com/akazad13/shopizy-microservice/actions/workflows/pr-review-agent.yml)
+[![Architecture: Clean DDD](https://img.shields.io/badge/Architecture-Clean%20%2B%20DDD%20%2B%20CQRS-blue)](.specify/architecture/system-architecture.md)
+[![.NET Aspire](https://img.shields.io/badge/Orchestration-.NET%20Aspire%2010-512BD4)](src/Shopizy.AppHost)
 
 ---
 
 ## 📖 Table of Contents
 
-1. [What Is Shopizy?](#-what-is-shopizy)
-2. [Architecture & Tech Stack](#-architecture--tech-stack)
-3. [Module Roadmap & Status](#-module-roadmap--status)
-4. [Project Structure](#-project-structure)
-5. [Developer Quick Start](#-developer-quick-start)
-6. [Project Constitution](#-project-constitution)
-7. [Documentation](#-documentation)
-8. [Contributing](#-contributing)
+1. [Overview & Highlights](#-overview--highlights)
+2. [Key Business Capabilities](#-key-business-capabilities)
+3. [Architecture & System Topology](#-architecture--system-topology)
+4. [Microservices Ecosystem](#-microservices-ecosystem)
+5. [Technology Stack](#-technology-stack)
+6. [Module Roadmap & Status](#-module-roadmap--status)
+7. [Solution Structure](#-solution-structure)
+8. [Developer Quick Start](#-developer-quick-start)
+9. [Engineering Principles](#-engineering-principles)
+10. [Documentation & Specs](#-documentation--specs)
+11. [Contributing](#-contributing)
 
 ---
 
-## 🌟 What Is Shopizy?
+## 🌟 Overview & Highlights
 
-Shopizy is an **enterprise-grade, headless digital commerce platform** built as a suite of independently deployable microservices. Each service owns its own domain, database, and API surface, communicating asynchronously via RabbitMQ events and orchestrated locally via .NET Aspire.
+Shopizy is a modern, high-throughput e-commerce platform designed from first principles as an ensemble of independently deployable microservices. Each service encapsulates its own bounded context, database schema, domain models, and API surface, eliminating distributed monolith anti-patterns.
 
-**Business capabilities delivered:**
-- Zero-overselling atomic inventory reservation
-- Hierarchical category trees & brand directory
-- Parent-variant dimensional product matrix (SKUs, barcodes, pricing, stock, JSON attributes)
-- Optimistic concurrency control on product updates and stock modifications
-- 15-minute unpaid order expiration with automatic stock release
-- Idempotency protection on financial and mutating operations via `Idempotency-Key`
-- Sub-second live order tracking push via SignalR + Redis
-- Multi-tenant customer data isolation with cryptographic JWT RBAC
-- Flash-sale Redis Lua hot-key inventory protection
+### Architectural Highlights
+
+- **Database-per-Service**: 10 isolated PostgreSQL databases + dedicated Redis instances ensure zero cross-domain table coupling.
+- **Asynchronous Event-Driven Messaging**: RabbitMQ + MassTransit power resilient event choreography backed by the Transactional Outbox pattern.
+- **Zero Overselling & Hot-Key Protection**: Atomic inventory reservation with 15-minute expiration windows and Redis Lua scripts for flash-sale protection.
+- **Enterprise Security**: Multi-tenant customer data isolation enforced at repository queries alongside cryptographic JWT RBAC.
+- **Idempotency by Design**: Mutating and financial endpoints enforce standard `Idempotency-Key` headers to guarantee exactly-once execution.
+- **End-to-End Observability**: Native OpenTelemetry distributed tracing, metrics, structured Serilog logging, and .NET Aspire dashboard telemetry.
 
 ---
 
-## 🏗️ Architecture & Tech Stack
+## ⚡ Key Business Capabilities
 
-| Layer | Technology |
+| Capability | Description |
 |:---|:---|
-| **Runtime** | .NET 10 / C# 14 |
-| **Architecture Pattern** | Clean Architecture + DDD + CQRS |
-| **Orchestration** | .NET Aspire 10 (`Shopizy.AppHost` + `Shopizy.ServiceDefaults`) |
-| **API** | ASP.NET Core 10 Minimal APIs + YARP Reverse Proxy |
-| **Database** | PostgreSQL 17 (database-per-service) via EF Core 10 |
-| **Caching / Sessions** | Redis 7 |
-| **Messaging** | RabbitMQ + MassTransit (Transactional Outbox pattern) |
-| **Search** | Elasticsearch / Meilisearch |
-| **Real-Time** | ASP.NET Core SignalR + Redis backplane |
-| **Observability** | OpenTelemetry (traces + metrics) + Serilog + .NET Aspire Dashboard |
-| **Resilience** | Polly (retry, circuit breaker, timeout) via `Microsoft.Extensions.Http.Resilience` |
-| **Testing** | xUnit + FluentAssertions + WebApplicationFactory test host |
-| **CI/CD** | GitHub Actions (.NET 10 SDK build + AI PR Review) |
-| **AI Reviewer** | Google AI Gemini via Gemini API |
+| **Atomic Inventory Reservation** | Prevents overselling under high concurrency; automatically restocks abandoned reservations after 15 minutes. |
+| **Dimensional Catalog Engine** | Hierarchical categories, brands, parent-variant matrix (SKUs, pricing, stock, JSON specifications), and optimistic concurrency. |
+| **Session-Backed Cart** | Redis-powered shopping cart with price snapshotting, live discrepancy warnings, and guest-to-customer cart merging. |
+| **Two-Phase Payment & Refunds** | Tokenized payment processing, gateway reconciliation, automated refund lifecycles, and audit records. |
+| **Retail Search & Typo Tolerance** | Multi-attribute faceting, Damerau-Levenshtein typo correction, retail synonym expansion, and "Did You Mean?" hints. |
+| **Promotions & Campaign Rules** | Coupon codes with safety cap ceilings, minimum spend enforcement, percentage/fixed discounts, and BOGO mechanics. |
+| **Logistics & Multi-Carrier Shipping** | Real-time rate calculation (FedEx, UPS, USPS, DHL), automatic $75 free shipping waivers, and milestone tracking. |
+| **Real-Time Push & Dispatch** | SignalR web sockets for live order status updates and transactional email notifications. |
+| **Verified Social Proof & Wishlists** | 1-5 star ratings with verified buyer badges, helpfulness voting, and customer wishlist collections. |
+| **Loyalty Ledger & Digital Gift Cards** | Tiered loyalty point accrual ($1 = 1 point), redemption ($1 discount per 100 points), and gift card balance deduction. |
+| **Cart Abandonment Sweeper** | Automated 2-hour inactivity sweeps, 24-hour customer cooldown suppression, and cryptographic recovery URLs. |
 
-### System Topology
+---
+
+## 🏗️ Architecture & System Topology
 
 ```mermaid
 flowchart TD
     subgraph Clients["Client Tier"]
-        Web["Storefront (Next.js)"]
-        Admin["Admin Portal"]
-        Mobile["Mobile App"]
+        Storefront["Storefront (Next.js / React)"]
+        AdminPortal["Admin Management Portal"]
+        MobileClient["Mobile Shopping Client"]
     end
 
-    subgraph Edge["API Gateway"]
-        YARP["YARP Reverse Proxy + Auth"]
+    subgraph GatewayTier["API Gateway Layer"]
+        YARP["YARP Reverse Proxy + Auth Gate"]
     end
 
-    subgraph Services["Business Microservices (ASP.NET Core 10)"]
-        Auth["Identity Service\n:5001"]
+    subgraph CoreCommerce["Core Commerce & Checkout"]
+        Identity["Identity Service\n:5001"]
         Catalog["Catalog Service\n:5002"]
         Cart["Cart Service\n:5004"]
         Order["Order Service\n:5005"]
         Payment["Payment Service\n:5006"]
     end
 
-    subgraph Infra["Infrastructure"]
-        PG[("PostgreSQL 17\n(per-service DB)")]
-        Redis[("Redis 7\nCache + Backplane")]
-        RMQ["RabbitMQ\n+ MassTransit"]
+    subgraph DiscoveryOps["Discovery, Promotions & Logistics"]
+        Search["Search Service\n:5007"]
+        Promotion["Promotion Service\n:5008"]
+        Shipping["Shipping Service\n:5009"]
+        Notification["Notification Service\n:5010"]
     end
 
-    subgraph Aspire[".NET Aspire Layer"]
-        AppHost["Shopizy.AppHost\n(Orchestration)"]
-        Defaults["Shopizy.ServiceDefaults\n(OTel + Health + Resilience)"]
+    subgraph Retention["Retention, Loyalty & Social"]
+        Review["Review Service\n:5011"]
+        Loyalty["Loyalty Service\n:5012"]
+        Abandonment["Cart Abandonment Worker\n:5013"]
     end
 
-    Clients --> Edge --> Services
-    Services --> Infra
-    Services <--> RMQ
-    AppHost -.->|Orchestrates| Services
-    AppHost -.->|Provisions| Infra
+    subgraph Infrastructure["Infrastructure & Persistence"]
+        PG[("PostgreSQL 17\n(10 Isolated Service Databases)")]
+        Redis[("Redis 7\nCache, Carts & Lua Scripts")]
+        RMQ["RabbitMQ Broker\nMassTransit + Outbox"]
+    end
+
+    subgraph Aspire["Cloud-Native Orchestrator (.NET Aspire 10)"]
+        AppHost["Shopizy.AppHost\n(Resource Provisioning & Orchestration)"]
+        Defaults["Shopizy.ServiceDefaults\n(OpenTelemetry + Health Probes + Polly Resilience)"]
+    end
+
+    Clients --> GatewayTier
+    GatewayTier --> CoreCommerce
+    GatewayTier --> DiscoveryOps
+    GatewayTier --> Retention
+
+    CoreCommerce --> PG
+    CoreCommerce --> Redis
+    CoreCommerce <--> RMQ
+
+    DiscoveryOps --> PG
+    DiscoveryOps --> Redis
+    DiscoveryOps <--> RMQ
+
+    Retention --> PG
+    Retention --> Redis
+    Retention <--> RMQ
+
+    AppHost -.->|Provisions & Orchestrates| CoreCommerce
+    AppHost -.->|Provisions & Orchestrates| DiscoveryOps
+    AppHost -.->|Provisions & Orchestrates| Retention
+    AppHost -.->|Hosts Containers| Infrastructure
 ```
+
+---
+
+## 🧩 Microservices Ecosystem
+
+| # | Service Name | Project Path | Storage / Database | Primary Responsibility |
+|:---:|:---|:---|:---|:---|
+| **1** | **Shared Kernel** | `src/Shopizy.SharedKernel` | — | Common DDD building blocks, Result<T>, Outbox pattern, and idempotency filter. |
+| **2** | **Identity Service** | `src/Shopizy.IdentityService` | `identitydb` (Postgres) | User registration, JWT issuance, refresh tokens, and multi-tenant scoping. |
+| **3** | **Catalog Service** | `src/Shopizy.CatalogService` | `catalogdb` (Postgres) | Categories, brands, parent-variant products, pricing, and stock concurrency. |
+| **4** | **Cart Service** | `src/Shopizy.CartService` | Redis 7 | Redis-backed cart state, price snapshotting, discrepancy alerts, and guest merges. |
+| **5** | **Order Service** | `src/Shopizy.OrderService` | `orderdb` (Postgres) | Atomic reservation, zero-overselling validation, 15-min unpaid expiry, and checkout. |
+| **6** | **Payment Service** | `src/Shopizy.PaymentService` | `paymentdb` (Postgres) | Tokenized charge authorization, decline handling, and automated refund ledger. |
+| **7** | **Search Service** | `src/Shopizy.SearchService` | Redis / Memory Index | Typo-tolerant search, retail synonyms, "Did You Mean?", and multi-faceted filtering. |
+| **8** | **Promotion Service**| `src/Shopizy.PromotionService` | `promotiondb` (Postgres) | Coupon validation, safety cap ceilings, percentage/fixed discounts, and BOGO rules. |
+| **9** | **Shipping Service** | `src/Shopizy.ShippingService` | `shippingdb` (Postgres) | Carrier rate quotation (USPS/UPS/FedEx/DHL), $75 waiver, and tracking milestones. |
+| **10**| **Notification Service**| `src/Shopizy.NotificationService`| `notificationdb` (Postgres)| Transactional email dispatch, merchant notifications, and SignalR live push hubs. |
+| **11**| **Review Service** | `src/Shopizy.ReviewService` | `reviewdb` (Postgres) | 1-5 star reviews, verified buyer badge verification, helpfulness voting, and wishlists. |
+| **12**| **Loyalty Service** | `src/Shopizy.LoyaltyService` | `loyaltydb` (Postgres) | Loyalty point accrual ($1=1pt), redemptions (100pt=$1), and digital gift cards. |
+| **13**| **Cart Abandonment**| `src/Shopizy.CartAbandonmentWorker`| `abandonmentdb` (Postgres)| Inactivity background sweeper, 24h recipient suppression, and restore tokens. |
+
+---
+
+## 🛠️ Technology Stack
+
+| Layer | Technology | Details |
+|:---|:---|:---|
+| **Runtime & Language** | .NET 10 / C# 14 | Latest performance enhancements, collection expressions, pattern matching |
+| **Architecture Style** | Clean Architecture + DDD + CQRS | Independent Domain, Application, Infrastructure, and Presentation layers |
+| **Orchestration** | .NET Aspire 10 | Centralized service discovery, telemetry, and container provisioning |
+| **API Framework** | ASP.NET Core 10 Minimal APIs | High-throughput, low-overhead HTTP endpoints with RFC 7807 Problem Details |
+| **Relational Database** | PostgreSQL 17 via EF Core 10 | Database-per-service isolation, migrations, and concurrency tokens |
+| **Distributed Cache & State** | Redis 7 | Cart sessions, Lua atomicity scripts, and SignalR backplane |
+| **Message Broker** | RabbitMQ + MassTransit | Asynchronous integration events with Transactional Outbox pattern |
+| **Real-Time Communication** | ASP.NET Core SignalR | Sub-second push delivery for order status and tracking milestones |
+| **Resilience & Fault Tolerance** | Polly (`Microsoft.Extensions.Http.Resilience`)| Circuit breakers, retries with exponential backoff, and timeouts |
+| **Observability** | OpenTelemetry + Serilog | Distributed tracing, live metrics, and Aspire Telemetry Dashboard |
+| **Automated Testing** | xUnit + FluentAssertions | 38 test suites across Unit, Integration, and WebApplicationFactory E2E tiers |
+| **Continuous Integration** | GitHub Actions | Automated build (`--warnaserror`), test runner, and Google AI PR review |
 
 ---
 
 ## 📦 Module Roadmap & Status
 
+All 13 modules across all 3 development phases are fully implemented, verified, and merged:
+
 ### Phase 1: Core Commerce & Checkout (MVP)
 
-| # | Module | Branch | PR | Status | Tests |
+| # | Module | Branch | Pull Request | Status | Automated Tests |
 |:---:|:---|:---|:---:|:---:|:---:|
-| 1 | **Shared Kernel & Aspire Orchestrator** | `feature/shared-kernel` | [#1](https://github.com/akazad13/shopizy-microservice/pull/1) | ✅ MERGED | 30/30 |
-| 2 | **Identity & Access Service** | `feature/identity-service` | [#2](https://github.com/akazad13/shopizy-microservice/pull/2), [#3](https://github.com/akazad13/shopizy-microservice/pull/3) | ✅ MERGED | 48/48 |
-| 3 | **Product Catalog Service** | `feature/catalog-service` | [#4](https://github.com/akazad13/shopizy-microservice/pull/4) | ✅ MERGED | 62/62 |
-| 4 | **Shopping Cart Service** | `feature/cart-service` | [#6](https://github.com/akazad13/shopizy-microservice/pull/6) | ✅ MERGED | 38/38 |
-| 5 | **Order & Inventory Service** | `feature/order-service` | [#7](https://github.com/akazad13/shopizy-microservice/pull/7) | ✅ MERGED | 33/33 |
-| 6 | **Payment & Refund Gateway** | `feature/payment-service` | [#8](https://github.com/akazad13/shopizy-microservice/pull/8) | ✅ MERGED | 15/15 |
+| 1 | **Shared Kernel & Aspire Orchestrator** | `feature/shared-kernel` | [#1](https://github.com/akazad13/shopizy-microservice/pull/1) | ✅ MERGED | 30 / 30 Passed |
+| 2 | **Identity & Access Service** | `feature/identity-service` | [#2](https://github.com/akazad13/shopizy-microservice/pull/2), [#3](https://github.com/akazad13/shopizy-microservice/pull/3) | ✅ MERGED | 48 / 48 Passed |
+| 3 | **Product Catalog Service** | `feature/catalog-service` | [#4](https://github.com/akazad13/shopizy-microservice/pull/4) | ✅ MERGED | 62 / 62 Passed |
+| 4 | **Shopping Cart Service** | `feature/cart-service` | [#6](https://github.com/akazad13/shopizy-microservice/pull/6) | ✅ MERGED | 38 / 38 Passed |
+| 5 | **Order & Inventory Service** | `feature/order-service` | [#7](https://github.com/akazad13/shopizy-microservice/pull/7) | ✅ MERGED | 33 / 33 Passed |
+| 6 | **Payment & Refund Gateway** | `feature/payment-service` | [#8](https://github.com/akazad13/shopizy-microservice/pull/8) | ✅ MERGED | 15 / 15 Passed |
 
 ### Phase 2: Discovery, Merchandising & Operations
 
-| # | Module | Branch | PR | Status | Tests |
+| # | Module | Branch | Pull Request | Status | Automated Tests |
 |:---:|:---|:---|:---:|:---:|:---:|
-| 7 | **Search & Discovery Engine** | `feature/search-service` | [#9](https://github.com/akazad13/shopizy-microservice/pull/9) | ✅ MERGED | 19/19 |
-| 8 | **Promotion & Coupon Service** | `feature/promotion-service` | [#10](https://github.com/akazad13/shopizy-microservice/pull/10) | ✅ MERGED | 12/12 |
-| 9 | **Shipping & Tracking Service** | `feature/shipping-service` | [#11](https://github.com/akazad13/shopizy-microservice/pull/11) | ✅ MERGED | 12/12 |
-| 10 | **Notification & Real-Time Push** | `feature/notification-service` | [#12](https://github.com/akazad13/shopizy-microservice/pull/12) | ✅ MERGED | 12/12 |
+| 7 | **Search & Discovery Engine** | `feature/search-service` | [#9](https://github.com/akazad13/shopizy-microservice/pull/9) | ✅ MERGED | 19 / 19 Passed |
+| 8 | **Promotion & Coupon Service** | `feature/promotion-service` | [#10](https://github.com/akazad13/shopizy-microservice/pull/10) | ✅ MERGED | 12 / 12 Passed |
+| 9 | **Shipping & Tracking Service** | `feature/shipping-service` | [#11](https://github.com/akazad13/shopizy-microservice/pull/11) | ✅ MERGED | 12 / 12 Passed |
+| 10 | **Notification & Real-Time Push** | `feature/notification-service` | [#12](https://github.com/akazad13/shopizy-microservice/pull/12) | ✅ MERGED | 12 / 12 Passed |
 
 ### Phase 3: Retention, Loyalty & Social Proof
 
-| # | Module | Branch | PR | Status | Tests |
+| # | Module | Branch | Pull Request | Status | Automated Tests |
 |:---:|:---|:---|:---:|:---:|:---:|
-| 11 | **Reviews, Ratings & Wishlists** | `feature/review-service` | [#13](https://github.com/akazad13/shopizy-microservice/pull/13) | ✅ MERGED | 17/17 |
-| 12 | **Loyalty Points & Gift Cards** | `feature/loyalty-service` | [#14](https://github.com/akazad13/shopizy-microservice/pull/14) | ✅ MERGED | 20/20 |
-| 13 | **Abandoned Cart Recovery Worker** | `feature/cart-abandonment-worker` | [#15](https://github.com/akazad13/shopizy-microservice/pull/15) | ✅ MERGED | 22/22 |
+| 11 | **Reviews, Ratings & Wishlists** | `feature/review-service` | [#13](https://github.com/akazad13/shopizy-microservice/pull/13) | ✅ MERGED | 17 / 17 Passed |
+| 12 | **Loyalty Points & Gift Cards** | `feature/loyalty-service` | [#14](https://github.com/akazad13/shopizy-microservice/pull/14) | ✅ MERGED | 20 / 20 Passed |
+| 13 | **Abandoned Cart Recovery Worker** | `feature/cart-abandonment-worker` | [#15](https://github.com/akazad13/shopizy-microservice/pull/15) | ✅ MERGED | 22 / 22 Passed |
+
+**Total Test Coverage:** 336 passing tests across 38 distinct test projects (100% pass rate).
 
 ---
 
-## 📁 Project Structure
+## 📁 Solution Structure
 
 ```
 shopizy-microservice/
-├── src/
-│   ├── Shopizy.SharedKernel/                  # DDD primitives, Result<T>, event contracts, idempotency middleware
-│   ├── Shopizy.ServiceDefaults/               # OpenTelemetry, health checks, Polly resilience
-│   ├── Shopizy.AppHost/                      # .NET Aspire 10 orchestrator (Postgres, Redis, RabbitMQ)
-│   ├── Shopizy.IdentityService/               # User registration, JWT auth, refresh tokens, RBAC, isolation
-│   ├── Shopizy.CatalogService/                # Hierarchical categories, brands, variants, optimistic concurrency
-│   ├── Shopizy.CartService/                   # Redis-backed shopping cart, price snapshotting, discrepancy alerts, merge
-│   ├── Shopizy.OrderService/                  # Atomic stock reservation, zero-overselling, 15-min auto-expiration, restocking
-│   ├── Shopizy.PaymentService/                # Tokenized payment processing, gateway reconciliation, automated refunds
-│   ├── Shopizy.SearchService/                 # Fuzzy matching, retail synonyms, "Did You Mean?", multi-attribute faceting
-│   ├── Shopizy.PromotionService/              # Discount campaigns, safety cap ceilings, BOGO, minimum spend rules
-│   ├── Shopizy.ShippingService/               # Multi-carrier rate engine, USPS $75 threshold, milestone tracking
-│   ├── Shopizy.NotificationService/           # SignalR real-time hubs, transactional email dispatch, merchant feed
-│   ├── Shopizy.ReviewService/                 # 1-5 star reviews, verified buyer badge, helpfulness voting, wishlists
-│   ├── Shopizy.LoyaltyService/                # Loyalty point accrual/redemption, digital gift card issuance/deductions
-│   └── Shopizy.CartAbandonmentWorker/         # 2h cart inactivity sweep, 24h cooldown suppression, tokenized restore URLs
-├── tests/
-│   ├── Shopizy.SharedKernel.UnitTests/        # 23 unit tests
-│   ├── Shopizy.SharedKernel.IntegrationTests/ # 7 integration tests
-│   ├── Shopizy.IdentityService.UnitTests/      # 38 unit tests (password policy, user aggregate, isolation)
-│   ├── Shopizy.IdentityService.IntegrationTests/ # 4 integration tests (EF Core persistence, tokens)
-│   ├── Shopizy.IdentityService.E2ETests/       # 6 automated E2E tests (auth, RBAC, data isolation, idempotency)
-│   ├── Shopizy.CatalogService.UnitTests/       # 46 unit tests (categories, brands, products, variants, money)
-│   ├── Shopizy.CatalogService.IntegrationTests/# 9 integration tests (category trees, search, concurrency)
-│   ├── Shopizy.CatalogService.E2ETests/        # 7 automated E2E tests (catalog hierarchy, variants, RBAC, replay)
-│   ├── Shopizy.CartService.UnitTests/          # 27 unit tests (item mutations, price snapshotting, subtotal)
-│   ├── Shopizy.CartService.IntegrationTests/   # 5 integration tests (Redis persistence roundtrip, TTL)
-│   ├── Shopizy.CartService.E2ETests/           # 6 automated E2E tests (guest lifecycle, merge, discrepancy, isolation)
-│   ├── Shopizy.OrderService.UnitTests/         # 24 unit tests (state machine, stock reservation, expiration)
-│   ├── Shopizy.OrderService.IntegrationTests/  # 3 integration tests (EF Core persistence, isolation)
-│   ├── Shopizy.OrderService.E2ETests/          # 6 automated E2E tests (checkout, zero-overselling, 15-min expiry, idempotency)
-│   ├── Shopizy.PaymentService.UnitTests/       # 7 unit tests (payment state machine, refund validation, currency check)
-│   ├── Shopizy.PaymentService.IntegrationTests/# 2 integration tests (EF Core persistence, refund records)
-│   ├── Shopizy.PaymentService.E2ETests/        # 6 automated E2E tests (card charge, declines, refunds, idempotency)
-│   ├── Shopizy.SearchService.UnitTests/         # 11 unit tests (fuzzy matching, Damerau-Levenshtein, synonyms, pagination safety)
-│   ├── Shopizy.SearchService.IntegrationTests/  # 2 integration tests (index store faceting, filtering)
-│   ├── Shopizy.SearchService.E2ETests/          # 6 automated E2E tests (typo tolerance, synonyms, did-you-mean, facets, filtering, RBAC)
-│   ├── Shopizy.PromotionService.UnitTests/      # 4 unit tests (percentage caps, fixed discounts, minimum spend, BOGO)
-│   ├── Shopizy.PromotionService.IntegrationTests/# 2 integration tests (EF Core campaign persistence, usage increments)
-│   ├── Shopizy.PromotionService.E2ETests/       # 6 automated E2E tests (safety cap ceilings, minimum spend, category rules, BOGO, RBAC)
-│   ├── Shopizy.ShippingService.UnitTests/      # 4 unit tests (free shipping waiver, sub-$75 fee, 4 carriers)
-│   ├── Shopizy.ShippingService.IntegrationTests/# 2 integration tests (EF Core persistence, milestone events)
-│   ├── Shopizy.ShippingService.E2ETests/       # 6 automated E2E tests (rates, threshold, progression, tracking, RBAC)
-│   ├── Shopizy.NotificationService.UnitTests/  # 4 unit tests (email validation, template rendering, status transitions)
-│   ├── Shopizy.NotificationService.IntegrationTests/# 2 integration tests (EF Core persistence, customer isolation)
-│   ├── Shopizy.NotificationService.E2ETests/   # 6 automated E2E tests (send, query, isolation, auth, push, RBAC)
-│   ├── Shopizy.ReviewService.UnitTests/        # 9 unit tests (rating bounds, validation, voting math, distribution)
-│   ├── Shopizy.ReviewService.IntegrationTests/ # 2 integration tests (EF Core persistence, customer isolation)
-│   ├── Shopizy.ReviewService.E2ETests/         # 6 automated E2E tests (verified badge, summary, helpful voting, wishlist, RBAC)
-│   ├── Shopizy.LoyaltyService.UnitTests/       # 12 unit tests (point accrual math, $1=1pt, 100pt=$1 discount, over-redemption, gift card states)
-│   ├── Shopizy.LoyaltyService.IntegrationTests/# 2 integration tests (EF Core account/ledger persistence, gift card balance deductions)
-│   ├── Shopizy.LoyaltyService.E2ETests/        # 6 automated E2E tests (order accrual, redemption, over-redemption 400, gift card lifecycle, isolation, RBAC)
-│   ├── Shopizy.CartAbandonmentWorker.UnitTests/ # 12 unit tests (2h inactivity threshold, 24h cooldown, URL formats)
-│   ├── Shopizy.CartAbandonmentWorker.IntegrationTests/ # 4 integration tests (EF Core persistence, cooldown tracking, restoration)
-│   └── Shopizy.CartAbandonmentWorker.E2ETests/  # 6 automated E2E tests (sweep dispatch, suppression, restore token, RBAC)
-├── .specify/
-│   ├── architecture/
-│   │   ├── system-architecture.md            # Full topology & tech rationale
-│   │   ├── module-decomposition.md           # 13-module roadmap with E2E scenarios
-│   │   └── interview-answers.json            # Ratified architectural decisions
-│   ├── memory/
-│   │   └── constitution.md                   # 8 non-negotiable engineering principles
-│   └── specs/
-│       ├── shared-kernel/                    # Module 1 specs & review log
-│       ├── identity-service/                 # Module 2 specs & review log
-│       ├── catalog-service/                  # Module 3 specs & review log
-│       ├── cart-service/                     # Module 4 specs & review log
-│       ├── order-service/                    # Module 5 specs & review log
-│       ├── payment-service/                  # Module 6 specs & review log
-│       ├── search-service/                   # Module 7 specs & review log
-│       ├── promotion-service/                # Module 8 specs & review log
-│       ├── shipping-service/                 # Module 9 specs & review log
-│       ├── notification-service/             # Module 10 specs & review log
-│       ├── review-service/                   # Module 11 specs & review log
-│       ├── loyalty-service/                  # Module 12 specs & review log
-│       └── cart-abandonment-worker/          # Module 13 specs & review log
-├── .agents/
-│   └── skills/                               # Antigravity AI skill definitions
-│       ├── sdd-intake/SKILL.md               # PRD ingestion & architecture interview
-│       ├── sdd-spec/SKILL.md                 # Module specification generator
-│       ├── sdd-loop/SKILL.md                 # Generator ↔ Reviewer refinement loop
-│       ├── sdd-pr/SKILL.md                   # Automated PR creation
-│       └── speckit-*/SKILL.md                # GitHub Spec Kit base skills
-├── .github/
-│   ├── workflows/
-│   │   ├── dotnet.yml                        # .NET 10 CI: build + test
-│   │   └── pr-review-agent.yml               # Google AI PR Review Agent
-│   └── scripts/
-│       └── pr_review_agent.py                # Gemini-powered review script
-└── docs/
-    ├── Shopizy_PRD.md                        # Product Requirements Document
-    ├── RUNBOOK.md                            # Comprehensive Operations & Incident Response Runbook
-    ├── sdd-workflow-guide.md                 # Detailed workflow guide
-    └── SPEC_DRIVEN_AI_WORKFLOW_PLAN.md
+├── src/                                       # Production microservice projects
+│   ├── Shopizy.SharedKernel/                  # Cross-cutting DDD domain primitives & contracts
+│   ├── Shopizy.ServiceDefaults/               # OpenTelemetry, health checks, resilience defaults
+│   ├── Shopizy.AppHost/                      # .NET Aspire 10 cloud-native local orchestrator
+│   ├── Shopizy.IdentityService/               # Auth, JWT, user accounts, customer isolation
+│   ├── Shopizy.CatalogService/                # Categories, brands, variants, stock concurrency
+│   ├── Shopizy.CartService/                   # Redis cart store, snapshotting, discrepancy alerts
+│   ├── Shopizy.OrderService/                  # Zero-overselling atomic reservations, orders
+│   ├── Shopizy.PaymentService/                # Payment gateway, refunds, transaction audit
+│   ├── Shopizy.SearchService/                 # Typo-tolerant search, synonyms, facets
+│   ├── Shopizy.PromotionService/              # Discount rules, coupon campaigns, BOGO logic
+│   ├── Shopizy.ShippingService/               # Carrier quote engine, $75 waiver, tracking
+│   ├── Shopizy.NotificationService/           # Email dispatcher, SignalR real-time hubs
+│   ├── Shopizy.ReviewService/                 # Ratings, verified buyer badge, wishlists
+│   ├── Shopizy.LoyaltyService/                # Loyalty ledger, points accrual, gift cards
+│   └── Shopizy.CartAbandonmentWorker/         # Inactivity sweeper, restore token generator
+├── tests/                                     # 38 Automated test projects (Unit, Integration, E2E)
+│   ├── Shopizy.*.UnitTests/                   # Domain logic, value object, and state machine tests
+│   ├── Shopizy.*.IntegrationTests/            # EF Core persistence, Redis, and event broker tests
+│   └── Shopizy.*.E2ETests/                    # Full HTTP WebApplicationFactory API contract tests
+├── .specify/                                  # Architectural specifications & engineering memory
+│   ├── architecture/                          # System architecture & module decomposition
+│   ├── memory/constitution.md                 # 8 non-negotiable engineering principles
+│   └── specs/                                 # Formal module specs, plans, tasks, and audit logs
+├── .agents/                                   # Antigravity autonomous development skills
+├── .github/                                   # CI workflows and Google AI PR review scripts
+└── docs/                                      # Operational runbook, PRD, and workflow guide
 ```
 
 ---
 
 ## 🏃 Developer Quick Start
 
-### Clone & Build
+### 1. Prerequisites
+
+- **[.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)** (v10.0.100+)
+- **[Docker Desktop](https://www.docker.com/)** or Podman (required for Aspire container provisioning)
+- **Git** & **[GitHub CLI (`gh`)](https://cli.github.com/)**
+
+### 2. Clone & Build
 
 ```bash
 git clone https://github.com/akazad13/shopizy-microservice.git
 cd shopizy-microservice
 
+# Restore packages & build entire solution with zero warnings allowed
 dotnet restore Shopizy.sln
 dotnet build Shopizy.sln --warnaserror
 ```
 
-### Run All Tests
+### 3. Run Automated Tests
+
+Execute the complete 38-project test suite locally:
 
 ```bash
 dotnet test Shopizy.sln
-# Expected: 336 passed, 0 failed across 38 test projects
+# Expected: 336 passed, 0 failed (100% pass rate)
 ```
 
-### Run Locally with .NET Aspire
+### 4. Run Locally with .NET Aspire
+
+Launch the entire ecosystem with a single command:
 
 ```bash
 dotnet run --project src/Shopizy.AppHost
-# Opens .NET Aspire Dashboard at https://localhost:15888
-# Provisions: PostgreSQL 17 (identitydb, catalogdb, orderdb, paymentdb, promotiondb, shippingdb, notificationdb, reviewdb, loyaltydb, abandonmentdb), Redis 7 (cart-service, caching), RabbitMQ
 ```
 
----
-
-## 📜 Project Constitution
-
-The Shopizy Platform operates under **8 non-negotiable engineering principles** defined in [`.specify/memory/constitution.md`](.specify/memory/constitution.md):
-
-| Principle | Rule |
-|:---|:---|
-| **I. Clean Architecture** | Domain layer contains zero ORM, framework, or web dependencies |
-| **II. Zero Overselling** | Stock reservation is atomic; 15-min unpaid expiry is mandatory |
-| **III. Event-Driven Decoupling** | No synchronous cross-service writes; use Transactional Outbox |
-| **IV. Test-First Quality** | Every spec defines test criteria before implementation begins |
-| **V. Zero Trust Security** | JWT Bearer required; multi-tenant data isolation at query level |
-| **VI. Idempotency** | All financial & mutating endpoints require and validate `Idempotency-Key` |
-| **VII. Database-per-Service** | No cross-database queries or cross-service foreign keys |
-| **VIII. Hot-Key Inventory** | Flash-sale protection via atomic Redis Lua scripts |
+This automatically:
+- Provisions containerized **PostgreSQL 17** with 10 separate service databases.
+- Provisions containerized **Redis 7** for cart state, caching, and pub/sub.
+- Provisions containerized **RabbitMQ** for event messaging.
+- Starts all 13 microservices with automatic service discovery.
+- Opens the **.NET Aspire Telemetry Dashboard** at `https://localhost:15888` for live logs, traces, and metrics.
 
 ---
 
-## 📚 Documentation
+## 📜 Engineering Principles
 
-| Document | Description |
+The Shopizy platform strictly adheres to **8 non-negotiable engineering principles** documented in [`.specify/memory/constitution.md`](.specify/memory/constitution.md):
+
+| # | Principle | Enforcement Rule |
+|:---:|:---|:---|
+| **I** | **Clean Architecture** | The Domain layer contains zero dependencies on ORMs, web frameworks, or third-party packages. |
+| **II** | **Zero Overselling** | Stock reservation is atomic; 15-minute unpaid expiry and restocking are mandatory. |
+| **III**| **Event-Driven Decoupling** | Synchronous cross-service writes are prohibited; services communicate via Transactional Outbox events. |
+| **IV** | **Test-First Quality** | Every specification defines unit, integration, and E2E acceptance criteria prior to implementation. |
+| **V** | **Zero Trust Security** | JWT Bearer authentication is mandatory; customer data isolation is strictly enforced at query level. |
+| **VI** | **Idempotency** | All mutating and financial endpoints require and validate standard `Idempotency-Key` headers. |
+| **VII**| **Database-per-Service** | Direct cross-database queries and foreign keys are forbidden; each service fully owns its data store. |
+| **VIII**|**Hot-Key Inventory** | High-contention flash-sale inventory operations are safeguarded by atomic Redis Lua scripts. |
+
+---
+
+## 📚 Documentation & Specs
+
+### System & Architecture Documentation
+
+| Document | Purpose |
 |:---|:---|
-| [Operations & Incident Runbook](docs/RUNBOOK.md) | Comprehensive operational, local setup, troubleshooting playbooks, and disaster recovery |
-| [Shopizy PRD](docs/Shopizy_PRD.md) | Full Product Requirements Document |
-| [SDD Workflow Guide](docs/sdd-workflow-guide.md) | Full SDLC lifecycle, autonomous agent loop, and workflow guide |
-| [System Architecture Blueprint](.specify/architecture/system-architecture.md) | Full topology, CQRS, and infrastructure rationale |
-| [Module Decomposition Roadmap](.specify/architecture/module-decomposition.md) | 13-module dependency graph with E2E scenarios |
-| [Project Constitution](.specify/memory/constitution.md) | 8 non-negotiable engineering principles |
-| [Shared Kernel Spec](.specify/specs/shared-kernel/spec.md) | Module 1 formal specification |
-| [Shared Kernel Review Log](.specify/specs/shared-kernel/review-log.md) | Module 1 audit trail (AI + peer feedback) |
-| [Identity Service Spec](.specify/specs/identity-service/spec.md) | Module 2 formal specification |
-| [Identity Service Review Log](.specify/specs/identity-service/review-log.md) | Module 2 audit trail (Customer Isolation & Idempotency) |
-| [Catalog Service Spec](.specify/specs/catalog-service/spec.md) | Module 3 formal specification |
-| [Catalog Service Review Log](.specify/specs/catalog-service/review-log.md) | Module 3 audit trail (Categories, Variants, Concurrency) |
-| [Cart Service Spec](.specify/specs/cart-service/spec.md) | Module 4 formal specification |
-| [Cart Service Review Log](.specify/specs/cart-service/review-log.md) | Module 4 audit trail (Redis Shopping Cart & Merging) |
-| [Order Service Spec](.specify/specs/order-service/spec.md) | Module 5 formal specification |
-| [Order Service Review Log](.specify/specs/order-service/review-log.md) | Module 5 audit trail (Atomic Stock Reservation & Expiration) |
-| [Payment Service Spec](.specify/specs/payment-service/spec.md) | Module 6 formal specification |
-| [Payment Service Review Log](.specify/specs/payment-service/review-log.md) | Module 6 audit trail (Tokenized Payments & Refunds) |
+| [Operations & Incident Runbook](docs/RUNBOOK.md) | Local setup, ports, configuration keys, database migrations, and incident troubleshooting playbooks. |
+| [Shopizy PRD](docs/Shopizy_PRD.md) | Comprehensive Product Requirements Document defining business scope and requirements. |
+| [SDD Workflow Guide](docs/sdd-workflow-guide.md) | Complete guide to the 7-stage Spec-Driven Development SDLC lifecycle and autonomous agent loops. |
+| [System Architecture Blueprint](.specify/architecture/system-architecture.md) | Full architectural topology, CQRS design, and technology rationale. |
+| [Module Decomposition Roadmap](.specify/architecture/module-decomposition.md) | 13-module dependency graph, integration contracts, and E2E scenario definitions. |
+| [Project Constitution](.specify/memory/constitution.md) | The 8 non-negotiable engineering laws governing all architecture and code reviews. |
+
+### Module Specifications & Audit Logs
+
+| Module | Specification | Audit Trail & Test Log |
+|:---|:---|:---|
+| **Module 1: Shared Kernel** | [Spec](.specify/specs/shared-kernel/spec.md) | [Review Log](.specify/specs/shared-kernel/review-log.md) |
+| **Module 2: Identity Service** | [Spec](.specify/specs/identity-service/spec.md) | [Review Log](.specify/specs/identity-service/review-log.md) |
+| **Module 3: Catalog Service** | [Spec](.specify/specs/catalog-service/spec.md) | [Review Log](.specify/specs/catalog-service/review-log.md) |
+| **Module 4: Cart Service** | [Spec](.specify/specs/cart-service/spec.md) | [Review Log](.specify/specs/cart-service/review-log.md) |
+| **Module 5: Order Service** | [Spec](.specify/specs/order-service/spec.md) | [Review Log](.specify/specs/order-service/review-log.md) |
+| **Module 6: Payment Service** | [Spec](.specify/specs/payment-service/spec.md) | [Review Log](.specify/specs/payment-service/review-log.md) |
+| **Module 7: Search Service** | [Spec](.specify/specs/search-service/spec.md) | [Review Log](.specify/specs/search-service/review-log.md) |
+| **Module 8: Promotion Service** | [Spec](.specify/specs/promotion-service/spec.md) | [Review Log](.specify/specs/promotion-service/review-log.md) |
+| **Module 9: Shipping Service** | [Spec](.specify/specs/shipping-service/spec.md) | [Review Log](.specify/specs/shipping-service/review-log.md) |
+| **Module 10: Notification Service** | [Spec](.specify/specs/notification-service/spec.md) | [Review Log](.specify/specs/notification-service/review-log.md) |
+| **Module 11: Review Service** | [Spec](.specify/specs/review-service/spec.md) | [Review Log](.specify/specs/review-service/review-log.md) |
+| **Module 12: Loyalty Service** | [Spec](.specify/specs/loyalty-service/spec.md) | [Review Log](.specify/specs/loyalty-service/review-log.md) |
+| **Module 13: Cart Abandonment** | [Spec](.specify/specs/cart-abandonment-worker/spec.md) | [Review Log](.specify/specs/cart-abandonment-worker/review-log.md) |
 
 ---
 
 ## 🤝 Contributing
 
-Contributions follow the project's Spec-Driven Development (SDD) lifecycle and engineering principles. Please see the [SDD Workflow Guide](docs/sdd-workflow-guide.md) for full details on specifications, autonomous agent loops, testing criteria, and PR reviews.
+We welcome contributions! All work follows the repository's Spec-Driven Development (SDD) lifecycle and adheres to the [Project Constitution](.specify/memory/constitution.md). 
+
+For step-by-step guidance on creating specifications, running the generator/reviewer loop, executing test verification, and automated PR reviews, refer to the [SDD Workflow Guide](docs/sdd-workflow-guide.md).
 
 ---
 
-*Built with ❤️ using [Antigravity AI](https://antigravity.dev) × [GitHub Spec Kit](https://github.com/github/spec-kit)*
+## 📄 License
+
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
