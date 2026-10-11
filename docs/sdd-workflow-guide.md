@@ -30,6 +30,54 @@ This produces code that is:
 - **Architecturally sound** — every layer boundary is audited
 - **Fully traceable** — PRDs → specs → code → tests → PR
 
+### SDLC Lifecycle Overview
+
+Every module in this repository is built using a **fully autonomous 7-stage Spec-Driven Development (SDD) pipeline**:
+
+```mermaid
+flowchart TD
+    subgraph Phase1["Phase 1: Architecture & Ingestion"]
+        PRD["📄 1. Ingest PRD\n/sdd-intake"]
+        Interview["🎙️ 2. Arch Interview\n(Interactive Q&A)"]
+        Blueprint["🏗️ 3. Architecture Blueprint\n+ Module Roadmap"]
+        PRD --> Interview --> Blueprint
+    end
+
+    subgraph Phase2["Phase 2: Formal Specification"]
+        Spec["📋 4. Module Spec\n/sdd-spec <module>"]
+    end
+
+    subgraph Phase3["Phase 3: Autonomous Implementation & Testing"]
+        Loop["🔄 5. Generator ⟷ Reviewer\n/sdd-loop <module>"]
+        Tests["✅ 6. Automated Tests\n(Unit + Integration + E2E)"]
+        Loop --> Tests
+    end
+
+    subgraph Phase4["Phase 4: Review, Feedback & Delivery"]
+        PR["🚀 7. GitHub PR\n/sdd-pr <module>"]
+        Review["🤖 8. AI PR Review\n(Google AI Gemini)"]
+        Feedback["🔁 9. Peer Feedback\nResolution Loop"]
+        Merge(["🎉 Merge to Main"])
+        PR --> Review --> Feedback
+        Feedback -->|"✅ APPROVED"| Merge
+    end
+
+    Blueprint --> Spec
+    Spec --> Loop
+    Tests --> PR
+```
+
+### Stage Summary
+
+| Stage | Command | What Happens | Output Artifacts |
+|:---|:---|:---|:---|
+| **1. PRD Intake** | `/sdd-intake` | AI reads the PRD, builds system architecture, conducts an interactive architectural interview | `system-architecture.md`, `module-decomposition.md`, `constitution.md` |
+| **2. Module Spec** | `/sdd-spec <module>` | Generates a formal module specification with unit, integration, and E2E test criteria | `spec.md`, `plan.md`, `tasks.md`, `checklist.md` |
+| **3. Gen↔Review Loop** | `/sdd-loop <module>` | Generator Agent writes code; Review Agent audits against 5 pillars; loops until `APPROVED` | Source code, test suites, `review-log.md` |
+| **4. GitHub PR** | `/sdd-pr <module>` | Creates feature branch, commits, generates traceability PR body, raises PR via `gh` | Feature branch, `pr-body.md`, GitHub PR |
+| **5. AI PR Review** | *Automatic (GitHub Actions)* | Google AI Gemini audits the PR diff with line-numbered findings and a deterministic verdict | PR comment with `✅ APPROVED` / `⚠️ APPROVED WITH SUGGESTIONS` / `❌ CHANGES REQUESTED` |
+| **6. Feedback Loop** | *Triggered on peer review* | AI ingests feedback, triages against the Constitution, applies targeted line patches, reruns tests, pushes remediation commit | Updated PR, re-triggered AI review |
+
 ---
 
 ## 2. Full Pipeline Walkthrough
@@ -282,6 +330,29 @@ Please resolve this on the current branch.
 ```
 
 ### Resolution Flow
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Reviewer as Human / AI Reviewer
+    participant PR as GitHub PR
+    participant Agent as Antigravity AI
+    participant Const as Project Constitution
+    participant Runner as dotnet test
+
+    Reviewer->>PR: Post finding at file:L88-L98 [Severity: Major]
+    PR->>Agent: Ingest PR comment threads
+    Agent->>Const: Audit suggestion vs. Constitution Principles I-VIII
+    alt Violates Constitution
+        Agent-->>PR: Counter-rationale referencing specific Principle
+    else Valid improvement
+        Agent->>Agent: Apply line-targeted patch
+        Agent->>Runner: dotnet build --warnaserror && dotnet test
+        Runner-->>Agent: ✅ 0 warnings, 140/140 passed
+        Agent->>PR: Push remediation commit
+        PR-->>Reviewer: AI Review Agent re-runs → ✅ APPROVED
+    end
+```
 
 ```mermaid
 flowchart TD

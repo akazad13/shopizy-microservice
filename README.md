@@ -1,6 +1,6 @@
 # 🛍️ Shopizy Microservices Platform
 
-> **Enterprise headless e-commerce microservices platform** built end-to-end using a fully autonomous **Spec-Driven Development (SDD)** AI workflow powered by [Antigravity AI](https://antigravity.dev) and [GitHub Spec Kit](https://github.com/github/spec-kit).
+> **Enterprise headless e-commerce microservices platform** built with .NET 10, Clean Architecture, and .NET Aspire orchestration.
 
 [![.NET](https://github.com/akazad13/shopizy-microservice/actions/workflows/dotnet.yml/badge.svg)](https://github.com/akazad13/shopizy-microservice/actions/workflows/dotnet.yml)
 [![Google AI PR Reviewer](https://github.com/akazad13/shopizy-microservice/actions/workflows/pr-review-agent.yml/badge.svg)](https://github.com/akazad13/shopizy-microservice/actions/workflows/pr-review-agent.yml)
@@ -10,16 +10,13 @@
 ## 📖 Table of Contents
 
 1. [What Is Shopizy?](#-what-is-shopizy)
-2. [The SDD AI Workflow](#-the-sdd-ai-workflow)
-3. [Using the Workflow](#-using-the-workflow)
-4. [Peer Feedback Resolution Loop](#-peer-feedback-resolution-loop)
-5. [Google AI PR Review Agent](#-google-ai-pr-review-agent)
-6. [Architecture & Tech Stack](#-architecture--tech-stack)
-7. [Module Roadmap & Status](#-module-roadmap--status)
-8. [Project Structure](#-project-structure)
-9. [Developer Quick Start](#-developer-quick-start)
-10. [Project Constitution](#-project-constitution)
-11. [Documentation](#-documentation)
+2. [Architecture & Tech Stack](#-architecture--tech-stack)
+3. [Module Roadmap & Status](#-module-roadmap--status)
+4. [Project Structure](#-project-structure)
+5. [Developer Quick Start](#-developer-quick-start)
+6. [Project Constitution](#-project-constitution)
+7. [Documentation](#-documentation)
+8. [Contributing](#-contributing)
 
 ---
 
@@ -37,197 +34,6 @@ Shopizy is an **enterprise-grade, headless digital commerce platform** built as 
 - Sub-second live order tracking push via SignalR + Redis
 - Multi-tenant customer data isolation with cryptographic JWT RBAC
 - Flash-sale Redis Lua hot-key inventory protection
-
----
-
-## 🤖 The SDD AI Workflow
-
-Every module in this repository is built using a **fully autonomous 7-stage Spec-Driven Development pipeline**:
-
-```mermaid
-flowchart TD
-    subgraph Phase1["Phase 1: Architecture & Ingestion"]
-        PRD["📄 1. Ingest PRD\n/sdd-intake"]
-        Interview["🎙️ 2. Arch Interview\n(Interactive Q&A)"]
-        Blueprint["🏗️ 3. Architecture Blueprint\n+ Module Roadmap"]
-        PRD --> Interview --> Blueprint
-    end
-
-    subgraph Phase2["Phase 2: Formal Specification"]
-        Spec["📋 4. Module Spec\n/sdd-spec <module>"]
-    end
-
-    subgraph Phase3["Phase 3: Autonomous Implementation & Testing"]
-        Loop["🔄 5. Generator ⟷ Reviewer\n/sdd-loop <module>"]
-        Tests["✅ 6. Automated Tests\n(Unit + Integration + E2E)"]
-        Loop --> Tests
-    end
-
-    subgraph Phase4["Phase 4: Review, Feedback & Delivery"]
-        PR["🚀 7. GitHub PR\n/sdd-pr <module>"]
-        Review["🤖 8. AI PR Review\n(Google AI Gemini)"]
-        Feedback["🔁 9. Peer Feedback\nResolution Loop"]
-        Merge(["🎉 Merge to Main"])
-        PR --> Review --> Feedback
-        Feedback -->|"✅ APPROVED"| Merge
-    end
-
-    Blueprint --> Spec
-    Spec --> Loop
-    Tests --> PR
-```
-
-### How Each Stage Works
-
-| Stage | Command | What Happens | Output Artifacts |
-|:---|:---|:---|:---|
-| **1. PRD Intake** | `/sdd-intake` | AI reads the PRD, builds system architecture, conducts an interactive architectural interview | `system-architecture.md`, `module-decomposition.md`, `constitution.md` |
-| **2. Module Spec** | `/sdd-spec <module>` | Generates a formal module specification with unit, integration, and E2E test criteria | `spec.md`, `plan.md`, `tasks.md`, `checklist.md` |
-| **3. Gen↔Review Loop** | `/sdd-loop <module>` | Generator Agent writes code; Review Agent audits against 5 pillars; loops until `APPROVED` | Source code, test suites, `review-log.md` |
-| **4. GitHub PR** | `/sdd-pr <module>` | Creates feature branch, commits, generates traceability PR body, raises PR via `gh` | Feature branch, `pr-body.md`, GitHub PR |
-| **5. AI PR Review** | *Automatic (GitHub Actions)* | Google AI Gemini audits the PR diff with line-numbered findings and a deterministic verdict | PR comment with `✅ APPROVED` / `⚠️ APPROVED WITH SUGGESTIONS` / `❌ CHANGES REQUESTED` |
-| **6. Feedback Loop** | *Triggered on peer review* | AI ingests feedback, triages against the Constitution, applies targeted line patches, reruns tests, pushes remediation commit | Updated PR, re-triggered AI review |
-
----
-
-## 🚀 Using the Workflow
-
-### Prerequisites
-
-```bash
-# .NET 10 SDK
-dotnet --version  # 10.x.x
-
-# GitHub CLI (authenticated)
-gh auth status
-
-# Antigravity IDE (for slash commands)
-```
-
-### Starting a New Module — Step by Step
-
-#### Step 1: Intake the PRD
-```text
-/sdd-intake docs/Shopizy_PRD.md
-```
-This conducts an interactive architectural interview and generates `.specify/architecture/`.
-
-#### Step 2: Generate a Module Specification
-```text
-/sdd-spec catalog-service
-```
-Generates the formal spec suite at `.specify/specs/catalog-service/`:
-- `spec.md` — user stories, acceptance criteria, and verifiable E2E test scenarios
-- `plan.md` — technical design, component diagram, and API schemas
-- `tasks.md` — ordered, actionable implementation task list
-- `checklist.md` — pre-PR quality checklist
-
-#### Step 3: Run the Generator ↔ Reviewer Loop
-```text
-/sdd-loop catalog-service
-```
-The **Generator Agent** implements all production code and tests. The **Review Agent** audits across 5 pillars:
-
-| Pillar | What Gets Checked |
-|:---|:---|
-| **Spec Adherence** | All user stories and acceptance criteria implemented? |
-| **Test Completeness** | Unit, integration, and E2E tests present with meaningful assertions? |
-| **Architecture & Standards** | Clean Architecture layers respected? Constitution compliant? |
-| **Error & Edge Cases** | Nulls, boundaries, RFC 7807 Problem Details, unauthorized paths? |
-| **Security & Performance** | OWASP guidelines, JWT auth, idempotency on financial & mutating endpoints? |
-
-If any pillar fails → feedback passed back to the Generator Agent → code is patched → reviewer re-audits (up to 3 cycles).
-
-#### Step 4: Raise the Pull Request
-```text
-/sdd-pr catalog-service
-```
-- Verifies build (`dotnet build --warnaserror`) and all tests pass
-- Creates a feature branch (`feature/catalog-service`)
-- Raises PR with full traceability to PRD sections, spec files, and review-log
-
-#### Step 5: Google AI Reviewer Runs Automatically
-On PR open/push, GitHub Actions triggers the Google AI PR Review Agent which:
-- Reads the PR diff and project constitution
-- Posts line-numbered findings using `file:L<start>-L<end>` references
-- Issues a deterministic verdict (`✅ APPROVED`, `⚠️ APPROVED WITH SUGGESTIONS`, `❌ CHANGES REQUESTED`)
-
-#### Step 6: Resolve Peer Feedback
-When a reviewer (human or AI) posts suggestions:
-> *"Address the feedback on PR #4"*
-
-The AI agent:
-1. Ingests all review comment threads
-2. Audits each suggestion against the Constitution
-3. Applies the targeted line-by-line fix
-4. Runs `dotnet build --warnaserror` and `dotnet test` locally
-5. Commits and pushes a remediation commit
-6. The AI Review Agent auto-re-runs and updates the PR verdict
-
----
-
-## 🔁 Peer Feedback Resolution Loop
-
-```mermaid
-sequenceDiagram
-    autonumber
-    actor Reviewer as Human / AI Reviewer
-    participant PR as GitHub PR
-    participant Agent as Antigravity AI
-    participant Const as Project Constitution
-    participant Runner as dotnet test
-
-    Reviewer->>PR: Post finding at file:L88-L98 [Severity: Major]
-    PR->>Agent: Ingest PR comment threads
-    Agent->>Const: Audit suggestion vs. Constitution Principles I-VIII
-    alt Violates Constitution
-        Agent-->>PR: Counter-rationale referencing specific Principle
-    else Valid improvement
-        Agent->>Agent: Apply line-targeted patch
-        Agent->>Runner: dotnet build --warnaserror && dotnet test
-        Runner-->>Agent: ✅ 0 warnings, 140/140 passed
-        Agent->>PR: Push remediation commit
-        PR-->>Reviewer: AI Review Agent re-runs → ✅ APPROVED
-    end
-```
-
----
-
-## 🤖 Google AI PR Review Agent
-
-Every PR automatically receives a detailed code review from **Google AI (Gemini)** via GitHub Actions.
-
-### What the Agent Reviews
-
-The agent reads the full PR diff and cross-references:
-- The **Project Constitution** (`.specify/memory/constitution.md`)
-- The **PR description** (traceability to spec and acceptance criteria)
-- Clean Architecture layer dependencies
-
-### Line-by-Line Finding Format
-
-```markdown
-#### 📍 `src/Shopizy.AppHost/Program.cs:L16-L19` — [Severity: Minor] Aspire Database Resource Scoping & Isolation
-- **Issue**: Precise technical description
-- **Current Code**: <exact snippet from diff>
-- **Suggested Fix**: <concrete, copy-pasteable replacement>
-- **Rationale**: Engineering reason (e.g., enforces Principle VII database-per-service isolation)
-```
-
-### Verdict Decision Matrix
-
-| Verdict | Triggered When | Merge Blocking? |
-|:---|:---|:---:|
-| `❌ CHANGES REQUESTED` | ANY finding with severity `[Critical]` or `[Major]` | ⛔ YES |
-| `⚠️ APPROVED WITH SUGGESTIONS` | All gates pass; only `[Minor]` or `[Nit]` items remain | 🟢 NO |
-| `✅ APPROVED` | Zero findings; 100% spec compliance; all tests pass | 🟢 NO |
-
-### Configuration
-
-The review agent uses:
-- **Script**: [`.github/scripts/pr_review_agent.py`](.github/scripts/pr_review_agent.py)
-- **Workflow**: [`.github/workflows/pr-review-agent.yml`](.github/workflows/pr-review-agent.yml)
-- **Secret Required**: `GEMINI_API_KEY` in repository secrets
 
 ---
 
@@ -453,19 +259,6 @@ dotnet run --project src/Shopizy.AppHost
 # Provisions: PostgreSQL 17 (identitydb, catalogdb, orderdb, paymentdb, promotiondb, shippingdb, notificationdb, reviewdb, loyaltydb, abandonmentdb), Redis 7 (cart-service, caching), RabbitMQ
 ```
 
-### Run the AI Workflow (In Antigravity Chat)
-
-```text
-# Start a new module:
-/sdd-spec search-service
-
-# Run the full generation + review loop:
-/sdd-loop search-service
-
-# Create the GitHub PR:
-/sdd-pr search-service
-```
-
 ---
 
 ## 📜 Project Constitution
@@ -491,7 +284,7 @@ The Shopizy Platform operates under **8 non-negotiable engineering principles** 
 |:---|:---|
 | [Operations & Incident Runbook](docs/RUNBOOK.md) | Comprehensive operational, local setup, troubleshooting playbooks, and disaster recovery |
 | [Shopizy PRD](docs/Shopizy_PRD.md) | Full Product Requirements Document |
-| [SDD Workflow Guide](docs/sdd-workflow-guide.md) | Detailed step-by-step workflow guide |
+| [SDD Workflow Guide](docs/sdd-workflow-guide.md) | Full SDLC lifecycle, autonomous agent loop, and workflow guide |
 | [System Architecture Blueprint](.specify/architecture/system-architecture.md) | Full topology, CQRS, and infrastructure rationale |
 | [Module Decomposition Roadmap](.specify/architecture/module-decomposition.md) | 13-module dependency graph with E2E scenarios |
 | [Project Constitution](.specify/memory/constitution.md) | 8 non-negotiable engineering principles |
@@ -512,12 +305,7 @@ The Shopizy Platform operates under **8 non-negotiable engineering principles** 
 
 ## 🤝 Contributing
 
-All contributions must go through the SDD workflow:
-1. Create a spec with `/sdd-spec <your-module>`
-2. Implement via `/sdd-loop <your-module>`
-3. Raise PR via `/sdd-pr <your-module>`
-4. All PRs are automatically reviewed by the Google AI Review Agent
-5. Address feedback using the [Peer Feedback Resolution Loop](#-peer-feedback-resolution-loop)
+Contributions follow the project's Spec-Driven Development (SDD) lifecycle and engineering principles. Please see the [SDD Workflow Guide](docs/sdd-workflow-guide.md) for full details on specifications, autonomous agent loops, testing criteria, and PR reviews.
 
 ---
 
