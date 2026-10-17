@@ -1,12 +1,25 @@
+<div align="center">
+
 # 🛍️ Shopizy Microservices Platform
 
-> **Enterprise-grade, headless digital commerce platform** engineered with **.NET 10**, **C# 14**, **Clean Architecture**, **Domain-Driven Design (DDD)**, and **.NET Aspire** cloud-native orchestration.
+### Enterprise-grade digital commerce platform engineered with .NET 10, Clean Architecture, DDD, and .NET Aspire
 
-[![.NET 10 Build](https://github.com/akazad13/shopizy-microservice/actions/workflows/dotnet.yml/badge.svg)](https://github.com/akazad13/shopizy-microservice/actions/workflows/dotnet.yml)
-[![Tests Passing](https://img.shields.io/badge/Tests-336%20Passed%20(100%25)-success?style=flat&logo=dotnet)](https://github.com/akazad13/shopizy-microservice)
-[![Google AI PR Reviewer](https://github.com/akazad13/shopizy-microservice/actions/workflows/pr-review-agent.yml/badge.svg)](https://github.com/akazad13/shopizy-microservice/actions/workflows/pr-review-agent.yml)
-[![Architecture: Clean DDD](https://img.shields.io/badge/Architecture-Clean%20%2B%20DDD%20%2B%20CQRS-blue)](.specify/architecture/system-architecture.md)
-[![.NET Aspire](https://img.shields.io/badge/Orchestration-.NET%20Aspire%2010-512BD4)](src/Shopizy.AppHost)
+[![CI Build](https://img.shields.io/github/actions/workflow/status/akazad13/shopizy-microservice/dotnet.yml?branch=main&style=flat-square&logo=githubactions&logoColor=white)](https://github.com/akazad13/shopizy-microservice/actions)
+[![.NET](https://img.shields.io/badge/.NET-10.0-512BD4?style=flat-square&logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/)
+[![C#](https://img.shields.io/badge/C%23-14.0-239120?style=flat-square&logo=csharp&logoColor=white)](https://learn.microsoft.com/en-us/dotnet/csharp/)
+[![Aspire](https://img.shields.io/badge/Aspire-10%20%2F%2013-512BD4?style=flat-square&logo=dotnet&logoColor=white)](src/Shopizy.AppHost)
+[![RabbitMQ](https://img.shields.io/badge/Broker-RabbitMQ-FF6600?style=flat-square&logo=rabbitmq&logoColor=white)](https://www.rabbitmq.com/)
+[![PostgreSQL](https://img.shields.io/badge/Database-PostgreSQL_17-4169E1?style=flat-square&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![License](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](LICENSE)
+
+[Overview](#-overview--highlights) •
+[Architecture](#-architecture--system-topology) •
+[Microservices Ecosystem](#-microservices-ecosystem) •
+[Tech Stack](#-technology-stack) •
+[Quick Start](#-developer-quick-start) •
+[Documentation](#-documentation--specs)
+
+</div>
 
 ---
 
@@ -343,6 +356,15 @@ For step-by-step guidance on creating specifications, running the generator/revi
 
 ---
 
+## 👤 Author
+
+**Md. Abul Kalam**
+- GitHub: [@akazad13](https://github.com/akazad13)
+- LinkedIn: [Md. Abul Kalam](https://linkedin.com/in/akazad13)
+
+---
+
 ## 📄 License
 
-This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+This project is licensed under the [MIT License](LICENSE).
+
