@@ -356,6 +356,12 @@ For step-by-step guidance on creating specifications, running the generator/revi
 
 ---
 
+## 🤖 AI-Driven Development & Contributing
+
+Autonomous coding agents (Antigravity, Cursor, Claude Code, GitHub Copilot) operating in this repository must consult [AGENTS.md](AGENTS.md) and [.specify/memory/constitution.md](.specify/memory/constitution.md) for database-per-service isolation rules, MassTransit outbox patterns, and .NET Aspire build verification gates.
+
+---
+
 ## 👤 Author
 
 **Md. Abul Kalam**
