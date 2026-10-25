@@ -321,6 +321,7 @@ The Shopizy platform strictly adheres to **8 non-negotiable engineering principl
 
 | Document | Purpose |
 |:---|:---|
+| [Architecture Decision Records (ADRs)](docs/adr/README.md) | Formal record of 13 key architectural decisions, tradeoffs, and system invariants. |
 | [Operations & Incident Runbook](docs/RUNBOOK.md) | Local setup, ports, configuration keys, database migrations, and incident troubleshooting playbooks. |
 | [Shopizy PRD](docs/Shopizy_PRD.md) | Comprehensive Product Requirements Document defining business scope and requirements. |
 | [SDD Workflow Guide](docs/sdd-workflow-guide.md) | Complete guide to the 7-stage Spec-Driven Development SDLC lifecycle and autonomous agent loops. |

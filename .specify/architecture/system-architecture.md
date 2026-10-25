@@ -204,3 +204,26 @@ Under extreme checkout load (e.g. 10,000 requests/sec for a limited sneaker rele
   - **RabbitMQ Queue Depth**: Background consumers (e.g., `OrderPlacedConsumer`, `ShippingDispatchConsumer`) scale dynamically based on unconsumed message lag, preventing queue backlog bottlenecks.
   - **Min / Max Replicas**: Critical services maintain minimum 2 replicas across Availability Zones for High Availability, scaling to 30+ replicas during peak load events.
 
+---
+
+## 8. Architecture Decision Records (ADRs)
+
+All foundational architectural decisions are formally recorded with context, tradeoffs, and consequences under [`docs/adr/`](../../docs/adr/):
+
+| ADR | Title | Key Architectural Principle |
+| :---: | :--- | :--- |
+| [0001](../../docs/adr/0001-record-architecture-decisions.md) | Record Architecture Decisions | MADR-style architectural decision governance |
+| [0002](../../docs/adr/0002-orchestration-and-observability-with-dotnet-aspire.md) | Orchestration & Observability with .NET Aspire | Single-command developer inner loop (`Shopizy.AppHost`) & OpenTelemetry |
+| [0003](../../docs/adr/0003-clean-architecture-and-domain-driven-design.md) | Clean Architecture & DDD per Service | Hexagonal layer boundaries with zero framework coupling in Domain |
+| [0004](../../docs/adr/0004-database-per-service-and-data-isolation.md) | Database-per-Service & Shared-Nothing Isolation | 10 isolated PostgreSQL databases; zero cross-database queries or foreign keys |
+| [0005](../../docs/adr/0005-asynchronous-messaging-with-rabbitmq-and-masstransit.md) | Asynchronous Messaging with RabbitMQ & MassTransit | Event-driven decoupling with typed integration contracts in SharedKernel |
+| [0006](../../docs/adr/0006-transactional-outbox-and-distributed-sagas.md) | Transactional Outbox & Distributed Sagas | At-least-once delivery with MassTransit outbox; multi-service checkout saga |
+| [0007](../../docs/adr/0007-two-tier-inventory-reservation-and-flash-sale-protection.md) | Two-Tier Inventory Reservation & Hot-Key Protection | Atomic Redis Lua script (hot path) + PostgreSQL durable reservation (cold path) |
+| [0008](../../docs/adr/0008-fifteen-minute-unpaid-order-expiration.md) | 15-Minute Unpaid Order Auto-Expiration | Scheduled expiration job releasing reserved inventory back to available stock |
+| [0009](../../docs/adr/0009-stateless-jwt-auth-and-customer-data-isolation.md) | Stateless Asymmetric JWT Auth & Data Isolation | RS256 token verification without sync auth calls; query-level customer filtering |
+| [0010](../../docs/adr/0010-idempotency-key-enforcement.md) | Idempotency-Key Enforcement for Mutating Endpoints | 60-second Redis idempotency cache on mutating/financial operations |
+| [0011](../../docs/adr/0011-read-optimization-and-search-engine-offloading.md) | Read Scalability via CQRS & Search Offloading | Inverted index (Elasticsearch/Meilisearch) offloads catalog search & facets |
+| [0012](../../docs/adr/0012-real-time-telemetry-via-signalr-and-redis-backplane.md) | Real-Time Telemetry via SignalR & Redis Backplane | Sub-second live order tracking & merchant metrics across scaled replicas |
+| [0013](../../docs/adr/0013-testing-pyramid-and-testcontainers-integration.md) | Testing Pyramid & Testcontainers Integration | Fast domain unit tests + real disposable PostgreSQL/RabbitMQ Testcontainers |
+
+
