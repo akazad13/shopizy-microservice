@@ -177,7 +177,7 @@ flowchart TD
 | **Real-Time Communication** | ASP.NET Core SignalR | Sub-second push delivery for order status and tracking milestones |
 | **Resilience & Fault Tolerance** | Polly (`Microsoft.Extensions.Http.Resilience`)| Circuit breakers, retries with exponential backoff, and timeouts |
 | **Observability** | OpenTelemetry + Serilog | Distributed tracing, live metrics, and Aspire Telemetry Dashboard |
-| **Automated Testing** | xUnit + FluentAssertions | 38 test suites across Unit, Integration, and WebApplicationFactory E2E tiers |
+| **Automated Testing** | xUnit + FluentAssertions + Testcontainers | 38 test suites structured across Small (Unit), Medium (Testcontainers), and Large (Aspire E2E) tiers per [ADR-0015](docs/adr/0015-agentic-testing-paradigm-and-verification-loop.md) |
 | **Continuous Integration** | GitHub Actions | Automated build (`--warnaserror`), test runner, and Google AI PR review |
 
 ---
@@ -272,11 +272,21 @@ dotnet restore Shopizy.sln
 dotnet build Shopizy.sln --warnaserror
 ```
 
-### 3. Run Automated Tests
+### 3. Run Automated Tests & Verification Loop
 
-Execute the complete 38-project test suite locally:
+The test suite follows the **Agentic Testing Paradigm** ([ADR-0015](docs/adr/0015-agentic-testing-paradigm-and-verification-loop.md)) structured into Small (Unit), Medium (Testcontainers), and Large (Aspire E2E) tiers:
 
 ```bash
+# Fast inner loop: run all in-memory unit tests (Small - milliseconds)
+dotnet test Shopizy.sln --filter "Category!=Integration&Category!=E2E"
+
+# Run a focused microservice test suite
+dotnet test tests/Shopizy.CatalogService.UnitTests
+
+# Run containerized integration tests (Medium - PostgreSQL/RabbitMQ/Redis Testcontainers)
+dotnet test tests/Shopizy.CatalogService.IntegrationTests
+
+# Execute the complete 38-project test suite across all services
 dotnet test Shopizy.sln
 # Expected: 336 passed, 0 failed (100% pass rate)
 ```
@@ -307,7 +317,7 @@ The Shopizy platform strictly adheres to **8 non-negotiable engineering principl
 | **I** | **Clean Architecture** | The Domain layer contains zero dependencies on ORMs, web frameworks, or third-party packages. |
 | **II** | **Zero Overselling** | Stock reservation is atomic; 15-minute unpaid expiry and restocking are mandatory. |
 | **III**| **Event-Driven Decoupling** | Synchronous cross-service writes are prohibited; services communicate via Transactional Outbox events. |
-| **IV** | **Test-First Quality** | Every specification defines unit, integration, and E2E acceptance criteria prior to implementation. |
+| **IV** | **Test-First Quality (Agentic TDD)** | Red-Green-Refactor loop is mandatory; bug fixes require Prove-It reproduction tests; state assertion over mocks ([ADR-0015](docs/adr/0015-agentic-testing-paradigm-and-verification-loop.md)). |
 | **V** | **Zero Trust Security** | JWT Bearer authentication is mandatory; customer data isolation is strictly enforced at query level. |
 | **VI** | **Idempotency** | All mutating and financial endpoints require and validate standard `Idempotency-Key` headers. |
 | **VII**| **Database-per-Service** | Direct cross-database queries and foreign keys are forbidden; each service fully owns its data store. |
@@ -321,7 +331,7 @@ The Shopizy platform strictly adheres to **8 non-negotiable engineering principl
 
 | Document | Purpose |
 |:---|:---|
-| [Architecture Decision Records (ADRs)](docs/adr/README.md) | Formal record of 13 key architectural decisions, tradeoffs, and system invariants. |
+| [Architecture Decision Records (ADRs)](docs/adr/README.md) | Formal record of 15 key architectural decisions, tradeoffs, and system invariants. |
 | [Operations & Incident Runbook](docs/RUNBOOK.md) | Local setup, ports, configuration keys, database migrations, and incident troubleshooting playbooks. |
 | [Shopizy PRD](docs/Shopizy_PRD.md) | Comprehensive Product Requirements Document defining business scope and requirements. |
 | [SDD Workflow Guide](docs/sdd-workflow-guide.md) | Complete guide to the 7-stage Spec-Driven Development SDLC lifecycle and autonomous agent loops. |
@@ -359,7 +369,7 @@ For step-by-step guidance on creating specifications, running the generator/revi
 
 ## 🤖 AI-Driven Development & Contributing
 
-Autonomous coding agents (Antigravity, Cursor, Claude Code, GitHub Copilot) operating in this repository must consult [AGENTS.md](AGENTS.md) and [.specify/memory/constitution.md](.specify/memory/constitution.md) for database-per-service isolation rules, MassTransit outbox patterns, and .NET Aspire build verification gates.
+Autonomous coding agents (Antigravity, Cursor, Claude Code, GitHub Copilot) operating in this repository must consult [AGENTS.md](AGENTS.md) and [.specify/memory/constitution.md](.specify/memory/constitution.md) for database-per-service isolation rules, MassTransit outbox patterns, and the **Agentic Testing Paradigm & Verification Loop** ([ADR-0015](docs/adr/0015-agentic-testing-paradigm-and-verification-loop.md)). All code changes must follow Red-Green-Refactor and the Prove-It bug reproduction pattern with zero-warning build gates.
 
 ---
 

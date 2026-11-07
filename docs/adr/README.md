@@ -24,6 +24,7 @@ Architecture Decision Records capture significant, architectural choices made du
 | [0012](0012-real-time-telemetry-via-signalr-and-redis-backplane.md) | Real-Time Telemetry via SignalR and Redis Backplane | Accepted | 2026-09-05 | Real-Time |
 | [0013](0013-testing-pyramid-and-testcontainers-integration.md) | Testing Pyramid and Testcontainers for Integration Verification | Accepted | 2026-09-05 | Quality |
 | [0014](0014-package-modernization.md) | Solution Package Modernization and Runtime Dependency Alignment | Accepted | 2026-11-07 | Infrastructure |
+| [0015](0015-agentic-testing-paradigm-and-verification-loop.md) | Agentic Testing Paradigm and Continuous Verification Loop | Accepted | 2026-11-07 | Quality |
 
 ---
 
