@@ -23,6 +23,7 @@ Architecture Decision Records capture significant, architectural choices made du
 | [0011](0011-read-optimization-and-search-engine-offloading.md) | Read Scalability via CQRS and Search Engine Offloading | Accepted | 2026-09-05 | Performance |
 | [0012](0012-real-time-telemetry-via-signalr-and-redis-backplane.md) | Real-Time Telemetry via SignalR and Redis Backplane | Accepted | 2026-09-05 | Real-Time |
 | [0013](0013-testing-pyramid-and-testcontainers-integration.md) | Testing Pyramid and Testcontainers for Integration Verification | Accepted | 2026-09-05 | Quality |
+| [0014](0014-package-modernization.md) | Solution Package Modernization and Runtime Dependency Alignment | Accepted | 2026-11-07 | Infrastructure |
 
 ---
 
